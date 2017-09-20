@@ -1,0 +1,25 @@
+{
+  "name": "bedrock-ledger-validator-signature-or-equihash",
+  "version": "0.0.1-0",
+  "description": "bedrock-ledger-validator-signature-or-equihash",
+  "main": "./lib",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/digitalbazaar/bedrock-ledger-validator-signature-or-equihash.git"
+  },
+  "bugs": {
+    "url": "https://github.com/digitalbazaar/bedrock-ledger-validator-signature-or-equihash/issues"
+  },
+  "homepage": "https://github.com/digitalbazaar/bedrock-ledger-validator-signature-or-equihash#readme",
+  "dependencies": {
+    "did-io": "digitalbazaar/did-io#master",
+    "jsonld-signatures": "digitalbazaar/jsonld-signatures#multiSignature",
+    "equihash-signature": "github:digitalbazaar/equihash-signature#wip"
+  },
+  "peerDependencies": {
+    "bedrock": "^1.4.1",
+    "bedrock-did-client": "^1.1.0",
+    "bedrock-ledger-node": "digitalbazaar/bedrock-ledger-node#cm4",
+    "bedrock-validation": "^2.2.1"
+  }
+}
