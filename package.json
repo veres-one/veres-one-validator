@@ -1,16 +1,16 @@
 {
-  "name": "bedrock-ledger-validator-signature-or-equihash",
+  "name": "bedrock-ledger-validator-multiproof",
   "version": "0.0.1-0",
-  "description": "bedrock-ledger-validator-signature-or-equihash",
+  "description": "bedrock-ledger-validator-multiproof",
   "main": "./lib",
   "repository": {
     "type": "git",
-    "url": "https://github.com/digitalbazaar/bedrock-ledger-validator-signature-or-equihash.git"
+    "url": "https://github.com/digitalbazaar/bedrock-ledger-validator-multiproof.git"
   },
   "bugs": {
-    "url": "https://github.com/digitalbazaar/bedrock-ledger-validator-signature-or-equihash/issues"
+    "url": "https://github.com/digitalbazaar/bedrock-ledger-validator-multiproof/issues"
   },
-  "homepage": "https://github.com/digitalbazaar/bedrock-ledger-validator-signature-or-equihash#readme",
+  "homepage": "https://github.com/digitalbazaar/bedrock-ledger-validator-multiproof#readme",
   "dependencies": {
     "did-io": "digitalbazaar/did-io#jsonld-1.1",
     "jsonld-signatures": "digitalbazaar/jsonld-signatures#multiSignature",
