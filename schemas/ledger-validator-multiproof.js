@@ -105,6 +105,10 @@ const schema = {
       }],
       required: true
     },
+    minimumProofs: {
+      type: 'number',
+      required: true
+    }
   },
   additionalProperties: false
 };
