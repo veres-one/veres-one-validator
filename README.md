@@ -1,10 +1,10 @@
-# bedrock-ledger-validator-signature-pow
+# bedrock-ledger-validator-multiproof
 
-[![Build Status](https://ci.digitalbazaar.com/buildStatus/icon?job=bedrock-ledger-validator-signature)](https://ci.digitalbazaar.com/job/bedrock-ledger-validator-signature-pow)
+[![Build Status](https://ci.digitalbazaar.com/buildStatus/icon?job=bedrock-ledger-validator-signature)](https://ci.digitalbazaar.com/job/bedrock-ledger-validator-multiproof)
 
 A validator for [bedrock-ledger-node] that determines if M of N
-digital signatures on a document, an Equihash proof, or both satisfies the
-requirements defined in the ledger's configuration.
+digital signatures on a document, an Equihash proof, or any combination
+thereof satisfies the requirements defined in the ledger's configuration.
 
 ## The Validator API
 - validateConfiguration(validatorConfig, callback(err))
@@ -16,10 +16,10 @@ For documentation on configuration, see [config.js](./lib/config.js).
 
 ## Usage Example
 ```javascript
-const brValidator = require('bedrock-ledger-validator-signature-pow');
+const brValidator = require('bedrock-ledger-validator-multiproof');
 
 const validatorConfig = {
-  type: 'SignatureProofOfWorkValidator2017',
+  type: 'MultiproofValidator2017',
   eventFilter: [{
     type: 'EventTypeFilter',
     eventType: ['WebLedgerEvent']
@@ -46,7 +46,9 @@ const validatorConfig = {
     requiredProof: true,
     equihashParameterN: 64,
     equihashParameterK: 3
-  }]
+  }],
+  // list the minimum number of proofs necessary for a valid event
+  minimumProofs: 1
 };
 
 const signedDocument = {
@@ -73,7 +75,7 @@ const signedDocument = {
     "creator": "did:v1:be0d2a4a-583f-4a8b-98c8-73bdf046bfd1/keys/1",
     "signatureValue": "IyEQBDNGEMt0YMpVQgrn...HF9FZpyDlFw=="
   }, {
-    "type": "EquihashSignature2017",
+    "type": "EquihashProof2017",
     "equihashParameterN": 64,
     "equihashParameterK": 3,
     "nonce": 3,

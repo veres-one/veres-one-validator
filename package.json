@@ -12,7 +12,7 @@
   },
   "homepage": "https://github.com/digitalbazaar/bedrock-ledger-validator-signature-or-equihash#readme",
   "dependencies": {
-    "did-io": "digitalbazaar/did-io#master",
+    "did-io": "digitalbazaar/did-io#jsonld-1.1",
     "jsonld-signatures": "digitalbazaar/jsonld-signatures#multiSignature",
     "equihash-signature": "github:digitalbazaar/equihash-signature#wip"
   },

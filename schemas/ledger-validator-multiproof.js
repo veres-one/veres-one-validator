@@ -5,13 +5,13 @@ const bedrock = require('bedrock');
 const schemas = require('bedrock-validation').schemas;
 
 const schema = {
-  title: 'Bedrock Ledger Signature and/or Proof of Work Validator Config',
+  title: 'Bedrock Ledger Multiproof Validator Config',
   required: true,
   type: 'object',
   properties: {
     type: {
       type: 'string',
-      enum: ['SignatureProofOfWorkValidator2017'],
+      enum: ['MultiproofValidator2017'],
       required: true
     },
     eventFilter: {
