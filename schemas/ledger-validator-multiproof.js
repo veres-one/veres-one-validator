@@ -51,7 +51,7 @@ const schema = {
           requiredProof: {
             type: 'boolean'
           },
-          minimumSignatures: {
+          minimumSignaturesRequired: {
             type: 'number'
           },
           authenticationCredential: {
@@ -105,7 +105,7 @@ const schema = {
       }],
       required: true
     },
-    minimumProofs: {
+    minimumProofsRequired: {
       type: 'number',
       required: true
     }
