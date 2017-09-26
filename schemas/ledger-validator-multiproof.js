@@ -2,16 +2,16 @@
  * Copyright (c) 2017 Digital Bazaar, Inc. All rights reserved.
  */
 const bedrock = require('bedrock');
-const schemas = require('bedrock-validation').schemas;
+// const schemas = require('bedrock-validation').schemas;
 
 const schema = {
-  title: 'Bedrock Ledger Multiproof Validator Config',
+  title: 'Veres One Validator Config',
   required: true,
   type: 'object',
   properties: {
     type: {
       type: 'string',
-      enum: ['MultiproofValidator2017'],
+      enum: ['VeresOneValidator2017'],
       required: true
     },
     eventFilter: {
@@ -36,79 +36,75 @@ const schema = {
       },
       required: true
     },
-    permittedProofType: {
-      title: 'Permitted Proof Type',
-      type: 'array',
-      minItems: 1,
-      items: [{
-        type: 'object',
-        properties: {
-          proofType: {
-            type: 'string',
-            enum: ['RsaSignatureProof2015'],
-            required: true
-          },
-          requiredProof: {
-            type: 'boolean'
-          },
-          minimumSignaturesRequired: {
-            type: 'number'
-          },
-          authenticationCredential: {
-            type: 'array',
-            minItems: 1,
-            items: {
-              type: 'object',
-              properties: [{
-                id: {
-                  type: 'string',
-                  required: true
-                },
-                type: {
-                  type: 'string',
-                  enum: ['RsaCryptographicKey'],
-                },
-                owner: {
-                  type: 'string',
-                },
-                publicKeyPem: {
-                  type: 'string'
-                }
-              }]
-            },
-            required: true
-          },
-          additionalProperties: false
-        },
-        additionalProperties: false
-      }, {
-        type: 'object',
-        properties: {
-          proofType: {
-            type: 'string',
-            enum: ['EquihashProof2017'],
-            required: true
-          },
-          requiredProof: {
-            type: 'boolean'
-          },
-          equihashParameterN: {
-            type: 'number',
-            required: true
-          },
-          equihashParameterK: {
-            type: 'number',
-            required: true
-          }
-        },
-        additionalProperties: false
-      }],
-      required: true
-    },
-    minimumProofsRequired: {
-      type: 'number',
-      required: true
-    }
+    // permittedProofType: {
+    //   title: 'Permitted Proof Type',
+    //   type: 'array',
+    //   minItems: 1,
+    //   items: [{
+    //     type: 'object',
+    //     properties: {
+    //       proofType: {
+    //         type: 'string',
+    //         enum: ['RsaSignatureProof2015'],
+    //         required: true
+    //       },
+    //       requiredProof: {
+    //         type: 'boolean'
+    //       },
+    //       minimumSignaturesRequired: {
+    //         type: 'number'
+    //       },
+    //       authenticationCredential: {
+    //         type: 'array',
+    //         minItems: 1,
+    //         items: {
+    //           type: 'object',
+    //           properties: [{
+    //             id: {
+    //               type: 'string',
+    //               required: true
+    //             },
+    //             type: {
+    //               type: 'string',
+    //               enum: ['RsaCryptographicKey'],
+    //             },
+    //             owner: {
+    //               type: 'string',
+    //             },
+    //             publicKeyPem: {
+    //               type: 'string'
+    //             }
+    //           }]
+    //         },
+    //         required: true
+    //       },
+    //       additionalProperties: false
+    //     },
+    //     additionalProperties: false
+    //   }, {
+    //     type: 'object',
+    //     properties: {
+    //       proofType: {
+    //         type: 'string',
+    //         enum: ['EquihashProof2017'],
+    //         required: true
+    //       },
+    //       requiredProof: {
+    //         type: 'boolean'
+    //       },
+    //       equihashParameterN: {
+    //         type: 'number',
+    //         required: true
+    //       },
+    //       equihashParameterK: {
+    //         type: 'number',
+    //         required: true
+    //       }
+    //     },
+    //     additionalProperties: false
+    //   }],
+    //   required: true
+    // },
   },
   additionalProperties: false
 };
