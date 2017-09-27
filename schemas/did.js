@@ -9,7 +9,7 @@ const schema = {
   description: 'A decentralized identifier.',
   type: 'string',
   // FIXME: review regex pattern for spec conformance`
-  pattern: "^(did:v1:|did:)([A-Za-z0-9.-]+)$",
+  pattern: "^(did:v1:|did:v1:testnet:|did:)([A-Za-z0-9.-]+)$",
   errors: {
     invalid: 'The decentralized identifier is invalid.',
     missing: 'Please enter a decentralized identifier.'
