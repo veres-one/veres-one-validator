@@ -235,6 +235,43 @@ describe('validateEvent API', () => {
         done();
       });
     });
+    it('validation fails if the Equihash signature is not valid', done => {
+      async.auto({
+        proof: callback => equihashSigs.sign({
+          // NOTE: generating a signature on a bogus document
+          doc: {
+            '@context': constants.WEB_LEDGER_CONTEXT_V1_URL,
+            operation: 'createInvalidSignature'
+          },
+          n: cfg.equihash.equihashParameterN,
+          k: cfg.equihash.equihashParameterK
+        }, callback),
+        sign: callback => signDocument({
+          creator: mockData.authorizedSigners.alpha,
+          privateKeyPem: mockData.keys.alpha.privateKey,
+          doc: mockData.events.alpha
+        }, callback),
+        check: ['proof', 'sign', (results, callback) => {
+          const signedDoc = bedrock.util.clone(mockData.events.alpha);
+          signedDoc.signature = [
+            results.sign.signature,
+            results.proof.signature
+          ];
+          voValidator.validateEvent(
+            signedDoc,
+            mockData.ledgers.alpha.config.ledgerConfiguration.eventValidator[0],
+            err => {
+              should.exist(err);
+              err.name.should.equal('ValidationError');
+              should.exist(err.details.event);
+              callback();
+            });
+        }]
+      }, err => {
+        assertNoError(err);
+        done();
+      });
+    });
     it('validation fails if the operation is not `Create`', done => {
       const testEvent = bedrock.util.clone(mockData.events.alpha);
       testEvent.operation = 'unknownOperation';
@@ -265,6 +302,41 @@ describe('validateEvent API', () => {
               err.details.supportedOperation.should.be.an('array');
               err.details.supportedOperation.should.have.same.members([
                 'Create']);
+              callback();
+            });
+        }]
+      }, err => {
+        assertNoError(err);
+        done();
+      });
+    });
+    it('validation fails if `permission` is not `UpdateDidDocument`', done => {
+      const testEvent = bedrock.util.clone(mockData.events.alpha);
+      testEvent.input[0].authorizationCapability[0].permission =
+        'unknownPermission';
+      async.auto({
+        proof: callback => equihashSigs.sign({
+          doc: testEvent,
+          n: cfg.equihash.equihashParameterN,
+          k: cfg.equihash.equihashParameterK
+        }, callback),
+        sign: callback => signDocument({
+          creator: mockData.authorizedSigners.alpha,
+          privateKeyPem: mockData.keys.alpha.privateKey,
+          doc: testEvent
+        }, callback),
+        check: ['proof', 'sign', (results, callback) => {
+          const signedDoc = bedrock.util.clone(testEvent);
+          signedDoc.signature = [
+            results.sign.signature,
+            results.proof.signature
+          ];
+          voValidator.validateEvent(
+            signedDoc,
+            mockData.ledgers.alpha.config.ledgerConfiguration.eventValidator[0],
+            err => {
+              should.exist(err);
+              err.name.should.equal('DataError');
               callback();
             });
         }]
