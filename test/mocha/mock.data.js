@@ -3,6 +3,8 @@
  */
 'use strict';
 
+const constants = require('bedrock').config.constants;
+
 const mock = {};
 module.exports = mock;
 
@@ -267,11 +269,11 @@ keys.epsilon_2 = {
 };
 
 events.alpha = {
-  '@context': 'https://w3id.org/webledger/v1',
+  '@context': constants.WEB_LEDGER_CONTEXT_V1_URL,
   type: 'WebLedgerEvent',
   operation: 'Create',
   input: [{
-    '@context': 'https://w3id.org/veres-one/v1',
+    '@context': constants.VERES_ONE_CONTEXT_URL,
     id: 'did:v1:d8a43e2e-eda9-436c-ae37-4ee65edab54c',
     authorizationCapability: [{
       permission: 'UpdateDidDocument',

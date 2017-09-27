@@ -93,7 +93,7 @@ const didDocument = {
   required: true,
   type: 'object',
   properties: {
-    '@context': schemas.jsonldContext(constants.VERES_ONE_CONTEXT_V1_URL),
+    '@context': schemas.jsonldContext(constants.VERES_ONE_CONTEXT),
     id: did(),
     authorizationCapability: {
       type: 'array',
