@@ -147,6 +147,38 @@ describe('validateEvent API', () => {
         done();
       });
     });
+    it.skip('validation fails if incorrect equihash params were used', done => {
+      async.auto({
+        proof: callback => equihashSigs.sign({
+          doc: mockData.events.alpha,
+          // NOTE: incorrect N parameter is used here
+          n: 4,
+          k: cfg.equihash.equihashParameterK
+        }, callback),
+        sign: callback => signDocument({
+          creator: mockData.authorizedSigners.alpha,
+          privateKeyPem: mockData.keys.alpha.privateKey,
+          doc: mockData.events.alpha
+        }, callback),
+        check: ['proof', 'sign', (results, callback) => {
+          const signedDoc = bedrock.util.clone(mockData.events.alpha);
+          signedDoc.signature = [
+            results.sign.signature,
+            results.proof.signature
+          ];
+          voValidator.validateEvent(
+            signedDoc,
+            mockData.ledgers.alpha.config.ledgerConfiguration.eventValidator[0],
+            err => {
+              assertNoError(err);
+              callback();
+            });
+        }]
+      }, err => {
+        assertNoError(err);
+        done();
+      });
+    });
   }); // end WebLedgerEvent
 
   describe.skip('WebLedgerConfigurationEvent', () => {
