@@ -3,10 +3,7 @@
  */
 'use strict';
 
-const bedrock = require('bedrock');
 const voValidator = require('veres-one-validator');
-const jsigs = require('jsonld-signatures');
-jsigs.use('jsonld', bedrock.jsonld);
 
 const mockData = require('./mock.data');
 

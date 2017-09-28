@@ -12,6 +12,7 @@ const voValidator = require('veres-one-validator');
 const equihashSigs = require('equihash-signature');
 const jsigs = require('jsonld-signatures');
 jsigs.use('jsonld', bedrock.jsonld);
+equihashSigs.use('jsonld', bedrock.jsonld);
 
 const mockData = require('./mock.data');
 
