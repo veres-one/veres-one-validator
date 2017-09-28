@@ -15,6 +15,7 @@ const keys = mock.keys = {};
 mock.authorizedSigners = {
   // fully valid signer
   alpha: 'did:v1:d8a43e2e-eda9-436c-ae37-4ee65edab54c/keys/1',
+  beta: 'did:v1:5627622e-0ab3-479a-bfe7-0f4983a1f7ce/keys/1'
 };
 
 ledgers.alpha = {

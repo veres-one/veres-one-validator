@@ -49,6 +49,43 @@ describe('validateEvent API', () => {
         done();
       });
     });
+    it('validates an event with extra jsonld-signatures', done => {
+      async.auto({
+        proof: callback => equihashSigs.sign({
+          doc: mockData.events.alpha,
+          n: cfg.equihash.equihashParameterN,
+          k: cfg.equihash.equihashParameterK
+        }, callback),
+        signAlpha: callback => signDocument({
+          creator: mockData.authorizedSigners.alpha,
+          privateKeyPem: mockData.keys.alpha.privateKey,
+          doc: mockData.events.alpha
+        }, callback),
+        signBeta: callback => signDocument({
+          creator: mockData.authorizedSigners.beta,
+          privateKeyPem: mockData.keys.beta.privateKey,
+          doc: mockData.events.alpha
+        }, callback),
+        check: ['proof', 'signAlpha', 'signBeta', (results, callback) => {
+          const signedDoc = bedrock.util.clone(mockData.events.alpha);
+          signedDoc.signature = [
+            results.signBeta.signature,
+            results.proof.signature,
+            results.signAlpha.signature,
+          ];
+          voValidator.validateEvent(
+            signedDoc,
+            mockData.ledgers.alpha.config.ledgerConfiguration.eventValidator[0],
+            err => {
+              assertNoError(err);
+              callback();
+            });
+        }]
+      }, err => {
+        assertNoError(err);
+        done();
+      });
+    });
     it('validation fails if Equihash signature is missing', done => {
       async.auto({
         sign: callback => signDocument({
@@ -67,10 +104,49 @@ describe('validateEvent API', () => {
             err => {
               should.exist(err);
               err.name.should.equal('ValidationError');
-              should.exist(err.details.updateSignatureType);
-              err.details.updateSignatureType.should.be.an('array');
-              err.details.updateSignatureType.should.have.same.members([
-                'LinkedDataSignature2015', 'EquihashProof2017']);
+              should.exist(err.details.event);
+              should.exist(err.details.requiredEquihashParams);
+              const p = err.details.requiredEquihashParams;
+              p.should.be.an('object');
+              p.equihashParameterN.should.equal(
+                cfg.equihash.equihashParameterN);
+              p.equihashParameterK.should.equal(
+                cfg.equihash.equihashParameterK);
+              callback();
+            });
+        }]
+      }, err => {
+        assertNoError(err);
+        done();
+      });
+    });
+    it('validation fails if two jsonld-signatures and no Equihash', done => {
+      async.auto({
+        sign: callback => signDocument({
+          creator: mockData.authorizedSigners.alpha,
+          privateKeyPem: mockData.keys.alpha.privateKey,
+          doc: mockData.events.alpha
+        }, callback),
+        check: ['sign', (results, callback) => {
+          const signedDoc = bedrock.util.clone(mockData.events.alpha);
+          signedDoc.signature = [
+            results.sign.signature,
+            results.sign.signature
+          ];
+          voValidator.validateEvent(
+            signedDoc,
+            mockData.ledgers.alpha.config.ledgerConfiguration.eventValidator[0],
+            err => {
+              should.exist(err);
+              err.name.should.equal('ValidationError');
+              should.exist(err.details.event);
+              should.exist(err.details.requiredEquihashParams);
+              const p = err.details.requiredEquihashParams;
+              p.should.be.an('object');
+              p.equihashParameterN.should.equal(
+                cfg.equihash.equihashParameterN);
+              p.equihashParameterK.should.equal(
+                cfg.equihash.equihashParameterK);
               callback();
             });
         }]
@@ -97,10 +173,10 @@ describe('validateEvent API', () => {
             err => {
               should.exist(err);
               err.name.should.equal('ValidationError');
-              should.exist(err.details.updateSignatureType);
-              err.details.updateSignatureType.should.be.an('array');
-              err.details.updateSignatureType.should.have.same.members([
-                'LinkedDataSignature2015', 'EquihashProof2017']);
+              should.exist(err.details.event);
+              should.exist(err.details.requiredCreator);
+              err.details.requiredCreator.should.equal(
+                mockData.events.alpha.input[0].authenticationCredential[0].id);
               callback();
             });
         }]
@@ -219,6 +295,7 @@ describe('validateEvent API', () => {
             err => {
               should.exist(err);
               err.name.should.equal('ValidationError');
+              should.exist(err.details.event);
               should.exist(err.details.requiredEquihashParams);
               const p = err.details.requiredEquihashParams;
               p.should.be.an('object');
@@ -226,8 +303,6 @@ describe('validateEvent API', () => {
                 cfg.equihash.equihashParameterN);
               p.equihashParameterK.should.equal(
                 cfg.equihash.equihashParameterK);
-              should.exist(err.details.signature);
-              err.details.signature.should.deep.equal(results.proof.signature);
               callback();
             });
         }]
