@@ -14,13 +14,13 @@
   "dependencies": {
     "async": "^2.5.0",
     "did-io": "digitalbazaar/did-io#jsonld-1.1",
-    "equihash-signature": "github:digitalbazaar/equihash-signature#removeBedrock",
-    "jsonld-signatures": "digitalbazaar/jsonld-signatures#master"
+    "equihash-signature": "github:digitalbazaar/equihash-signature#master",
+    "jsonld-signatures": "^2.1.1"
   },
   "peerDependencies": {
     "bedrock": "^1.4.1",
     "bedrock-did-client": "^1.1.0",
-    "bedrock-ledger-node": "digitalbazaar/bedrock-ledger-node#cm4",
+    "bedrock-ledger-node": "digitalbazaar/bedrock-ledger-node#master",
     "bedrock-validation": "^2.2.1",
     "veres-one-context": "digitalbazaar/veres-one-context"
   }
