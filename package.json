@@ -15,7 +15,7 @@
     "async": "^2.5.0",
     "did-io": "digitalbazaar/did-io#jsonld-1.1",
     "equihash-signature": "github:digitalbazaar/equihash-signature#master",
-    "jsonld-signatures": "^2.1.1"
+    "jsonld-signatures": "^2.1.3"
   },
   "peerDependencies": {
     "bedrock": "^1.4.1",

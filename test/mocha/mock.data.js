@@ -1,80 +1,108 @@
-/*
- * Copyright (c) 2017 Digital Bazaar, Inc. All rights reserved.
+/*!
+ * Copyright (c) 2017-2018 Digital Bazaar, Inc. All rights reserved.
  */
 'use strict';
 
-const constants = require('bedrock').config.constants;
+const bedrock = require('bedrock');
 
 const mock = {};
 module.exports = mock;
 
-const ledgers = mock.ledgers = {};
-const events = mock.events = {};
+const ledgerConfigurations = mock.ledgerConfigurations = {};
+const operations = mock.operations = {};
+const didDocuments = mock.didDocuments = {};
+const privateDidDocuments = mock.privateDidDocuments = {};
 const keys = mock.keys = {};
 
 mock.authorizedSigners = {
   // fully valid signer
-  alpha: 'did:v1:d8a43e2e-eda9-436c-ae37-4ee65edab54c/keys/1',
+  alpha:
+    'did:v1:test:nym:FEPcLNgdfOz4uruoWY9VALiAETdu848om_8sGuYJccE#authn-key-1',
   beta: 'did:v1:5627622e-0ab3-479a-bfe7-0f4983a1f7ce/keys/1'
 };
 
-ledgers.alpha = {
-  config: {
-    '@context': 'https://w3id.org/webledger/v1',
-    type: 'WebLedgerConfigurationEvent',
-    ledgerConfiguration: {
-      type: 'WebLedgerConfiguration',
-      ledger: 'did:v1:c02915fc-672d-4568-8e6e-b12a0b35cbb3',
-      consensusMethod: 'UnilateralConsensus2017',
-      eventValidator: [{
-        type: 'VeresOneValidator2017',
-        eventFilter: [{
-          type: 'EventTypeFilter',
-          eventType: ['WebLedgerEvent']
-        }]
-      }]
-    }
-  }
+ledgerConfigurations.alpha = {
+  '@context': 'https://w3id.org/webledger/v1',
+  type: 'WebLedgerConfiguration',
+  ledger: 'did:v1:c02915fc-672d-4568-8e6e-b12a0b35cbb3',
+  consensusMethod: 'UnilateralConsensus2017',
+  operationValidator: [{
+    type: 'VeresOneValidator2017',
+    validatorFilter: [{
+      type: 'ValidatorFilterByType',
+      validatorFilterByType: ['CreateWebLedgerRecord']
+    }]
+  }]/*,
+  ledgerConfigurationValidator: [{
+    type: 'SignatureValidator2017',
+    validatorFilter: [{
+      type: 'ValidatorFilterByType',
+      validatorFilterByType: ['WebLedgerConfiguration']
+    }],
+    approvedSigner: [
+      'did:v1:53ebca61-5687-4558-b90a-03167e4c2838'
+    ],
+    minimumSignaturesRequired: 1
+  }]*/
 };
 
-keys.alpha = {
-  publicKey: '-----BEGIN PUBLIC KEY-----\n' +
-    'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAskcRISeoOvgQM8KxMEzP\n' +
-    'DMSfcw9NKJRvXNoFnxS0j7DcTPvi0zMXKAY5smANZ1iz9jQ43X/EUDNyjaWkiDUr\n' +
-    'lpxGxTFq9D+hUnfzPCW6xAprzZaYhvuHun88CmULWeyWLphISk3/3YhRGnywyUfK\n' +
-    'AuYYnKo6F+lDPNyPhknlB2uLblE4upqY5OrvlBdey6PV8teyjVSFo+WSTqzH02ne\n' +
-    'X0aaIzZ675BWZyBGK5wCq/6vgCOSBqePflPXY2CfwdMVRe4I3FRnqEsKVQtZ2zwi\n' +
-    '5j8YSZKNH4+2SrwuGqG/XcZaKCgKNMNDLRErZkdSPGCLM+OoPUOJEKdCvV3zUZYC\n' +
-    'mwIDAQAB\n' +
-    '-----END PUBLIC KEY-----',
-  privateKey: '-----BEGIN RSA PRIVATE KEY-----\n' +
-    'MIIEpQIBAAKCAQEAskcRISeoOvgQM8KxMEzPDMSfcw9NKJRvXNoFnxS0j7DcTPvi\n' +
-    '0zMXKAY5smANZ1iz9jQ43X/EUDNyjaWkiDUrlpxGxTFq9D+hUnfzPCW6xAprzZaY\n' +
-    'hvuHun88CmULWeyWLphISk3/3YhRGnywyUfKAuYYnKo6F+lDPNyPhknlB2uLblE4\n' +
-    'upqY5OrvlBdey6PV8teyjVSFo+WSTqzH02neX0aaIzZ675BWZyBGK5wCq/6vgCOS\n' +
-    'BqePflPXY2CfwdMVRe4I3FRnqEsKVQtZ2zwi5j8YSZKNH4+2SrwuGqG/XcZaKCgK\n' +
-    'NMNDLRErZkdSPGCLM+OoPUOJEKdCvV3zUZYCmwIDAQABAoIBAQCMdIMhXO4kr2WM\n' +
-    'chpJVGpXw91fuDFxBCkMvVRqddSf1JZsLJMTFBBtXyI7z4Mf5fm6wn/+une/PBlH\n' +
-    'UbZj/Yf+29bB62I5VpxRreE7hPo1E4TFb51x01+m5jE2e09LJKNZyG5D5FnufkRv\n' +
-    'msdpfR7B0+iWHWMxjXyEybxl73f6tEZcsfK/O46rtVsD/e8szyugg6zrrYWX8BA4\n' +
-    'sIRHzLvOZIow5eNbkAFfxXbIRLxjxFt2zSFM3a0GjKkU/7Jb8XoNszHc0eFVS79y\n' +
-    'PwQDeoqUP7sHLoHqazhFxI1KJftA/9NE6Nw+U/XJvQRyEaJxAGYgXvvRXhVtEN/H\n' +
-    '0y4/tbJZAoGBANvph6zmm49ExBXIg5K6JZw/9vM5GdJpmOTglQuLZGYJ9zwcAiqq\n' +
-    'U0mVGsJW0uq5VrHyqknc+edBfYD9K76mf0Sn9jG6rLL1fCl8BnLaF21tGVHU2W+Y\n' +
-    'ogcYXRkgYgYVl6RhvRqEsMWSEdr0S0z240bOsUB5W1mA601q7PwXfWYPAoGBAM+I\n' +
-    'eXxuskg+pCrWjgPke2Rk7PeEXrWPilSMR1ueA5kNCNdAMmxbDqDD7TKmKsyIfEEQ\n' +
-    '3VcWLGVY4vj0yW+ptsw+QFlt8PSjCT2z1heJW9AFEA/9ULU0ZpVdgy+ys9/cXSfq\n' +
-    'hZC4UQVwL3ODZE+hIU8pEJw1wTEMUvUBlxkOb4a1AoGBAI/6ydWt9lNK1obcjShX\n' +
-    'r6ApUOnVjM5yTKQtVegFD2qvQ6ubOt/sPDOE58wtRFJhnh1Ln6pUf1mlSyJUn3tn\n' +
-    'TxQIU+wjKEbS6sPOa/puR8BhGZ62GNYzvIGgtfNpfEQ3ht0dEM536bSw+fe80kBF\n' +
-    'tG/7i5mG2wQyn9xEEXzLdFKJAoGAQA7rGNp+U0hqmgJyAYeUAtAYSOpl5XryAtjt\n' +
-    '6byjdamNUguxxLpykHMJkzmxOkLiv566A3iHqZy/KoM8bigfkXmhmTkTSB/O6WnK\n' +
-    'KqeuXE5Dv/u73sLW60HbDW0GkpHNe1Wrdpk+AQS40Nn8q4ub4XhWdTEuebpJHPEp\n' +
-    't4U6LYUCgYEAvi38SUMij1zrNMVoslx5VojF961KCY+RNJvv9HmwV/W2XwjF0VGX\n' +
-    'luDSMT5bBXHf1kQfB+DJGo2M6it2IOEZQjd9AJdW1baLGwm56AyQNko7HtEczH0n\n' +
-    '42EADs/ajTEckTxULdirbEk2rINRwQC5kWMde3fcwAnn6xt3wvOyuwg=\n' +
-    '-----END RSA PRIVATE KEY-----'
+privateDidDocuments.alpha = {
+  "@context": "https://w3id.org/veres-one/v1",
+  "id": "did:v1:test:nym:FEPcLNgdfOz4uruoWY9VALiAETdu848om_8sGuYJccE",
+  "authentication": [
+    {
+      "type": "RsaSignatureAuthentication2018",
+      "publicKey": {
+        "id": "did:v1:test:nym:FEPcLNgdfOz4uruoWY9VALiAETdu848om_8sGuYJccE#authn-key-1",
+        "type": "RsaSigningKey2018",
+        "owner": "did:v1:test:nym:FEPcLNgdfOz4uruoWY9VALiAETdu848om_8sGuYJccE",
+        "publicKeyPem": "-----BEGIN PUBLIC KEY-----\r\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA1c6NPf2m8J98o6FO65HY\r\n6iD+RE1uSoOfR3OY91EKSu/I7Ntdckqgoygv6W5L5moypUvLe3ZNON1gfdiKGZz+\r\nRmV2HFiC1kYHNWDJLTbpDwfDHTvmwFjGl5btlrsnsSOixJkiUlpMCNhPUEVx1a+P\r\nSANNblrPFHpJJQ5rwBB9DUlJI9sp5WiBSt2fNacymFMb24m8YmKxU4ImB/vJwSOY\r\n5IrkU/AFysicewgpkSRGCOMqn9Z/R4hllq/6x1HIpEH8WqBIQJIadEXLZyQador0\r\nSuvtK7ioexrxfc3uCFZiioiVX4SidawxxMPyi85Rm0ykRQXhkNY0gnnfgLyz3Tbs\r\nGQIDAQAB\r\n-----END PUBLIC KEY-----\r\n",
+        "privateKey": {
+          "privateKeyPem": "-----BEGIN RSA PRIVATE KEY-----\r\nMIIEowIBAAKCAQEA1c6NPf2m8J98o6FO65HY6iD+RE1uSoOfR3OY91EKSu/I7Ntd\r\nckqgoygv6W5L5moypUvLe3ZNON1gfdiKGZz+RmV2HFiC1kYHNWDJLTbpDwfDHTvm\r\nwFjGl5btlrsnsSOixJkiUlpMCNhPUEVx1a+PSANNblrPFHpJJQ5rwBB9DUlJI9sp\r\n5WiBSt2fNacymFMb24m8YmKxU4ImB/vJwSOY5IrkU/AFysicewgpkSRGCOMqn9Z/\r\nR4hllq/6x1HIpEH8WqBIQJIadEXLZyQador0SuvtK7ioexrxfc3uCFZiioiVX4Si\r\ndawxxMPyi85Rm0ykRQXhkNY0gnnfgLyz3TbsGQIDAQABAoIBAFYxMpdvDkGqyeBd\r\nQyeMYFniex6l6HR5o1h2rY/mR7P1/pYdyQouM5wSs13zbP2yikBA0gMvqenmtOOG\r\nzAWPWKKgfIDo3bXr/TPzlKZ5oHLCulGquFeKcmTiH13IjTPIHfILmd6BMG3QZgkC\r\nNeXjJGvviOOYECs9MQeTTLTc8MzNpTRrJRFiHzC5xat/f78fuvDx4YLBoYpMIQaM\r\nM7TyTURkksOCdHYjz3Ebi6WXYexiWOvswDBi5rFjMbD3ya3Lge0S6oR4mJrkCfVl\r\nbmZc4quZDBR6dtal903qV7pC7eu0dge7HfUjbhE1vIaVBXnJreyfBjdFsdOXIoUK\r\nIdIsDgECgYEA/pb3WSAJ93PBV+Jad1txlt7eTpuLvU8DuBt/cfgM+4XjESqZ84Pt\r\nhHW7QjVJvt92zADa6kF3eGaYWW7bptjEKyyEMY4T7KAzWuxyUTfu5/RVrJ9Wxr81\r\nOIZZRWk2FBKHVmposV5op8hs6idL7eIyVraMn/9qGFt3IH8iTOCcJikCgYEA1v3A\r\nVkn4U6DW1sIjRGD4XfNcEPuPPz+fiSUjhnp3c2gsHaePlt0oomE056hpPdU8uQXK\r\n+lPTE6wZ7QoT0JSZESov3AXVEK/dhpizES6vzhZd5n9fo/EuuYKpC1VrprwyX/pU\r\nlyFABQmsv/MqGNpnjSz8nrillAUgYD1wobPz9HECgYAQhYGFwiODcHqilmjiiAem\r\nD86DcWqvHVqTbw1lOwC0reqfaZFWEUCvsOg3Erg3b88IzCFoxFjZcmb+nsgYWsbY\r\nOmpVwO+gEoFirCd7B9M0MFIDAtAh07TDd0yByaMdyFoKDJvAruzBvqr6wxQVWvGD\r\nWRNlKrEa5YykijuSm5zmiQKBgHDO7SFZ5udaueAuNfsnNqt1ipWOqfdyFvALgLyL\r\nfiocOynERl/O5AdwIiZ8A9ziCt6632rCmTr1TxVF+Ge10Stki4BTvxzmasK5VRxq\r\n9uyYZ+UOaMzJPM8ydCjyRW5Tycr6u3AhjkoWbYK6wRgRYcx+En/mO1uT5Q0asALp\r\nPdTBAoGBAJzIMhN9p8xvDt/RlNcgpse8O4jVJKEvV/86mEAX6iYYPDjjtovkiwnp\r\n/CO0RSaTYhdmWI9t8L1lpUvgSgS766lYoeATBwAm25WBzaG3EkvpcliFDAVE/9gC\r\n7hrvE+pLF41+sUalitkYNnucLPmq75wm9WePPFw3T3ZJJkiVL1e/\r\n-----END RSA PRIVATE KEY-----\r\n"
+        }
+      }
+    }
+  ],
+  "grantCapability": [
+    {
+      "type": "RsaSignatureCapabilityAuthorization2018",
+      "publicKey": {
+        "id": "did:v1:test:nym:FEPcLNgdfOz4uruoWY9VALiAETdu848om_8sGuYJccE#ocap-grant-key-1",
+        "type": "RsaSigningKey2018",
+        "owner": "did:v1:test:nym:FEPcLNgdfOz4uruoWY9VALiAETdu848om_8sGuYJccE",
+        "publicKeyPem": "-----BEGIN PUBLIC KEY-----\r\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA1iOv4JvL7SB8RLv8z7r1\r\nAjfhozN3hOCbuGd0h5kCA56Kq0a9Ip2d2s4Asv1gzCwS92D3q+UPpqSrR4/afI4L\r\n+0NjNRHWFxjp0ML9jI0S2PFmYBRZhCqVGseBi11pOBthsLjY3Sxuj/ZgxgSQPYAa\r\n5qHu+VwyWXNcKQhSlEUgeCckODA4OEMk+2U67Vt2FiyggS7uZd4+6UJKuvyzEl6D\r\ntGbZLkeGh3lHISz+jeYY0D+El+8+PyDBcjjam4qiLfpQGwI73eMeOoTnXU9huT9M\r\njiEPuS5RkmMaNajTAYKN6qrpHjJPOVJlNAGLTSFKvDGN0/iivrRDbzOVcMarJ1Ur\r\nDQIDAQAB\r\n-----END PUBLIC KEY-----\r\n",
+        "privateKey": {
+          "privateKeyPem": "-----BEGIN RSA PRIVATE KEY-----\r\nMIIEpQIBAAKCAQEA1iOv4JvL7SB8RLv8z7r1AjfhozN3hOCbuGd0h5kCA56Kq0a9\r\nIp2d2s4Asv1gzCwS92D3q+UPpqSrR4/afI4L+0NjNRHWFxjp0ML9jI0S2PFmYBRZ\r\nhCqVGseBi11pOBthsLjY3Sxuj/ZgxgSQPYAa5qHu+VwyWXNcKQhSlEUgeCckODA4\r\nOEMk+2U67Vt2FiyggS7uZd4+6UJKuvyzEl6DtGbZLkeGh3lHISz+jeYY0D+El+8+\r\nPyDBcjjam4qiLfpQGwI73eMeOoTnXU9huT9MjiEPuS5RkmMaNajTAYKN6qrpHjJP\r\nOVJlNAGLTSFKvDGN0/iivrRDbzOVcMarJ1UrDQIDAQABAoIBAQCq92sgRMMX22vb\r\n5Mr/fyDGWJ9JkXnHGRy6qb6b1EmLYjUMcjnnPTgezYI5ZZq26ClsYHrdPtC0F5y4\r\nUd36u95NCYxXfpoTbsye5E9Su/9kPbei1hxyLR1GeCqxfi7XoOTqF2rtit/rCKZS\r\n8qnGsFTJ9le5tyZrzHK0P/TOdDJsOj0y/haILCIpRa5PWCEvjFoIdLO8AcStWImB\r\nPjki/zrObh6ZFiYmWUqUp04IQ8gPExfciab5tKZ9XvtYPH5kG59wXlIQvpSQcVFp\r\nlFRNPJV4OxNXStdCXibFak4VFOoxcuhTMj1ExI7PhA1xiilslWPrkz+lWnHFeeRc\r\nNprGQxBxAoGBAPqHtAfB6PS3pDTXbfUS+c/dp/rPpwqIkP9sHlFGYedAYZ9avhXR\r\nesUUWdEAIy91MCN00lYLUQ8UHmkTb4s4JEAAnerYY4ALIzQemrAIRlha1heLcqdY\r\nsDPp7xmBFodRiWW0v6AO0SDqGrsye5UYtY4TWsgnAnQWDz5T66lGwWGXAoGBANrQ\r\nlYGDAFRdeGFvZDwbVz9OJdeoCXIbY0/W9l0YDhQjMLTKc9ufFHsh2pT8Oiv6lRHh\r\nBDEp8x4/yBZ+f1/+dPT6hc8eMXKMReGw2e1kkL9+TawY1z8mZUIkRC/70WxkRBXi\r\nxY/+y53cpVNk1ys+O6s0JQK6ev9k072Sp5TTsOT7AoGBAMhVd5q0bsoxhzdSBXVx\r\n5R1ZTBf9sL91kS0Okfe/5k37Z5T8BQCBcEDkEyZTi89JUGMp6YAwsHL0TZUMm6ei\r\nDyq205CV1IrxXQcyadPV6hqBGK3fLqGvA8efizjDxvYSN2KC9LDS6Fv/l7yVk8kX\r\n5yZjR7bBqu6VLT9T8CB+meilAoGBAIk1ODqQ8bj1L5IxbjH+lvP8ReB33wxtPhYH\r\nXk670cAw3M7REFtL4mTfspevna6MH8OpTJ6jhm6WYhow0iBYh/BB03wvm6QPb5Z4\r\n9f5VDCr3wS7EGNzhb6dM5HEOP6DvMn5ix61mgTmI7SZg2keka3gMZ5TRaGUTTW7X\r\nMjwxjf/XAoGALHMBbAmSCt5Q8lMaqexoT4N32t9XBJ16za0sb/KO+BUYWuAL0Sw/\r\nI+vnQGzXiYlLdLzgF4N8z0rdI7n6/mcIxI//T937iGvN4FYvOA7faxlS34tCGjmE\r\nnmcyBgRMDH0beLjfWQ900Y1Rhfv2HuFYUPjn65RSsJ7LXZP2q5NLeBY=\r\n-----END RSA PRIVATE KEY-----\r\n"
+        }
+      }
+    }
+  ],
+  "invokeCapability": [
+    {
+      "type": "RsaSignatureCapabilityAuthorization2018",
+      "publicKey": {
+        "id": "did:v1:test:nym:FEPcLNgdfOz4uruoWY9VALiAETdu848om_8sGuYJccE#ocap-invoke-key-1",
+        "type": "RsaSigningKey2018",
+        "owner": "did:v1:test:nym:FEPcLNgdfOz4uruoWY9VALiAETdu848om_8sGuYJccE",
+        "publicKeyPem": "-----BEGIN PUBLIC KEY-----\r\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArocfciiSJ34t4bjduB+b\r\nd+VjAQpZE+d4c2iIm9D3ScN+d+kIJK+U2NAcbX7Yfw1xvmjypQTutPbirfFMzjr0\r\nTYQnl2Qzzr0gZHT6WbRcx9FAxT8QYnqbUPtvgw3SrORPgfv69RzLO1k4HPKLhjBE\r\nxYjcmyqTeSYLYHiYB6qLXSlEAyNW+BJ23dpUyeYNbX+hBmx5jL1q+txOBMI1YV/W\r\nOSehCO3HLDtzT4P951InxqqsRlrn4m6PVHxiR2N/H6jHSMpDfCmEWtJvJpLSVX3q\r\nEB5WYz1Fs3SlwCG7XezFrCAj/ik4miFtwf6+BTUnxJCuSMHYG90CWydSwYgUrUZ3\r\nOQIDAQAB\r\n-----END PUBLIC KEY-----\r\n",
+        "privateKey": {
+          "privateKeyPem": "-----BEGIN RSA PRIVATE KEY-----\r\nMIIEowIBAAKCAQEArocfciiSJ34t4bjduB+bd+VjAQpZE+d4c2iIm9D3ScN+d+kI\r\nJK+U2NAcbX7Yfw1xvmjypQTutPbirfFMzjr0TYQnl2Qzzr0gZHT6WbRcx9FAxT8Q\r\nYnqbUPtvgw3SrORPgfv69RzLO1k4HPKLhjBExYjcmyqTeSYLYHiYB6qLXSlEAyNW\r\n+BJ23dpUyeYNbX+hBmx5jL1q+txOBMI1YV/WOSehCO3HLDtzT4P951InxqqsRlrn\r\n4m6PVHxiR2N/H6jHSMpDfCmEWtJvJpLSVX3qEB5WYz1Fs3SlwCG7XezFrCAj/ik4\r\nmiFtwf6+BTUnxJCuSMHYG90CWydSwYgUrUZ3OQIDAQABAoIBAAoq4RAbgPhAB5hA\r\n1tnlLX98o5np6mqYb5H5owvAzsdDVljSAKFygS9oYF+YpjAwrlGzd39ZnDZ6s5YC\r\nmsDg+l6RtmTBd6sxpXN0xSj4svcJH8bd96xlDCtZmpN9+KoN2vvtnB8vgD+C4Rv+\r\nnVZB9Z+0a3W2s0S5jKwgGmtH6jqRFinz5VPiCwYqlidHTvav71o6Avsvri2bG6Hp\r\nX/9V1IlWJd1iDn55nW2vD8eDzWqX2qZybKH24tGq2GPO13RTNPktTXvGZTkJvcst\r\nHyNVQIsoux2hVpnqr9VRtBJM29qzh/SgH5NkoOgrPg2pUb+UwIdJmCzLpsFoWuvn\r\nBEQf1AkCgYEA5RM9qwnVK4ENEb1AOVD0YnMUXYiUWroCzs8bgPRgmlt2qUmot8pM\r\ncZmPLaOVTtwpfKRdOI+ghpa61IjSw+nACpPGUn56i5+uRyqr/ec1cXFWvTOTeJAL\r\noxqzob5isxvdeQ36SxoZbVetidOipypmMyWsc3jfc2gtRY314nw2zp8CgYEAwwqU\r\nUfaYjoiLh9pC+rupjHpPT9VQiDAif8/M7gq2Son3SmKcXlUvyMO8ZIrW70jTtZSC\r\nPS1J5Dp+OxgQCw6SsOFicFCzVH6YxNJE0GCUHN39fSJ9qpcNtDJEkccryejxW6x0\r\n6lBpVtt9LJ+T4gih0viQqyXiolKmnkg6FHqK4ycCgYEAik+twmGzdgr7aySLbI/2\r\nnqLBPyBCAu2g2GGwR5JF6a0j3l79IcthkI2ZJ4NHmU/RNNLA/m+qCtljgQQDzgqK\r\ny1giPJjlQPxu68VWB33chNxb9Oz5M6g1fouWvigHzAEdHgRUhZgClkSEIV3JLYmq\r\nH2O11hq7QCE8hGyMc+1v4h0CgYBC22CGTBJ1YWb69Z1aF3QCHHcNdaC6Xk2lJFUq\r\nD+/20x46mFzjlS3hEv+EM3eD5KH1r2eJkvmuS0Kz/Qaa068DBO9acr9WKmMxrKY8\r\nC68Zyhq3h1guXsMqzsRkeDKRbtE1TINzQocpZ+mbn0PxCmZ2TBBDKqRqYgyNW1LV\r\nbEAppwKBgHIF6KnK/XoBufX/IfbpFNY04dw45IxrSxuDdAR0wPadIqXJBK5xw1wi\r\nR64KvaGODII621ozOac37yFyPdn0ri8IQf/4mgUXlXmLHCTnZU8BFzG6978R6X6/\r\njLPM9x0Dmknq/gX0SMpGgIkT5O8NVrlx3I47WIr0xXn1FykOw6Bg\r\n-----END RSA PRIVATE KEY-----\r\n"
+        }
+      }
+    }
+  ]
 };
+didDocuments.alpha = bedrock.util.clone(privateDidDocuments.alpha);
+delete didDocuments.alpha.authentication[0].publicKey.privateKey;
+delete didDocuments.alpha.grantCapability[0].publicKey.privateKey;
+delete didDocuments.alpha.invokeCapability[0].publicKey.privateKey;
+
+operations.alpha = {
+  '@context': 'https://w3id.org/webledger/v1',
+  type: 'CreateWebLedgerRecord',
+  record: didDocuments.alpha
+};
+
 keys.beta = {
   publicKey: '-----BEGIN PUBLIC KEY-----\n' +
     'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA3Keb82mEEcdsocDDGz4V\n' +
@@ -113,209 +141,19 @@ keys.beta = {
     'N/2BNGqcYPn2i/AJqFIrhLHHG+oPl8XCQUr3YOuxlSuAn/Y+nVCd4WE=\n' +
     '-----END RSA PRIVATE KEY-----'
 };
-keys.gamma = {
-  publicKey: '-----BEGIN PUBLIC KEY-----\n' +
-    'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwHsTdLQYH6t7BIi/l2Te\n' +
-    'ULf/H9djLr3QuWWURp7IzsTlQ2NuCZE5Hmx8BuCZSFnh/yF4OVF1LHhIVmUGJQ+8\n' +
-    'eOtdoQyvSe9LyjMVyfyqyRjgEWP5q2Twp/AZN4pKAt2W5NbzulIo0tncJltIyV2o\n' +
-    'TS8In7nbxwLa95zjCKdKvkpbBinrxwtY7F+D1XmMly9OLc+P+vcVVvqNsEpyGkSE\n' +
-    'kUs9nvgaMgSKgT5Wo/2ljdJZOTeCus3OYaxPOwcvX9OEo7SrVJnTdKtEo5Bfe3ol\n' +
-    'H2VceH3luUdyTMMjRKGILJ8VUF4fx0EXGwG4CyQrkMkaXhmR1tozQRl/kR/mybP/\n' +
-    'xwIDAQAB\n' +
-    '-----END PUBLIC KEY-----',
-  privateKey: '-----BEGIN RSA PRIVATE KEY-----\n' +
-    'MIIEowIBAAKCAQEAwHsTdLQYH6t7BIi/l2TeULf/H9djLr3QuWWURp7IzsTlQ2Nu\n' +
-    'CZE5Hmx8BuCZSFnh/yF4OVF1LHhIVmUGJQ+8eOtdoQyvSe9LyjMVyfyqyRjgEWP5\n' +
-    'q2Twp/AZN4pKAt2W5NbzulIo0tncJltIyV2oTS8In7nbxwLa95zjCKdKvkpbBinr\n' +
-    'xwtY7F+D1XmMly9OLc+P+vcVVvqNsEpyGkSEkUs9nvgaMgSKgT5Wo/2ljdJZOTeC\n' +
-    'us3OYaxPOwcvX9OEo7SrVJnTdKtEo5Bfe3olH2VceH3luUdyTMMjRKGILJ8VUF4f\n' +
-    'x0EXGwG4CyQrkMkaXhmR1tozQRl/kR/mybP/xwIDAQABAoIBAQCt1Xm4yH2Q/JnZ\n' +
-    'encuD5cIZ2QuKaQVrrA3ABptvTG2K/Sya7YRRerEI03QGD/XK/YDKQMfIQYl52vN\n' +
-    'OufVyOR6gHbK4F3e9BMKxiBDj8HeZGzYx+XQeRUvVpQvqOE2vVFt0wPDnjfoVYGR\n' +
-    '0pdl5QP+0R+EwaJPlbCUOEiCpDPIrmL/arzpHZTkYexN4HMF2Vfr5eyBnBZFZT0q\n' +
-    'c4ePMsGfvk0rQTQ7e+p8NOLt36gvNSmWSIFxJvy5tZRNkKYH46tdEVZypsWXSd83\n' +
-    'PS0M3dLEIrkaqoYYezmgaO+5Y1WLAgqr8QkSJLDgOWkk/z49GXQpsJLxDSGuxNXR\n' +
-    'x4+KeF3hAoGBAPjBdMh7flwhqPB+Jxi6S1VexioNRqPSrXEKIdAKMbcb3uh1Qgkw\n' +
-    'lq+ZBEV0rrLxgDSyjpReavuXfCgRRF2nnma22ejcEeWSw83PDqXJKDGp2dIrEtgZ\n' +
-    't1dPXfRHGypIe3axaddRafCVDiSFEzJlN9iWt8YtvL3lOejy/4FZjtctAoGBAMYW\n' +
-    'EwuTi8AcA8k75aTZSlVGssngkpmdGGt9e0UylBrwLDZByJ13xBdSLf6yEvCKGOh+\n' +
-    'n44k2T1BhOI0sOW3iu6fIuOIX4xQdWgM59nMSyLWbFMAxvgWjVhxoNYN3GQXjxW+\n' +
-    '5I1feuyUMouW6mVVVTe7E/TdNR02MtrFg7bmFctDAoGAC/bB9yJ5YVT9GxP2LWpI\n' +
-    'VULJpRweWaK4VMd3+NmEqpncjrGVC3wawzdIzU5fWJvk3qP314ry+ka+4e5yq050\n' +
-    'f9wrfteWxMPaRvu+aJrUJA9XOpR3w4z5FGnsyuLgm5gA2CSQQprXzYpds8PyuGnF\n' +
-    '1dTp4c4xVbDAqEOHpmD4TcECgYBIl3RZTLPtLhcRGvs4Y00DXUpOAxeWZeS6F50i\n' +
-    'Kbvu908sfwUW9/oLldk3OmkIb4NbSHQOcmCOO0GIaEjflli6w+TUP3jMgfvUqs4Y\n' +
-    'me57ENtXu7Qu3Izl+ZY4e5HluGB+VpuJV5FDu7eeQisaAaCeMNfKZ3p8fw058SIo\n' +
-    '177q4wKBgBT5PM5LOeuEE2RjjWNjZjHN6pztCoXF1EhilZk/vIEoQpQBpsQRrxzl\n' +
-    'LRL0ScLS0TEMtIfKoshNsYdVz6+EYVYkU4E/k/MqGD8hLX12tCEKAOjVhOkGkMHS\n' +
-    'gSQRmrM9jgxutpwAQBZ0rWQlzwkp60T3OTPqsAvrt1COzdWCMmCN\n' +
-    '-----END RSA PRIVATE KEY-----'
-};
-// delta: the public and private keys do not match
-keys.delta = {
-  publicKey: '-----BEGIN PUBLIC KEY-----\n' +
-    'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA3Keb82mEEcdsocDDGz4V\n' +
-    'q4qetnlONh9KMNtyOTIiDmAx+cNUZj2ApJH64Gsz7EfmXGyai/l4NvtlAKXGEEw3\n' +
-    'dPJGjiE1DckXisTWIc5uRt+Yih4593LVPcrgWfspmg+UqqvmqsSKGYHrKhZ09Wi1\n' +
-    'a+vD+6iaYcqydBnUK6X1m9DFtoCbu5eCaBlIVt4j7OhKHN8XkPFfwwbKms3g+O2U\n' +
-    'Pj3atdlmQGuJjd5fjfzrtG32sn6+FPV3+nlJ6kncppR0io4gh05Pv5DeAY3vrJdN\n' +
-    'c8az9ph0xLK7p/n5o7RI4g+o0RHiczNqsv/I5YknFmGjqPOnThB9Jfy2ctLvDW5a\n' +
-    'bQIDAQAB\n' +
-    '-----END PUBLIC KEY-----',
-  privateKey: '-----BEGIN RSA PRIVATE KEY-----\n' +
-    'MIIEowIBAAKCAQEAwHsTdLQYH6t7BIi/l2TeULf/H9djLr3QuWWURp7IzsTlQ2Nu\n' +
-    'CZE5Hmx8BuCZSFnh/yF4OVF1LHhIVmUGJQ+8eOtdoQyvSe9LyjMVyfyqyRjgEWP5\n' +
-    'q2Twp/AZN4pKAt2W5NbzulIo0tncJltIyV2oTS8In7nbxwLa95zjCKdKvkpbBinr\n' +
-    'xwtY7F+D1XmMly9OLc+P+vcVVvqNsEpyGkSEkUs9nvgaMgSKgT5Wo/2ljdJZOTeC\n' +
-    'us3OYaxPOwcvX9OEo7SrVJnTdKtEo5Bfe3olH2VceH3luUdyTMMjRKGILJ8VUF4f\n' +
-    'x0EXGwG4CyQrkMkaXhmR1tozQRl/kR/mybP/xwIDAQABAoIBAQCt1Xm4yH2Q/JnZ\n' +
-    'encuD5cIZ2QuKaQVrrA3ABptvTG2K/Sya7YRRerEI03QGD/XK/YDKQMfIQYl52vN\n' +
-    'OufVyOR6gHbK4F3e9BMKxiBDj8HeZGzYx+XQeRUvVpQvqOE2vVFt0wPDnjfoVYGR\n' +
-    '0pdl5QP+0R+EwaJPlbCUOEiCpDPIrmL/arzpHZTkYexN4HMF2Vfr5eyBnBZFZT0q\n' +
-    'c4ePMsGfvk0rQTQ7e+p8NOLt36gvNSmWSIFxJvy5tZRNkKYH46tdEVZypsWXSd83\n' +
-    'PS0M3dLEIrkaqoYYezmgaO+5Y1WLAgqr8QkSJLDgOWkk/z49GXQpsJLxDSGuxNXR\n' +
-    'x4+KeF3hAoGBAPjBdMh7flwhqPB+Jxi6S1VexioNRqPSrXEKIdAKMbcb3uh1Qgkw\n' +
-    'lq+ZBEV0rrLxgDSyjpReavuXfCgRRF2nnma22ejcEeWSw83PDqXJKDGp2dIrEtgZ\n' +
-    't1dPXfRHGypIe3axaddRafCVDiSFEzJlN9iWt8YtvL3lOejy/4FZjtctAoGBAMYW\n' +
-    'EwuTi8AcA8k75aTZSlVGssngkpmdGGt9e0UylBrwLDZByJ13xBdSLf6yEvCKGOh+\n' +
-    'n44k2T1BhOI0sOW3iu6fIuOIX4xQdWgM59nMSyLWbFMAxvgWjVhxoNYN3GQXjxW+\n' +
-    '5I1feuyUMouW6mVVVTe7E/TdNR02MtrFg7bmFctDAoGAC/bB9yJ5YVT9GxP2LWpI\n' +
-    'VULJpRweWaK4VMd3+NmEqpncjrGVC3wawzdIzU5fWJvk3qP314ry+ka+4e5yq050\n' +
-    'f9wrfteWxMPaRvu+aJrUJA9XOpR3w4z5FGnsyuLgm5gA2CSQQprXzYpds8PyuGnF\n' +
-    '1dTp4c4xVbDAqEOHpmD4TcECgYBIl3RZTLPtLhcRGvs4Y00DXUpOAxeWZeS6F50i\n' +
-    'Kbvu908sfwUW9/oLldk3OmkIb4NbSHQOcmCOO0GIaEjflli6w+TUP3jMgfvUqs4Y\n' +
-    'me57ENtXu7Qu3Izl+ZY4e5HluGB+VpuJV5FDu7eeQisaAaCeMNfKZ3p8fw058SIo\n' +
-    '177q4wKBgBT5PM5LOeuEE2RjjWNjZjHN6pztCoXF1EhilZk/vIEoQpQBpsQRrxzl\n' +
-    'LRL0ScLS0TEMtIfKoshNsYdVz6+EYVYkU4E/k/MqGD8hLX12tCEKAOjVhOkGkMHS\n' +
-    'gSQRmrM9jgxutpwAQBZ0rWQlzwkp60T3OTPqsAvrt1COzdWCMmCN\n' +
-    '-----END RSA PRIVATE KEY-----'
-};
-// epsilon: has two valid keypairs
-keys.epsilon_1 = {
-  publicKey: '-----BEGIN PUBLIC KEY-----\n' +
-    'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwIjS6bkpr+xR/+JCL0KF\n' +
-    '24ZOHEmX/4ASBhSfKh0vGb5plKFuAOumNj5y/CzdgkqenhtcbrMunHuzPqYdTUJB\n' +
-    'NXDqpVzXh7bZDHDjFcHgHcU8xxCvchL9EDKyFP39JJG9/sTr6SEkKz8OH48lZoFh\n' +
-    'GsXvsYTCMKJRZ0+vECTvEb2gd6OGhXwQqPk402Kk0hMq/5LjceUaxDfcBDJ8WYim\n' +
-    'BWy9YO+xeEu3nFrPk2I1aMFDdD6vHO7l7P6tMAY/U+H1wrsDPuv3A/stalSHjZyh\n' +
-    'DaBD1ZoEtAk03kOSvwLQb2LI3kAwYqoNApNsLVI+U9HsP/UuKk2/3kZS8Oa70b97\n' +
-    'RwIDAQAB\n' +
-    '-----END PUBLIC KEY-----',
-  privateKey: '-----BEGIN RSA PRIVATE KEY-----\n' +
-    'MIIEogIBAAKCAQEAwIjS6bkpr+xR/+JCL0KF24ZOHEmX/4ASBhSfKh0vGb5plKFu\n' +
-    'AOumNj5y/CzdgkqenhtcbrMunHuzPqYdTUJBNXDqpVzXh7bZDHDjFcHgHcU8xxCv\n' +
-    'chL9EDKyFP39JJG9/sTr6SEkKz8OH48lZoFhGsXvsYTCMKJRZ0+vECTvEb2gd6OG\n' +
-    'hXwQqPk402Kk0hMq/5LjceUaxDfcBDJ8WYimBWy9YO+xeEu3nFrPk2I1aMFDdD6v\n' +
-    'HO7l7P6tMAY/U+H1wrsDPuv3A/stalSHjZyhDaBD1ZoEtAk03kOSvwLQb2LI3kAw\n' +
-    'YqoNApNsLVI+U9HsP/UuKk2/3kZS8Oa70b97RwIDAQABAoIBADJKCr0drjPTSD/L\n' +
-    '+3mYqJoEZJai6l7ENvD7pe88HDdfMvitiawX4Rw+B46ysVD86J1njCcmCkC5VsJA\n' +
-    'ZVruuVWaHs/+hhVevyauvcHLGBzujcd5Jjpnl04Jz9YH2X0ZzESlbvE/xNC+8ZNw\n' +
-    'slYp6REzLj5x7L8DRrvzZkiTPRamuiDQrxr6d27TWPZIAwfPYuoy/OMx9hMgZyKk\n' +
-    'pxsAvMmVRyy2NZK428oU5rwF/mWsURS05oWyBqicgaeWlqJ9swnak1OnF5z0N196\n' +
-    'fU4bVHjtyAMS/DCNI+4qjpg7G+PPUfK4RXtJ/0AC0ZRDu35khXeI5u1U3F5Ks6ms\n' +
-    'XUTQDhECgYEA/gltTiKTlZhGxx9K1P5DQ+ZFHns+NsonbBS1i9Io6dFK0QfS4xOa\n' +
-    'TjP1nOKFIlB1TS2kqOylkxbS/Jf1bzSOk/rwIFfDnE0q4zIfiGEnlmnqefmJ4Qac\n' +
-    'LXsfwTQ4WiHuQcqOMlM3PgWm8r1zhPQaY2yFXzgCBpsD82cLcaPa8R0CgYEAwgW5\n' +
-    'US/UBB+j8OLyjeDgZvhvIfsgL8hREaS3U+Uk72ei+UT2XhjdV4mVyiQ3N5cTHyXC\n' +
-    'vkamozmp90zHSnAyjDq+GNt04A1n3nz45VKNlstG/NfrqP5QCfCjEwiJfuclD2+q\n' +
-    'VRrpbHbWBJ9B/8e+andl5rixNoI72n44n/k7NLMCgYB/6HM20kYJHoEUpXbiQ5vO\n' +
-    'xlSrAlbS83ph+xNl8U1UXWMUWKIgX7BkC9lxQsTSADzvvTmZLH45z1YwhLq5YXcg\n' +
-    'n0rkngwJ2PjtKEGkQ3bRT0cWX0TDHrboV4QnnYl6KHd0fO6X/DpmaiYjNqzBlr7q\n' +
-    'rKuCxAqRFOAqYAntEBmfKQKBgDjYNnhL3AEtR/nudAQPa4+fn+fDzKVTOjVCHhgt\n' +
-    'XYnqwjvn8YqWHFtmSwWDYM4frBGHHaxjxLSz01FKJGVxw82D9GgR/Accxl7QHJgL\n' +
-    'fMI+Ylj35eqIP+j5oL2V1brhe+Eu5Se0D8mgc4m9IzgOTIKi4q8bU4hV1bVpH6v2\n' +
-    '+FqzAoGAHM2v90bEbN/TNFv7OODWeK7HBRKBNigMVktXBpfCAFOm+cSfMlsoQTr3\n' +
-    '4xiV0oxUFjPHA6qt0hGsk7/0P1Pe15Kg5n6+w2JzFpN5ix7DWus57PBKbMUkE64y\n' +
-    'KBFLr5ANLqWLaVrSw5Uep1s5VvXyOrltUN/1SUoCoNZuM/FakRc=\n' +
-    '-----END RSA PRIVATE KEY-----'
-};
-// epsilon: has two valid keypairs
-keys.epsilon_2 = {
-  publicKey: '-----BEGIN PUBLIC KEY-----\n' +
-    'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvfj/ZG9AgsfTyytb+Zou\n' +
-    'iT24VXLfo/LUXO/Z3C+8XiBIBMFHlLc//0zQM/wjIpGczYgFqEac2OpKFTcciDxp\n' +
-    '0uw4m44+OPI/FYMjddpsv8/PLV8iaOY7mZ7tgoCdZhzFRm70i7YHYCfvgGuowL1l\n' +
-    'MjlUBbrcGKjBr3JpZHgaCE6Upol+j+fZvyEFjwXAwHSCSIawxfMaxEXi/Qux9hiT\n' +
-    'lC5Xza0JclT5ZlKTlmFxiA3Q448GBHCZfIrzy2VCVvWPJ9FD9RU95Tep7xUDaAfu\n' +
-    '5Maxz56QoadsZiP1ajrcFJgFYZYAkgog6a9BMWpZC3lmOzl3iciMK/zcDGaE6MRY\n' +
-    'eQIDAQAB\n' +
-    '-----END PUBLIC KEY-----',
-  privateKey: '-----BEGIN RSA PRIVATE KEY-----\n' +
-    'MIIEpAIBAAKCAQEAvfj/ZG9AgsfTyytb+ZouiT24VXLfo/LUXO/Z3C+8XiBIBMFH\n' +
-    'lLc//0zQM/wjIpGczYgFqEac2OpKFTcciDxp0uw4m44+OPI/FYMjddpsv8/PLV8i\n' +
-    'aOY7mZ7tgoCdZhzFRm70i7YHYCfvgGuowL1lMjlUBbrcGKjBr3JpZHgaCE6Upol+\n' +
-    'j+fZvyEFjwXAwHSCSIawxfMaxEXi/Qux9hiTlC5Xza0JclT5ZlKTlmFxiA3Q448G\n' +
-    'BHCZfIrzy2VCVvWPJ9FD9RU95Tep7xUDaAfu5Maxz56QoadsZiP1ajrcFJgFYZYA\n' +
-    'kgog6a9BMWpZC3lmOzl3iciMK/zcDGaE6MRYeQIDAQABAoIBAQCoL5rDqy782bbr\n' +
-    'J079UwAiJs9cbyAJwQE76mkBZA2rc37vHsKlqfrxpmqpq27buviMigEgMqvH6tx9\n' +
-    'ndYX0wyJXPLc3Pi/Z9Br1jb9rswaoPs1mwUWw8Y+QhLaN82hypTov3CnhBdRjOmf\n' +
-    '0zCKuuKtrU1y6TTUbAtVrcAa362Eba70/TeDAORYUz8sYpTzjX30kEd8ybbrGkWN\n' +
-    '449PK5Rx2/9YHdyuHIIowa2tCdAGmM1umhrHdwptgPjBwkSOPGfMnMe9orcgmFPa\n' +
-    'BqlbFTJ0rIdAGsyC3IJb2Q2/GUVxHtU2tNga0SJwvOgjfEhWc0DLi2QgWm0i4Mpo\n' +
-    'POQ9emLFAoGBAN4w6LIvOOfBmnOijJ5N1MPQpQ54v2haQ5iQlThq3+8LtksNPxTs\n' +
-    'phebdu61S/6RilbkR+vtTYLa8+x+/vkOT7IDzWALWJIIeTjy3FuQ/s3s5kaqR/fr\n' +
-    'qqWZdcT6db88RDBpTc2LjmWyg/IPoI1VdwWa8ThOr0JEi70dcfwFP8LXAoGBANrh\n' +
-    'ErkziBcGfRclraooT9UeyO4MwsyI/HNS83MIWgOLGeAAsBTmJWj3ue/4vWUEwuW2\n' +
-    '+QSCAFD9Kc7Qj/Zk4JcKJfoznN+qHKlsqxNN9sWMUzTgoZ+Jvef9q++1glGHghDa\n' +
-    'rQp3K3Rme+lhb84ttsX9BXYG7BDhJ6Jrz2mt/aUvAoGAd366RsoawplepX3wPlsB\n' +
-    'aGZXvpa16jtRS0XG2tavpHIaEfcHzAsRsHSN3Ado3XoMenq/K2UuYIe8053hJrTJ\n' +
-    'q6Vb2KGBethPyY7jb+NlBf64QZzmo7D8z57etZc1qCmTSq33h+ncJVmCmLZK1Hf4\n' +
-    'UO1peaznmK4gsQ6a9L0l83UCgYB1Pw+qiYIi42Tqm1JVzdZF0YHMkqVerxqcJBko\n' +
-    'y5Z8Q20O4w9vgoETo2/Erje1/0DvkH3//itxNsvIb0xOrmboQZVqW29zGErWLtHN\n' +
-    'O3wvAiYoMxQgw8YomWgatd4jEjWIFbuP2Zo7dhJ2R61+glpf4FOmj7qwqAt1I88t\n' +
-    'SviOHQKBgQCgPNz2GjwHPJFSg82JEYR2OiJ5YdxM+/dL3g4thmW77nYwHfkmuj6K\n' +
-    'GXj/O1tZimzpG7w6Zxm4aBgKHgZtfjEn+c9kJ+SIZ5/n5iy+X55R5R1wSvX7kk1t\n' +
-    'jsUGrOAr2kJFuUdbayio26MvPCAQMFdwXTp4NVabg3CgSIE+eYY9rA==\n' +
-    '-----END RSA PRIVATE KEY-----'
-};
-
-events.alpha = {
-  '@context': constants.WEB_LEDGER_CONTEXT_V1_URL,
-  type: 'WebLedgerEvent',
-  operation: 'Create',
-  input: [{
-    '@context': constants.VERES_ONE_CONTEXT_URL,
-    id: 'did:v1:d8a43e2e-eda9-436c-ae37-4ee65edab54c',
-    authorizationCapability: [{
-      permission: 'UpdateDidDocument',
-      entity: 'did:v1:d8a43e2e-eda9-436c-ae37-4ee65edab54c',
-      permittedProofType: [{
-        proofType: 'LinkedDataSignature2015'
-      }, {
-        proofType: 'EquihashProof2017',
-        equihashParameterAlgorithm: 'VeresOne2017'
-      }]
-    }],
-    authenticationCredential: [{
-      id: 'did:v1:d8a43e2e-eda9-436c-ae37-4ee65edab54c/keys/1',
-      type: 'CryptographicKey',
-      owner: 'did:v1:d8a43e2e-eda9-436c-ae37-4ee65edab54c',
-      publicKeyPem: keys.alpha.publicKey
-    }]
-  }]
-};
 
 mock.ldDocuments = {};
 
 // alpha
-mock.ldDocuments['did:v1:53ebca61-5687-4558-b90a-03167e4c2838'] = {
-  "@context": "https://w3id.org/identity/v1",
-  "id": "did:v1:53ebca61-5687-4558-b90a-03167e4c2838",
-  "publicKey": [{
-    "id": 'did:v1:53ebca61-5687-4558-b90a-03167e4c2838/keys/1',
-    "type": "CryptographicKey",
-    "owner": "did:v1:53ebca61-5687-4558-b90a-03167e4c2838",
-    "publicKeyPem": keys.alpha.publicKey
-  }]
-};
-mock.ldDocuments['did:v1:53ebca61-5687-4558-b90a-03167e4c2838/keys/1'] = {
-  "@context": "https://w3id.org/identity/v1",
-  "type": "CryptographicKey",
-  "owner": "did:v1:53ebca61-5687-4558-b90a-03167e4c2838",
-  "label": "Signing Key 1",
-  "id": 'did:v1:53ebca61-5687-4558-b90a-03167e4c2838/keys/1',
-  "publicKeyPem": keys.alpha.publicKey
-};
+mock.ldDocuments[didDocuments.alpha.id] = didDocuments.alpha;
+mock.ldDocuments[didDocuments.alpha.grantCapability[0].publicKey.id] =
+  Object.assign({
+    "@context": "https://w3id.org/identity/v1"
+  }, didDocuments.alpha.grantCapability[0].publicKey);
+mock.ldDocuments[didDocuments.alpha.invokeCapability[0].publicKey.id] =
+  Object.assign({
+    "@context": "https://w3id.org/identity/v1"
+  }, didDocuments.alpha.invokeCapability[0].publicKey);
 
 // beta
 mock.ldDocuments['did:v1:5627622e-0ab3-479a-bfe7-0f4983a1f7ce'] = {
@@ -337,78 +175,13 @@ mock.ldDocuments['did:v1:5627622e-0ab3-479a-bfe7-0f4983a1f7ce/keys/1'] = {
   "publicKeyPem": keys.beta.publicKey
 };
 
-// delta
-mock.ldDocuments['did:v1:79482a9c-e352-4b50-9d39-5594968bd81d'] = {
-  "@context": "https://w3id.org/identity/v1",
-  "id": "did:v1:79482a9c-e352-4b50-9d39-5594968bd81d",
-  "publicKey": [{
-    "id": 'did:v1:79482a9c-e352-4b50-9d39-5594968bd81d/keys/1',
-    "type": "CryptographicKey",
-    "owner": "did:v1:79482a9c-e352-4b50-9d39-5594968bd81d",
-    "publicKeyPem": keys.delta.publicKey
-  }]
-};
-mock.ldDocuments['did:v1:79482a9c-e352-4b50-9d39-5594968bd81d/keys/1'] = {
-  "@context": "https://w3id.org/identity/v1",
-  "type": "CryptographicKey",
-  "owner": "did:v1:79482a9c-e352-4b50-9d39-5594968bd81d",
-  "label": "Signing Key 1",
-  "id": 'did:v1:79482a9c-e352-4b50-9d39-5594968bd81d/keys/1',
-  "publicKeyPem": keys.delta.publicKey
-};
-
-// epsilon has 2 public keys
-mock.ldDocuments['did:v1:324d09e4-07a9-44aa-a89c-c7a9e344316b'] = {
-  "@context": "https://w3id.org/identity/v1",
-  "id": "did:v1:324d09e4-07a9-44aa-a89c-c7a9e344316b",
-  "publicKey": [{
-    "id": 'did:v1:324d09e4-07a9-44aa-a89c-c7a9e344316b/keys/1',
-    "type": "CryptographicKey",
-    "owner": "did:v1:324d09e4-07a9-44aa-a89c-c7a9e344316b",
-    "publicKeyPem": keys.epsilon_1.publicKey
-  }, {
-    "id": 'did:v1:324d09e4-07a9-44aa-a89c-c7a9e344316b/keys/2',
-    "type": "CryptographicKey",
-    "owner": "did:v1:324d09e4-07a9-44aa-a89c-c7a9e344316b",
-    "publicKeyPem": keys.epsilon_2.publicKey
-  }]
-};
-mock.ldDocuments['did:v1:324d09e4-07a9-44aa-a89c-c7a9e344316b/keys/1'] = {
-  "@context": "https://w3id.org/identity/v1",
-  "type": "CryptographicKey",
-  "owner": "did:v1:324d09e4-07a9-44aa-a89c-c7a9e344316b",
-  "label": "Signing Key 1",
-  "id": 'did:v1:324d09e4-07a9-44aa-a89c-c7a9e344316b/keys/1',
-  "publicKeyPem": keys.epsilon_1.publicKey
-};
-mock.ldDocuments['did:v1:324d09e4-07a9-44aa-a89c-c7a9e344316b/keys/2'] = {
-  "@context": "https://w3id.org/identity/v1",
-  "type": "CryptographicKey",
-  "owner": "did:v1:324d09e4-07a9-44aa-a89c-c7a9e344316b",
-  "label": "Signing Key 2",
-  "id": 'did:v1:324d09e4-07a9-44aa-a89c-c7a9e344316b/keys/2',
-  "publicKeyPem": keys.epsilon_2.publicKey
-};
-
-const bedrock = require('bedrock');
-const config = bedrock.config;
 const jsonld = bedrock.jsonld;
 const oldLoader = jsonld.documentLoader;
 jsonld.documentLoader = function(url, callback) {
-  if(Object.keys(mock.ldDocuments).includes(url)) {
+  if(url in mock.ldDocuments) {
     return callback(null, {
       contextUrl: null,
       document: mock.ldDocuments[url],
-      documentUrl: url
-    });
-  }
-  const regex = new RegExp(
-    config['did-client']['authorization-io'].didBaseUrl + '/(.*?)$');
-  const didMatch = url.match(regex);
-  if(didMatch && didMatch.length === 2 && didMatch[1] in mock.ldDocuments) {
-    return callback(null, {
-      contextUrl: null,
-      document: mock.ldDocuments[didMatch[1]],
       documentUrl: url
     });
   }

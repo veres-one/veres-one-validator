@@ -1,5 +1,5 @@
 /*!
- * Copyright (c) 2017 Digital Bazaar, Inc. All rights reserved.
+ * Copyright (c) 2017-2018 Digital Bazaar, Inc. All rights reserved.
  */
 const constants = require('bedrock').config.constants;
 const schemas = require('bedrock-validation').schemas;
@@ -15,8 +15,8 @@ const config = {
       enum: ['VeresOneValidator2017'],
       required: true
     },
-    eventFilter: {
-      title: 'Event Filter',
+    validatorFilter: {
+      title: 'Validator Type Filter',
       type: 'array',
       items: {
         type: 'object',
@@ -25,7 +25,7 @@ const config = {
             type: 'string',
             required: true
           },
-          eventType: {
+          validatorFilterByType: {
             type: 'array',
             items: {
               type: 'string'
@@ -41,51 +41,25 @@ const config = {
   additionalProperties: false
 };
 
-const capability = {
-  title: 'Capability',
+const publicKey = {
   type: 'object',
-  required: true,
-  properties: {
-    permission: {
-      type: 'string',
-      required: true
+  items: {
+    type: 'object',
+    properties: {
+      id: {
+        type: 'string',
+        required: true
+      },
+      type: {
+        type: 'string',
+        required: true,
+        enum: ['CryptographicKey'],
+      },
+      owner: did(),
+      publicKeyPem: schemas.publicKeyPem()
     },
-    entity: did(),
-    permittedProofType: {
-      title: 'Permitted Proof Type',
-      type: 'array',
-      minItems: 1,
-      items: [{
-        type: 'object',
-        properties: {
-          proofType: {
-            type: 'string',
-            enum: ['LinkedDataSignature2015'],
-            required: true
-          },
-          additionalProperties: false
-        },
-        additionalProperties: false
-      }, {
-        type: 'object',
-        properties: {
-          proofType: {
-            type: 'string',
-            enum: ['EquihashProof2017'],
-            required: true
-          },
-          equihashParameterAlgorithm: {
-            type: 'string',
-            required: true,
-            enum: ['VeresOne2017']
-          }
-        },
-        additionalProperties: false
-      }],
-      required: true
-    }
-  },
-  additionalProperties: false
+    additionalProperties: false
+  }
 };
 
 const didDocument = {
@@ -95,36 +69,78 @@ const didDocument = {
   properties: {
     '@context': schemas.jsonldContext(constants.VERES_ONE_CONTEXT),
     id: did(),
-    authorizationCapability: {
-      type: 'array',
-      required: true,
-      items: capability
+    // FIXME: be more specific with restrictions for all properties below
+    invocationTarget: {
+      type: 'string',
+      required: false
     },
-    authenticationCredential: {
+    invoker: {
+      type: 'string',
+      required: false
+    },
+    authentication: {
       type: 'array',
       minItems: 1,
       items: {
         type: 'object',
-        properties: {
-          id: {
-            type: 'string',
-            required: true
-          },
-          type: {
-            type: 'string',
-            required: true,
-            enum: ['CryptographicKey'],
-          },
-          owner: did(),
-          publicKeyPem: schemas.publicKeyPem()
-        },
-        additionalProperties: false
+        properties: {publicKey}
       },
+      required: false
+    },
+    grantCapability: {
+      type: 'array',
+      minItems: 1,
+      items: {
+        type: 'object',
+        properties: {publicKey}
+      },
+      required: false
+    },
+    invokeCapability: {
+      type: 'array',
+      minItems: 1,
+      items: {
+        type: 'object',
+        properties: {publicKey}
+      },
+      required: false
+    }
+  },
+  additionalProperties: false
+};
+
+const operation = {
+  // FIXME: support `UpdateWebLedgerRecord` as well
+  title: 'CreateWebLedgerRecord',
+  required: true,
+  type: 'object',
+  properties: {
+    '@context': schemas.jsonldContext(constants.VERES_ONE_CONTEXT),
+    type: 'CreateWebLedgerRecord',
+    record: {
+      type: 'object',
       required: true
     },
+    proof: {
+      type: 'array',
+      minItems: 2,
+      items: {
+        type: 'object',
+        properties: {
+          type: {
+            type: 'string',
+            enum: [
+              'RsaSignature2018', 'Ed25519Signature2018', 'EquihashProof2018'],
+            required: true
+          }
+        },
+        additionalProperties: false
+      }
+    }
   },
   additionalProperties: false
 };
 
 module.exports.config = () => config;
 module.exports.didDocument = () => didDocument;
+module.exports.operation = () => operation;
