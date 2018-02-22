@@ -8,8 +8,8 @@ require('../lib/config');
 const cfg = config['veres-one-validator'];
 
 const pattern = cfg.environment === 'live' ?
-  "^(did\:v1\:nym\:|did\:v1\:uuid\:)([A-Za-z0-9.-]+)$" :
-  "^(did\:v1\:test\:nym\:|did\:v1\:test\:uuid\:)([A-Za-z0-9.-]+)$";
+  "^(did\:v1\:nym\:|did\:v1\:uuid\:)([A-Za-z0-9.-_]+)$" :
+  "^(did\:v1\:test\:nym\:|did\:v1\:test\:uuid\:)([A-Za-z0-9.-_]+)$";
 
 const schema = {
   required: true,

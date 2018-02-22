@@ -1,18 +1,20 @@
-/*
- * Copyright (c) 2017 Digital Bazaar, Inc. All rights reserved.
+/*!
+ * Copyright (c) 2017-2018 Digital Bazaar, Inc. All rights reserved.
  */
 'use strict';
 
 const voValidator = require('veres-one-validator');
 const mockData = require('./mock.data');
 
-describe('mustValidateEvent API', () => {
-  describe('WebLedgerEvent validator', () => {
-    it('should return true on a WebLedgerEvent event', done => {
-      const event = mockData.events.alpha;
+describe('mustValidate API', () => {
+  describe('operationValidator', () => {
+    it('should return true on an CreateWebLedgerRecord operation', done => {
+      const operation = mockData.operations.alpha;
       const testConfig =
-        mockData.ledgers.alpha.config.ledgerConfiguration.eventValidator[0];
-      voValidator.mustValidateEvent(event, testConfig, (err, result) => {
+        mockData.ledgerConfigurations.alpha.operationValidator[0];
+      voValidator.mustValidate(
+        operation, testConfig, {ledgerNode: mockData.ledgerNode},
+        (err, result) => {
         assertNoError(err);
         should.exist(result);
         result.should.be.a('boolean');
@@ -20,11 +22,13 @@ describe('mustValidateEvent API', () => {
         done();
       });
     });
-    it('should return false on a WebLedgerConfigurationEvent event', done => {
-      const event = mockData.ledgers.alpha.config;
+    it('should return false on a WebLedgerConfiguration', done => {
+      const ledgerConfiguration = mockData.ledgerConfigurations.alpha;
       const testConfig =
-        mockData.ledgers.alpha.config.ledgerConfiguration.eventValidator[0];
-      voValidator.mustValidateEvent(event, testConfig, (err, result) => {
+        mockData.ledgerConfigurations.alpha.operationValidator[0];
+      voValidator.mustValidate(
+        ledgerConfiguration, testConfig, {ledgerNode: mockData.ledgerNode},
+        (err, result) => {
         assertNoError(err);
         should.exist(result);
         result.should.be.a('boolean');

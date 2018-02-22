@@ -1,5 +1,5 @@
-/*
- * Copyright (c) 2017 Digital Bazaar, Inc. All rights reserved.
+/*!
+ * Copyright (c) 2017-2018 Digital Bazaar, Inc. All rights reserved.
  */
 'use strict';
 
@@ -10,8 +10,9 @@ const mockData = require('./mock.data');
 describe('validateConfiguration API', () => {
   it('validates a proper config', done => {
     const testConfig =
-      mockData.ledgers.alpha.config.ledgerConfiguration.eventValidator[0];
-    voValidator.validateConfiguration(testConfig, err => {
+      mockData.ledgerConfigurations.alpha.operationValidator[0];
+    voValidator.validateConfiguration(
+      testConfig, {ledgerNode: mockData.ledgerNode}, err => {
       assertNoError(err);
       done();
     });

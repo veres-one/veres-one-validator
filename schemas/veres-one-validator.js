@@ -42,6 +42,7 @@ const config = {
 };
 
 const publicKey = {
+  title: 'Public Key',
   type: 'object',
   items: {
     type: 'object',
@@ -50,13 +51,20 @@ const publicKey = {
         type: 'string',
         required: true
       },
+      // FIXME: allow other types of keys
       type: {
         type: 'string',
         required: true,
-        enum: ['CryptographicKey'],
+        enum: ['RsaVerificationKey2018', 'Ed25519VerificationKey2018'],
       },
       owner: did(),
-      publicKeyPem: schemas.publicKeyPem()
+      // FIXME: make schema require this for RsaVerificationKey2018
+      publicKeyPem: schemas.publicKeyPem({required: false}),
+      // FIXME: make schema require this for Ed25519VerificationKey2018
+      publicKeyBase58: {
+        type: 'string',
+        required: false
+      }
     },
     additionalProperties: false
   }
@@ -67,7 +75,6 @@ const didDocument = {
   required: true,
   type: 'object',
   properties: {
-    '@context': schemas.jsonldContext(constants.VERES_ONE_CONTEXT),
     id: did(),
     // FIXME: be more specific with restrictions for all properties below
     invocationTarget: {
@@ -83,7 +90,17 @@ const didDocument = {
       minItems: 1,
       items: {
         type: 'object',
-        properties: {publicKey}
+        properties: {
+          type: {
+            type: 'string',
+            required: true
+          },
+          publicKey: {
+            type: 'array',
+            minItems: 1,
+            items: publicKey
+          }
+        }
       },
       required: false
     },
@@ -92,7 +109,17 @@ const didDocument = {
       minItems: 1,
       items: {
         type: 'object',
-        properties: {publicKey}
+        properties: {
+          type: {
+            type: 'string',
+            required: true
+          },
+          publicKey: {
+            type: 'array',
+            minItems: 1,
+            items: publicKey
+          }
+        }
       },
       required: false
     },
@@ -101,7 +128,17 @@ const didDocument = {
       minItems: 1,
       items: {
         type: 'object',
-        properties: {publicKey}
+        properties: {
+          type: {
+            type: 'string',
+            required: true
+          },
+          publicKey: {
+            type: 'array',
+            minItems: 1,
+            items: publicKey
+          }
+        }
       },
       required: false
     }
@@ -116,11 +153,12 @@ const operation = {
   type: 'object',
   properties: {
     '@context': schemas.jsonldContext(constants.VERES_ONE_CONTEXT),
-    type: 'CreateWebLedgerRecord',
-    record: {
-      type: 'object',
+    type: {
+      type: 'string',
+      enum: ['CreateWebLedgerRecord'],
       required: true
     },
+    record: didDocument,
     proof: {
       type: 'array',
       minItems: 2,
@@ -133,8 +171,7 @@ const operation = {
               'RsaSignature2018', 'Ed25519Signature2018', 'EquihashProof2018'],
             required: true
           }
-        },
-        additionalProperties: false
+        }
       }
     }
   },
