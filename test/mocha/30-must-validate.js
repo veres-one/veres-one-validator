@@ -9,7 +9,7 @@ const mockData = require('./mock.data');
 describe('mustValidate API', () => {
   describe('operationValidator', () => {
     it('should return true on an CreateWebLedgerRecord operation', done => {
-      const operation = mockData.operations.alpha;
+      const operation = mockData.operations.create;
       const testConfig =
         mockData.ledgerConfigurations.alpha.operationValidator[0];
       voValidator.mustValidate(

@@ -75,6 +75,8 @@ const didDocument = {
   required: true,
   type: 'object',
   properties: {
+    '@context': schemas.jsonldContext(
+      constants.VERES_ONE_CONTEXT, {required: false}),
     id: did(),
     // FIXME: be more specific with restrictions for all properties below
     invocationTarget: {
@@ -104,6 +106,7 @@ const didDocument = {
       },
       required: false
     },
+    // TODO: change to `capabilityDelegation`?
     grantCapability: {
       type: 'array',
       minItems: 1,
@@ -123,6 +126,7 @@ const didDocument = {
       },
       required: false
     },
+    // TODO: change to `capabilityInvocation`?
     invokeCapability: {
       type: 'array',
       minItems: 1,
@@ -146,8 +150,54 @@ const didDocument = {
   additionalProperties: false
 };
 
-const operation = {
-  // FIXME: support `UpdateWebLedgerRecord` as well
+const didDocumentPatch = {
+  title: 'DID Document Patch',
+  required: true,
+  type: 'object',
+  properties: {
+    target: did(),
+    // FIXME: also support `frame` property later
+    patch: {
+      type: 'array',
+      required: true,
+      minItems: 1,
+      items: {
+        type: 'object',
+        required: true,
+        // FIXME: more strictly validate properties based on value of `op`
+        properties: {
+          op: {
+            type: 'string',
+            required: true,
+            enum: ['add', 'copy', 'move', 'remove', 'replace', 'test']
+          },
+          from: {
+            type: 'string',
+            required: false
+          },
+          path: {
+            type: 'string',
+            required: true
+          },
+          value: {
+            //type: ['number', 'string', 'boolean', 'object', 'array'],
+            required: false
+          }
+        },
+        additionalProperties: false
+      }
+    },
+    sequence: {
+      type: 'integer',
+      required: true,
+      minimum: 0,
+      maximum: Number.MAX_SAFE_INTEGER
+    }
+  },
+  additionalProperties: false
+};
+
+const createOperation = {
   title: 'CreateWebLedgerRecord',
   required: true,
   type: 'object',
@@ -178,6 +228,41 @@ const operation = {
   additionalProperties: false
 };
 
+const updateOperation = {
+  title: 'UpdateWebLedgerRecord',
+  required: true,
+  type: 'object',
+  properties: {
+    '@context': schemas.jsonldContext(constants.VERES_ONE_CONTEXT),
+    type: {
+      type: 'string',
+      enum: ['UpdateWebLedgerRecord'],
+      required: true
+    },
+    recordPatch: didDocumentPatch,
+    proof: {
+      type: 'array',
+      minItems: 2,
+      items: {
+        type: 'object',
+        properties: {
+          type: {
+            type: 'string',
+            enum: [
+              'RsaSignature2018', 'Ed25519Signature2018', 'EquihashProof2018'],
+            required: true
+          }
+        }
+      }
+    }
+  },
+  additionalProperties: false
+};
+
 module.exports.config = () => config;
 module.exports.didDocument = () => didDocument;
-module.exports.operation = () => operation;
+module.exports.operation = () => ({
+  title: 'WebLedgerOperation',
+  required: true,
+  type: [createOperation, updateOperation]
+});
