@@ -145,6 +145,28 @@ const didDocument = {
         }
       },
       required: false
+    },
+    service: {
+      type: 'array',
+      minItems: 1,
+      items: {
+        type: 'object',
+        properties: {
+          type: {
+            type: 'string',
+            required: true
+          },
+          name: {
+            type: 'string',
+            required: false
+          },
+          serviceEndpoint: {
+            type: 'string',
+            required: true
+          }
+        }
+      },
+      required: false
     }
   },
   additionalProperties: false
