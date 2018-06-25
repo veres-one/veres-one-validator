@@ -21,7 +21,7 @@
     "equihash-signature": "digitalbazaar/equihash-signature#master",
     "grunt": "^1.0.1",
     "jsonld-signatures": "^2.1.4",
-    "veres-one-context": "^1.0.0",
+    "veres-one-context": "digitalbazaar/veres-one-context#update-terminology",
     "veres-one-validator": "file:.."
   }
 }
