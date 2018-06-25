@@ -37,9 +37,9 @@ describe('validate API', () => {
             capability: mockData.didDocuments.alpha,
             capabilityAction: capabilityActions.register,
             creator: mockData.didDocuments.alpha
-              .invokeCapability[0].publicKey[0].id,
+              .capabilityInvocation[0].publicKey[0].id,
             privateKeyBase58: mockData.privateDidDocuments.alpha
-              .invokeCapability[0].publicKey[0].privateKey.privateKeyBase58
+              .capabilityInvocation[0].publicKey[0].privateKey.privateKeyBase58
           }, callback),
           pow: ['capability', (results, callback) => didv1.attachEquihashProof({
             operation: results.capability,
@@ -65,9 +65,9 @@ describe('validate API', () => {
             capability: mockData.didDocuments.alpha,
             capabilityAction: capabilityActions.register,
             creator: mockData.didDocuments.alpha
-              .invokeCapability[0].publicKey[0].id,
+              .capabilityInvocation[0].publicKey[0].id,
             privateKeyBase58: mockData.privateDidDocuments.alpha
-              .invokeCapability[0].publicKey[0].privateKey.privateKeyBase58
+              .capabilityInvocation[0].publicKey[0].privateKey.privateKeyBase58
           }, callback),
           pow: ['capability', (results, callback) => jsigs.sign(
             results.capability, {
@@ -101,9 +101,9 @@ describe('validate API', () => {
             capability: mockData.didDocuments.alpha,
             capabilityAction: capabilityActions.register,
             creator: mockData.didDocuments.alpha
-              .invokeCapability[0].publicKey[0].id,
+              .capabilityInvocation[0].publicKey[0].id,
             privateKeyBase58: mockData.privateDidDocuments.alpha
-              .invokeCapability[0].publicKey[0].privateKey.privateKeyBase58
+              .capabilityInvocation[0].publicKey[0].privateKey.privateKeyBase58
           }, callback),
           authorizeCapability: ['registerCapability', (results, callback) =>
             didv1.attachInvocationProof({
@@ -111,9 +111,10 @@ describe('validate API', () => {
               capability: mockData.capabilities.authorizeRequest,
               capabilityAction: capabilityActions.authorize,
               creator: mockData.didDocuments.alpha
-                .invokeCapability[0].publicKey[0].id,
+                .capabilityInvocation[0].publicKey[0].id,
               privateKeyBase58: mockData.privateDidDocuments.alpha
-                .invokeCapability[0].publicKey[0].privateKey.privateKeyBase58
+                .capabilityInvocation[0].publicKey[0]
+                  .privateKey.privateKeyBase58
             }, callback)],
           check: ['authorizeCapability', (results, callback) =>
             voValidator.validate(
@@ -133,9 +134,9 @@ describe('validate API', () => {
             capability: mockData.didDocuments.alpha,
             capabilityAction: capabilityActions.register,
             creator: mockData.didDocuments.alpha
-              .invokeCapability[0].publicKey[0].id,
+              .capabilityInvocation[0].publicKey[0].id,
             privateKeyBase58: mockData.privateDidDocuments.alpha
-              .invokeCapability[0].publicKey[0].privateKey.privateKeyBase58
+              .capabilityInvocation[0].publicKey[0].privateKey.privateKeyBase58
           }, callback),
           check: ['capability', (results, callback) => voValidator.validate(
             results.capability,
@@ -156,9 +157,9 @@ describe('validate API', () => {
             capability: mockData.didDocuments.alpha,
             capabilityAction: capabilityActions.register,
             creator: mockData.didDocuments.alpha
-              .invokeCapability[0].publicKey[0].id,
+              .capabilityInvocation[0].publicKey[0].id,
             privateKeyBase58: mockData.privateDidDocuments.alpha
-              .invokeCapability[0].publicKey[0].privateKey.privateKeyBase58
+              .capabilityInvocation[0].publicKey[0].privateKey.privateKeyBase58
           }, callback),
           extraSign: ['capability', (results, callback) => signDocument({
             creator: mockData.authorizedSigners.beta,
@@ -231,7 +232,8 @@ describe('validate API', () => {
               keyResults[0].should.be.an('object');
               keyResults[0].verified.should.be.false;
               keyResults[0].publicKey.should.equal(
-                mockData.didDocuments.alpha.invokeCapability[0].publicKey[0].id);
+                mockData.didDocuments.alpha.capabilityInvocation[0]
+                  .publicKey[0].id);
               callback();
             })]
         }, done);
@@ -243,9 +245,9 @@ describe('validate API', () => {
             capability: mockData.didDocuments.alpha,
             capabilityAction: capabilityActions.register,
             creator: mockData.didDocuments.alpha
-              .invokeCapability[0].publicKey[0].id,
+              .capabilityInvocation[0].publicKey[0].id,
             privateKeyBase58: mockData.privateDidDocuments.alpha
-              .invokeCapability[0].publicKey[0].privateKey.privateKeyBase58
+              .capabilityInvocation[0].publicKey[0].privateKey.privateKeyBase58
           }, (err, result) => {
             if(err) {
               return callback(err);
@@ -275,7 +277,8 @@ describe('validate API', () => {
               keyResults[0].should.be.an('object');
               keyResults[0].verified.should.be.false;
               keyResults[0].publicKey.should.equal(
-                mockData.didDocuments.alpha.invokeCapability[0].publicKey[0].id);
+                mockData.didDocuments.alpha.capabilityInvocation[0]
+                  .publicKey[0].id);
               callback();
             })]
         }, done);
@@ -287,9 +290,9 @@ describe('validate API', () => {
             capability: mockData.didDocuments.alpha,
             capabilityAction: capabilityActions.register,
             creator: mockData.didDocuments.alpha
-              .invokeCapability[0].publicKey[0].id,
+              .capabilityInvocation[0].publicKey[0].id,
             privateKeyBase58: mockData.privateDidDocuments.alpha
-              .invokeCapability[0].publicKey[0].privateKey.privateKeyBase58
+              .capabilityInvocation[0].publicKey[0].privateKey.privateKeyBase58
           }, callback),
           pow: ['capability', (results, callback) => didv1.attachEquihashProof({
             operation: results.capability,
@@ -325,9 +328,9 @@ describe('validate API', () => {
             capability: mockData.didDocuments.alpha,
             capabilityAction: capabilityActions.register,
             creator: mockData.didDocuments.alpha
-              .invokeCapability[0].publicKey[0].id,
+              .capabilityInvocation[0].publicKey[0].id,
             privateKeyBase58: mockData.privateDidDocuments.alpha
-              .invokeCapability[0].publicKey[0].privateKey.privateKeyBase58
+              .capabilityInvocation[0].publicKey[0].privateKey.privateKeyBase58
           }, callback),
           pow: ['capability', (results, callback) => didv1.attachEquihashProof({
             operation: Object.assign(
@@ -361,9 +364,9 @@ describe('validate API', () => {
             capability: operation,
             capabilityAction: capabilityActions.register,
             creator: mockData.didDocuments.alpha
-              .invokeCapability[0].publicKey[0].id,
+              .capabilityInvocation[0].publicKey[0].id,
             privateKeyBase58: mockData.privateDidDocuments.alpha
-              .invokeCapability[0].publicKey[0].privateKey.privateKeyBase58
+              .capabilityInvocation[0].publicKey[0].privateKey.privateKeyBase58
           }, callback),
           pow: ['capability', (results, callback) => didv1.attachEquihashProof({
             operation: results.capability,
@@ -398,9 +401,9 @@ describe('validate API', () => {
             capability: operation,
             capabilityAction: capabilityActions.register,
             creator: mockData.didDocuments.alpha
-              .invokeCapability[0].publicKey[0].id,
+              .capabilityInvocation[0].publicKey[0].id,
             privateKeyBase58: mockData.privateDidDocuments.alpha
-              .invokeCapability[0].publicKey[0].privateKey.privateKeyBase58
+              .capabilityInvocation[0].publicKey[0].privateKey.privateKeyBase58
           }, callback),
           pow: ['capability', (results, callback) => didv1.attachEquihashProof({
             operation: results.capability,
@@ -430,9 +433,9 @@ describe('validate API', () => {
             capability: operation,
             capabilityAction: capabilityActions.register,
             creator: mockData.didDocuments.alpha
-              .invokeCapability[0].publicKey[0].id,
+              .capabilityInvocation[0].publicKey[0].id,
             privateKeyBase58: mockData.privateDidDocuments.alpha
-              .invokeCapability[0].publicKey[0].privateKey.privateKeyBase58
+              .capabilityInvocation[0].publicKey[0].privateKey.privateKeyBase58
           }, callback),
           pow: ['capability', (results, callback) => didv1.attachEquihashProof({
             operation: results.capability,
@@ -462,9 +465,9 @@ describe('validate API', () => {
             capability: mockData.didDocuments.beta,
             capabilityAction: capabilityActions.update,
             creator: mockData.didDocuments.beta
-              .invokeCapability[0].publicKey[0].id,
+              .capabilityInvocation[0].publicKey[0].id,
             privateKeyBase58: mockData.privateDidDocuments.beta
-              .invokeCapability[0].publicKey[0].privateKey.privateKeyBase58
+              .capabilityInvocation[0].publicKey[0].privateKey.privateKeyBase58
           }, callback),
           pow: ['capability', (results, callback) => didv1.attachEquihashProof({
             operation: results.capability,
@@ -490,9 +493,9 @@ describe('validate API', () => {
             capability: mockData.didDocuments.beta,
             capabilityAction: capabilityActions.update,
             creator: mockData.didDocuments.beta
-              .invokeCapability[0].publicKey[0].id,
+              .capabilityInvocation[0].publicKey[0].id,
             privateKeyBase58: mockData.privateDidDocuments.beta
-              .invokeCapability[0].publicKey[0].privateKey.privateKeyBase58
+              .capabilityInvocation[0].publicKey[0].privateKey.privateKeyBase58
           }, callback),
           pow: ['capability', (results, callback) => jsigs.sign(
             results.capability, {
@@ -526,9 +529,9 @@ describe('validate API', () => {
             capability: mockData.didDocuments.beta,
             capabilityAction: capabilityActions.update,
             creator: mockData.didDocuments.beta
-              .invokeCapability[0].publicKey[0].id,
+              .capabilityInvocation[0].publicKey[0].id,
             privateKeyBase58: mockData.privateDidDocuments.beta
-              .invokeCapability[0].publicKey[0].privateKey.privateKeyBase58
+              .capabilityInvocation[0].publicKey[0].privateKey.privateKeyBase58
           }, callback),
           authorizeCapability: ['registerCapability', (results, callback) =>
             didv1.attachInvocationProof({
@@ -536,9 +539,10 @@ describe('validate API', () => {
               capability: mockData.capabilities.authorizeRequest,
               capabilityAction: capabilityActions.authorize,
               creator: mockData.didDocuments.beta
-                .invokeCapability[0].publicKey[0].id,
+                .capabilityInvocation[0].publicKey[0].id,
               privateKeyBase58: mockData.privateDidDocuments.beta
-                .invokeCapability[0].publicKey[0].privateKey.privateKeyBase58
+                .capabilityInvocation[0].publicKey[0]
+                  .privateKey.privateKeyBase58
             }, callback)],
           check: ['authorizeCapability', (results, callback) =>
             voValidator.validate(
@@ -558,9 +562,9 @@ describe('validate API', () => {
             capability: mockData.didDocuments.beta,
             capabilityAction: capabilityActions.update,
             creator: mockData.didDocuments.beta
-              .invokeCapability[0].publicKey[0].id,
+              .capabilityInvocation[0].publicKey[0].id,
             privateKeyBase58: mockData.privateDidDocuments.beta
-              .invokeCapability[0].publicKey[0].privateKey.privateKeyBase58
+              .capabilityInvocation[0].publicKey[0].privateKey.privateKeyBase58
           }, callback),
           pow: ['capability', (results, callback) => didv1.attachEquihashProof({
             operation: results.capability,
@@ -587,9 +591,9 @@ describe('validate API', () => {
             capability: mockData.didDocuments.beta,
             capabilityAction: capabilityActions.update,
             creator: mockData.didDocuments.beta
-              .invokeCapability[0].publicKey[0].id,
+              .capabilityInvocation[0].publicKey[0].id,
             privateKeyBase58: mockData.privateDidDocuments.beta
-              .invokeCapability[0].publicKey[0].privateKey.privateKeyBase58
+              .capabilityInvocation[0].publicKey[0].privateKey.privateKeyBase58
           }, callback),
           pow: ['capability', (results, callback) => didv1.attachEquihashProof({
             operation: results.capability,

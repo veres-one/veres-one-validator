@@ -106,8 +106,7 @@ const didDocument = {
       },
       required: false
     },
-    // TODO: change to `capabilityDelegation`?
-    grantCapability: {
+    capabilityDelegation: {
       type: 'array',
       minItems: 1,
       items: {
@@ -126,8 +125,7 @@ const didDocument = {
       },
       required: false
     },
-    // TODO: change to `capabilityInvocation`?
-    invokeCapability: {
+    capabilityInvocation: {
       type: 'array',
       minItems: 1,
       items: {
@@ -152,13 +150,13 @@ const didDocument = {
       items: {
         type: 'object',
         properties: {
-          type: {
+          id: {
             type: 'string',
             required: true
           },
-          name: {
+          type: {
             type: 'string',
-            required: false
+            required: true
           },
           serviceEndpoint: {
             type: 'string',

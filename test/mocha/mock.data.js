@@ -50,7 +50,7 @@ privateDidDocuments.alpha = {
       ]
     }
   ],
-  "grantCapability": [
+  "capabilityDelegation": [
     {
       "type": "Ed25519SignatureCapabilityAuthorization2018",
       "publicKey": [
@@ -66,7 +66,7 @@ privateDidDocuments.alpha = {
       ]
     }
   ],
-  "invokeCapability": [
+  "capabilityInvocation": [
     {
       "type": "Ed25519SignatureCapabilityAuthorization2018",
       "publicKey": [
@@ -103,7 +103,7 @@ privateDidDocuments.beta = {
       ]
     }
   ],
-  "grantCapability": [
+  "capabilityDelegation": [
     {
       "type": "Ed25519SignatureCapabilityAuthorization2018",
       "publicKey": [
@@ -119,7 +119,7 @@ privateDidDocuments.beta = {
       ]
     }
   ],
-  "invokeCapability": [
+  "capabilityInvocation": [
     {
       "type": "Ed25519SignatureCapabilityAuthorization2018",
       "publicKey": [
@@ -143,8 +143,8 @@ didDocuments.beta = _stripPrivateKeys(privateDidDocuments.beta);
 function _stripPrivateKeys(privateDidDocument) {
   const didDocument = bedrock.util.clone(privateDidDocument);
   delete didDocument.authentication[0].publicKey[0].privateKey;
-  delete didDocument.grantCapability[0].publicKey[0].privateKey;
-  delete didDocument.invokeCapability[0].publicKey[0].privateKey;
+  delete didDocument.capabilityDelegation[0].publicKey[0].privateKey;
+  delete didDocument.capabilityInvocation[0].publicKey[0].privateKey;
   return didDocument;
 }
 
@@ -243,25 +243,25 @@ capabilities.authorizeRequest =
 
 // alpha
 ldDocuments[didDocuments.alpha.id] = didDocuments.alpha;
-ldDocuments[didDocuments.alpha.grantCapability[0].publicKey.id] =
+ldDocuments[didDocuments.alpha.capabilityDelegation[0].publicKey.id] =
   Object.assign({
     "@context": "https://w3id.org/security/v2"
-  }, didDocuments.alpha.grantCapability[0].publicKey);
-ldDocuments[didDocuments.alpha.invokeCapability[0].publicKey.id] =
+  }, didDocuments.alpha.capabilityDelegation[0].publicKey);
+ldDocuments[didDocuments.alpha.capabilityInvocation[0].publicKey.id] =
   Object.assign({
     "@context": "https://w3id.org/security/v2"
-  }, didDocuments.alpha.invokeCapability[0].publicKey);
+  }, didDocuments.alpha.capabilityInvocation[0].publicKey);
 
 // beta
 ldDocuments[didDocuments.beta.id] = didDocuments.beta;
-ldDocuments[didDocuments.beta.grantCapability[0].publicKey.id] =
+ldDocuments[didDocuments.beta.capabilityDelegation[0].publicKey.id] =
   Object.assign({
     "@context": "https://w3id.org/security/v2"
-  }, didDocuments.beta.grantCapability[0].publicKey);
-ldDocuments[didDocuments.beta.invokeCapability[0].publicKey.id] =
+  }, didDocuments.beta.capabilityDelegation[0].publicKey);
+ldDocuments[didDocuments.beta.capabilityInvocation[0].publicKey.id] =
   Object.assign({
     "@context": "https://w3id.org/security/v2"
-  }, didDocuments.beta.invokeCapability[0].publicKey);
+  }, didDocuments.beta.capabilityInvocation[0].publicKey);
 
 ldDocuments[capabilities.authorizeRequest] = {
   "@context": "https://w3id.org/security/v2",
