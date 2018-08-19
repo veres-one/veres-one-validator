@@ -13,14 +13,14 @@
   "homepage": "https://github.com/digitalbazaar/veres-one-validator#readme",
   "dependencies": {
     "async": "^2.5.0",
-    "did-veres-one": "github:veres-one/did-veres-one#update-terminology",
+    "did-veres-one": "github:veres-one/did-veres-one#multihash",
     "equihash-signature": "github:digitalbazaar/equihash-signature#master",
     "fast-json-patch": "^2.0.6",
     "jsonld-signatures": "^2.1.4"
   },
   "peerDependencies": {
     "bedrock": "^1.8.0",
-    "bedrock-ledger-node": "digitalbazaar/bedrock-ledger-node#master",
+    "bedrock-ledger-node": "digitalbazaar/bedrock-ledger-node#multihash",
     "bedrock-validation": "^2.2.1",
     "veres-one-context": "digitalbazaar/veres-one-context#update-terminology"
   }

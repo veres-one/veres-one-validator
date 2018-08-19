@@ -9,10 +9,11 @@
   "dependencies": {
     "async": "^2.4.1",
     "bedrock": "^1.8.0",
+    "bedrock-injector": "^1.0.0",
     "bedrock-jobs": "^2.0.3",
     "bedrock-ledger-context": "digitalbazaar/bedrock-ledger-context#master",
-    "bedrock-ledger-node": "digitalbazaar/bedrock-ledger-node#master",
-    "bedrock-ledger-storage-mongodb": "digitalbazaar/bedrock-ledger-storage-mongodb#master",
+    "bedrock-ledger-node": "digitalbazaar/bedrock-ledger-node#multihash",
+    "bedrock-ledger-storage-mongodb": "digitalbazaar/bedrock-ledger-storage-mongodb#multihash",
     "bedrock-mongodb": "^4.0.3",
     "bedrock-permission": "^2.4.3",
     "bedrock-test": "^2.0.0",
