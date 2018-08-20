@@ -17,16 +17,16 @@ const capabilities = mock.capabilities = {};
 const ldDocuments = mock.ldDocuments = {};
 
 mock.ledgerNode = {
-  stateMachine: {
-    get(id, options, callback) {
-      if(id === didDocuments.beta.id) {
+  records: {
+    get({maxBlockHeight, recordId}, callback) {
+      if(recordId === didDocuments.beta.id) {
         return callback(null, {
-          object: ldDocuments[didDocuments.beta.id],
+          record: ldDocuments[didDocuments.beta.id],
           meta: {sequence: 0}
         });
       }
       callback(new BedrockError(
-        'DID Document not found.', 'NotFoundError', {id}));
+        'DID Document not found.', 'NotFoundError', {recordId}));
     }
   }
 };
