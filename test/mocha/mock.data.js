@@ -33,18 +33,18 @@ mock.ledgerNode = {
 
 privateDidDocuments.alpha = {
   "@context": "https://w3id.org/veres-one/v1",
-  "id": "did:v1:test:nym:z279tsMiWpyTGi3DjipGU4MkfZSiDuxsH5ZJT6AA7rYbYNb7",
+  "id": "did:v1:test:nym:z279tjfMvfjqHvkuqXbFFTB5hqWpWNLfAptnQvUFiRFebJgL",
   "authentication": [
     {
       "type": "Ed25519SignatureAuthentication2018",
       "publicKey": [
         {
-          "id": "did:v1:test:nym:z279tsMiWpyTGi3DjipGU4MkfZSiDuxsH5ZJT6AA7rYbYNb7#authn-key-1",
+          "id": "did:v1:test:nym:z279tjfMvfjqHvkuqXbFFTB5hqWpWNLfAptnQvUFiRFebJgL#authn-key-1",
           "type": "Ed25519VerificationKey2018",
-          "owner": "did:v1:test:nym:z279tsMiWpyTGi3DjipGU4MkfZSiDuxsH5ZJT6AA7rYbYNb7",
-          "publicKeyBase58": "C9FccpemTaGKdpwTFErrZyCJJQ5vZTM7uCnDjP3MM4jw",
+          "owner": "did:v1:test:nym:z279tjfMvfjqHvkuqXbFFTB5hqWpWNLfAptnQvUFiRFebJgL",
+          "publicKeyBase58": "GhRN3AWmarx4MYUnoLqnZjscyDyzsHxXKuZNmXf9AQ1s",
           "privateKey": {
-            "privateKeyBase58": "5eNqLTZuJ7ip2wvzt2aBDNcW8bBxSNxe7ZM13qQKneHQG72eDzoNJHWf4VcFCGov8SKaTCndnooNtJLEvNxHZ6R3"
+            "privateKeyBase58": "4r4t7zzyVNiSSuHNj5V8rjJDGYiLZ7N8b5achD9zUbdQ1nrrQ283Ctgq234BWmDGdsJbSVks3J1uotMLPdi34kFf"
           }
         }
       ]
@@ -55,12 +55,12 @@ privateDidDocuments.alpha = {
       "type": "Ed25519SignatureCapabilityAuthorization2018",
       "publicKey": [
         {
-          "id": "did:v1:test:nym:z279tsMiWpyTGi3DjipGU4MkfZSiDuxsH5ZJT6AA7rYbYNb7#ocap-delegate-key-1",
+          "id": "did:v1:test:nym:z279tjfMvfjqHvkuqXbFFTB5hqWpWNLfAptnQvUFiRFebJgL#ocap-delegate-key-1",
           "type": "Ed25519VerificationKey2018",
-          "owner": "did:v1:test:nym:z279tsMiWpyTGi3DjipGU4MkfZSiDuxsH5ZJT6AA7rYbYNb7",
-          "publicKeyBase58": "fs5FLf8wBa9UurH92Yq7WXTfTdfykjsejgfyKv4YR8F",
+          "owner": "did:v1:test:nym:z279tjfMvfjqHvkuqXbFFTB5hqWpWNLfAptnQvUFiRFebJgL",
+          "publicKeyBase58": "3LRDabY5N4TU5MasAbcXVbXmEAD2QAg1oUiyWnA3Ngnr",
           "privateKey": {
-            "privateKeyBase58": "37EoF7tonu6B6Mhbb8YY1oYitmDoh8oVwYejoTExYmZBnDSnsV4SXZPaHewusq8sGzknqNFAHtEACpnWM7FLbG91"
+            "privateKeyBase58": "AfoqQ46sTgDCXSs3BLgecRMW2KMMHzJSmc1KxbZSxSpufYX4vmdpAXQSmetmspW5yGKZj4Brhut7fbzxG7RVztv"
           }
         }
       ]
@@ -71,12 +71,12 @@ privateDidDocuments.alpha = {
       "type": "Ed25519SignatureCapabilityAuthorization2018",
       "publicKey": [
         {
-          "id": "did:v1:test:nym:z279tsMiWpyTGi3DjipGU4MkfZSiDuxsH5ZJT6AA7rYbYNb7#ocap-invoke-key-1",
+          "id": "did:v1:test:nym:z279tjfMvfjqHvkuqXbFFTB5hqWpWNLfAptnQvUFiRFebJgL#ocap-invoke-key-1",
           "type": "Ed25519VerificationKey2018",
-          "owner": "did:v1:test:nym:z279tsMiWpyTGi3DjipGU4MkfZSiDuxsH5ZJT6AA7rYbYNb7",
-          "publicKeyBase58": "EZ4jqdeP1zmTca7qLkoPh78YTxGpbmu5pHKdZNxd2cAK",
+          "owner": "did:v1:test:nym:z279tjfMvfjqHvkuqXbFFTB5hqWpWNLfAptnQvUFiRFebJgL",
+          "publicKeyBase58": "C1ZG2fR9Unz1jdiS2dgBcFGQarTiTCgbs36KKwkQPzqA",
           "privateKey": {
-            "privateKeyBase58": "4xkdXodP4dbWRJqRWnuma1Hgh74nYCKsfcpBc1mKPkDMmQz6pyVPpmUZG4vitYw83HCmqeG6De6exvbQUt4Z2JiT"
+            "privateKeyBase58": "5yiybQnFhQNE7YoAn3EaSL3s6w8KzDQ4SGJapgkVh1tT3PcuGSKWLR1t5ZW1foeVQsRyUY6MoTUv4Kq8Uaph38w6"
           }
         }
       ]
@@ -86,18 +86,18 @@ privateDidDocuments.alpha = {
 
 privateDidDocuments.beta = {
   "@context": "https://w3id.org/veres-one/v1",
-  "id": "did:v1:test:nym:z279wWXz4nugfh2XATAnFQkqaoSg97AWyNbsvdpr8hujamKJ",
+  "id": "did:v1:test:nym:z279nCCZVzxreYfLw3EtFLtBMSVVY2pA6uxKengriMCdG3DF",
   "authentication": [
     {
       "type": "Ed25519SignatureAuthentication2018",
       "publicKey": [
         {
-          "id": "did:v1:test:nym:z279wWXz4nugfh2XATAnFQkqaoSg97AWyNbsvdpr8hujamKJ#authn-key-1",
+          "id": "did:v1:test:nym:z279nCCZVzxreYfLw3EtFLtBMSVVY2pA6uxKengriMCdG3DF#authn-key-1",
           "type": "Ed25519VerificationKey2018",
-          "owner": "did:v1:test:nym:z279wWXz4nugfh2XATAnFQkqaoSg97AWyNbsvdpr8hujamKJ",
-          "publicKeyBase58": "EnRtAnazrZFd4ZHy2bFwVDCGDbHaFkPhNkSukEQVPTU8",
+          "owner": "did:v1:test:nym:z279nCCZVzxreYfLw3EtFLtBMSVVY2pA6uxKengriMCdG3DF",
+          "publicKeyBase58": "7tJdgUebDRaVFR2d8LzV9BK7RMz5aw2AuW5LsEBBAKWs",
           "privateKey": {
-            "privateKeyBase58": "4xj86VfVkfCUcPtMPYTjBB2LZAW6pDdcaybYvy56D7bSpbeGLjnDMRvdpkh6uBXXzN8x7VmQxGSACJ9gGsSKZfa"
+            "privateKeyBase58": "4kftxewt3RQUW7k1MoTqEbZW5MnsJszNAwgEqbjJvKmJYeyUJFmkzYwwMZfB7Z5bWFyo1pQJzZL2mLL5zagc3dAT"
           }
         }
       ]
@@ -108,12 +108,12 @@ privateDidDocuments.beta = {
       "type": "Ed25519SignatureCapabilityAuthorization2018",
       "publicKey": [
         {
-          "id": "did:v1:test:nym:z279wWXz4nugfh2XATAnFQkqaoSg97AWyNbsvdpr8hujamKJ#ocap-delegate-key-1",
+          "id": "did:v1:test:nym:z279nCCZVzxreYfLw3EtFLtBMSVVY2pA6uxKengriMCdG3DF#ocap-delegate-key-1",
           "type": "Ed25519VerificationKey2018",
-          "owner": "did:v1:test:nym:z279wWXz4nugfh2XATAnFQkqaoSg97AWyNbsvdpr8hujamKJ",
-          "publicKeyBase58": "98DTMwZYAUfivKEcR3BNNAvgbUrmMJgj3bCaAKbWymPk",
+          "owner": "did:v1:test:nym:z279nCCZVzxreYfLw3EtFLtBMSVVY2pA6uxKengriMCdG3DF",
+          "publicKeyBase58": "CWERGaLLTsWGAKzpTKpHs9WyZ5Xczgj8HSbcZ7FjGAtQ",
           "privateKey": {
-            "privateKeyBase58": "4GEjLv796PqciMy4fHwQ1JL1Gq3Dv4zxt5dzvxoEatsdF6wzwrq1RoMwjZRkAh2SUNs8r6buxgzdpG32iwNB8aS2"
+            "privateKeyBase58": "4bzwvphLSbKF3zWEB18dEFusRPSvpFqefeGqUSfNr3dwcN6KD7xNbAG1q1nBAFu7r6Knj4Lmex1zvWXrv632eS4Q"
           }
         }
       ]
@@ -124,12 +124,12 @@ privateDidDocuments.beta = {
       "type": "Ed25519SignatureCapabilityAuthorization2018",
       "publicKey": [
         {
-          "id": "did:v1:test:nym:z279wWXz4nugfh2XATAnFQkqaoSg97AWyNbsvdpr8hujamKJ#ocap-invoke-key-1",
+          "id": "did:v1:test:nym:z279nCCZVzxreYfLw3EtFLtBMSVVY2pA6uxKengriMCdG3DF#ocap-invoke-key-1",
           "type": "Ed25519VerificationKey2018",
-          "owner": "did:v1:test:nym:z279wWXz4nugfh2XATAnFQkqaoSg97AWyNbsvdpr8hujamKJ",
-          "publicKeyBase58": "Ad45k3zrAVUZqSgJ4D6dN38LQo9HTjvcvXr91HwX8UgT",
+          "owner": "did:v1:test:nym:z279nCCZVzxreYfLw3EtFLtBMSVVY2pA6uxKengriMCdG3DF",
+          "publicKeyBase58": "5U6TbzeAqQtSq9N52XPHFrF5cWwDPHk96uJvKshP4jN5",
           "privateKey": {
-            "privateKeyBase58": "ixRWi3FaUyN2TXpzcsakatUYPMmQPiPZWGyY7gSj9v6qX1E1uNWzjy6itaqmHVfwh5zbcQo2UwMydZa5yMp1y63"
+            "privateKeyBase58": "5hvHHCpocudyac6fT6jJCHe2WThQHsKYsjazkGV2L1Umwj5w9HtzcqoZ886yHJdHKbpC4W2qGhUMPbHNPpNDK6Dj"
           }
         }
       ]
