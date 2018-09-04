@@ -281,6 +281,7 @@ const updateOperation = {
 
 module.exports.config = () => config;
 module.exports.didDocument = () => didDocument;
+module.exports.didDocumentPatch = () => didDocumentPatch;
 module.exports.operation = () => ({
   title: 'WebLedgerOperation',
   required: true,
