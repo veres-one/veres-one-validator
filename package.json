@@ -21,7 +21,7 @@
   "peerDependencies": {
     "bedrock": "^1.12.0",
     "bedrock-ledger-node": "^1.0.0",
-    "bedrock-validation": "^2.2.1",
+    "bedrock-validation": "^3.1.0",
     "veres-one-context": "digitalbazaar/veres-one-context#update-terminology"
   }
 }
