@@ -1,8 +1,10 @@
 /*!
  * Copyright (c) 2017-2018 Digital Bazaar, Inc. All rights reserved.
  */
+'use strict';
+
 const bedrock = require('bedrock');
-const config = bedrock.config;
+const {config} = bedrock;
 require('../lib/config');
 
 const cfg = config['veres-one-validator'];
@@ -12,7 +14,6 @@ const pattern = cfg.environment === 'live' ?
   "^(did\:v1\:test\:nym\:|did\:v1\:test\:uuid\:)([-_A-Za-z0-9.]+)$";
 
 const schema = {
-  required: true,
   title: 'Decentralized Identifier',
   description: 'A decentralized identifier.',
   type: 'string',

@@ -194,7 +194,7 @@ operations.update = {
     sequence: 0,
     patch: [{
       "op": "add",
-      "path": "/authentication/0/publicKey/1",
+      "path": "/authentication/1",
       "value": {
         "type": "Ed25519SignatureAuthentication2018",
         "publicKey": [{

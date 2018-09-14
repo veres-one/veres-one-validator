@@ -1,41 +1,43 @@
 /*!
  * Copyright (c) 2017-2018 Digital Bazaar, Inc. All rights reserved.
  */
-const constants = require('bedrock').config.constants;
-const schemas = require('bedrock-validation').schemas;
+'use strict';
+
+const {constants} = require('bedrock').config;
+const {schemas} = require('bedrock-validation');
 const did = require('./did');
 
 const config = {
   title: 'Veres One Validator Config',
-  required: true,
+  required: [
+    'type',
+    'validatorFilter',
+  ],
   type: 'object',
   properties: {
     type: {
       type: 'string',
       enum: ['VeresOneValidator2017'],
-      required: true
     },
     validatorFilter: {
       title: 'Validator Type Filter',
       type: 'array',
       items: {
+        required: ['type', 'validatorFilterByType'],
         type: 'object',
         properties: {
           type: {
             type: 'string',
-            required: true
           },
           validatorFilterByType: {
             type: 'array',
             items: {
               type: 'string'
             },
-            required: true
           }
         },
         additionalProperties: false
       },
-      required: true
     }
   },
   additionalProperties: false
@@ -43,59 +45,57 @@ const config = {
 
 const publicKey = {
   title: 'Public Key',
+  required: [
+    'id',
+    'owner',
+    'type'
+  ],
   type: 'object',
-  items: {
-    type: 'object',
-    properties: {
-      id: {
-        type: 'string',
-        required: true
-      },
-      // FIXME: allow other types of keys
-      type: {
-        type: 'string',
-        required: true,
-        enum: ['RsaVerificationKey2018', 'Ed25519VerificationKey2018'],
-      },
-      owner: did(),
-      // FIXME: make schema require this for RsaVerificationKey2018
-      publicKeyPem: schemas.publicKeyPem({required: false}),
-      // FIXME: make schema require this for Ed25519VerificationKey2018
-      publicKeyBase58: {
-        type: 'string',
-        required: false
-      }
+  properties: {
+    id: {
+      type: 'string',
     },
-    additionalProperties: false
-  }
+    // FIXME: allow other types of keys
+    type: {
+      type: 'string',
+      enum: ['RsaVerificationKey2018', 'Ed25519VerificationKey2018'],
+    },
+    owner: did(),
+    // FIXME: make schema require this for RsaVerificationKey2018
+    publicKeyPem: schemas.publicKeyPem(),
+    // FIXME: make schema require this for Ed25519VerificationKey2018
+    publicKeyBase58: {
+      type: 'string',
+    }
+  },
+  additionalProperties: false
 };
 
 const didDocument = {
   title: 'DID Document',
-  required: true,
+  required: [
+    'id',
+  ],
   type: 'object',
   properties: {
-    '@context': schemas.jsonldContext(
-      constants.VERES_ONE_CONTEXT, {required: false}),
+    '@context': schemas.jsonldContext(constants.VERES_ONE_CONTEXT),
     id: did(),
     // FIXME: be more specific with restrictions for all properties below
     invocationTarget: {
       type: 'string',
-      required: false
     },
     invoker: {
       type: 'string',
-      required: false
     },
     authentication: {
       type: 'array',
       minItems: 1,
       items: {
+        required: ['type'],
         type: 'object',
         properties: {
           type: {
             type: 'string',
-            required: true
           },
           publicKey: {
             type: 'array',
@@ -104,17 +104,16 @@ const didDocument = {
           }
         }
       },
-      required: false
     },
     capabilityDelegation: {
       type: 'array',
       minItems: 1,
       items: {
+        required: ['type'],
         type: 'object',
         properties: {
           type: {
             type: 'string',
-            required: true
           },
           publicKey: {
             type: 'array',
@@ -123,17 +122,16 @@ const didDocument = {
           }
         }
       },
-      required: false
     },
     capabilityInvocation: {
       type: 'array',
       minItems: 1,
       items: {
+        required: ['type'],
         type: 'object',
         properties: {
           type: {
             type: 'string',
-            required: true
           },
           publicKey: {
             type: 'array',
@@ -142,29 +140,29 @@ const didDocument = {
           }
         }
       },
-      required: false
     },
     service: {
       type: 'array',
       minItems: 1,
       items: {
+        required: [
+          'id',
+          'serviceEndpoint',
+          'type',
+        ],
         type: 'object',
         properties: {
           id: {
             type: 'string',
-            required: true
           },
           type: {
             type: 'string',
-            required: true
           },
           serviceEndpoint: {
             type: 'string',
-            required: true
           }
         }
       },
-      required: false
     }
   },
   additionalProperties: false
@@ -172,36 +170,38 @@ const didDocument = {
 
 const didDocumentPatch = {
   title: 'DID Document Patch',
-  required: true,
+  required: [
+    'patch',
+    'sequence',
+    'target'
+  ],
   type: 'object',
   properties: {
     target: did(),
     // FIXME: also support `frame` property later
     patch: {
       type: 'array',
-      required: true,
       minItems: 1,
       items: {
+        required: [
+          'op',
+          'path'
+        ],
         type: 'object',
-        required: true,
         // FIXME: more strictly validate properties based on value of `op`
         properties: {
           op: {
             type: 'string',
-            required: true,
             enum: ['add', 'copy', 'move', 'remove', 'replace', 'test']
           },
           from: {
             type: 'string',
-            required: false
           },
           path: {
             type: 'string',
-            required: true
           },
           value: {
             //type: ['number', 'string', 'boolean', 'object', 'array'],
-            required: false
           }
         },
         additionalProperties: false
@@ -209,7 +209,6 @@ const didDocumentPatch = {
     },
     sequence: {
       type: 'integer',
-      required: true,
       minimum: 0,
       maximum: Number.MAX_SAFE_INTEGER
     }
@@ -219,27 +218,33 @@ const didDocumentPatch = {
 
 const createOperation = {
   title: 'CreateWebLedgerRecord',
-  required: true,
+  required: [
+    '@context',
+    'proof',
+    'record',
+    'type',
+  ],
   type: 'object',
   properties: {
     '@context': schemas.jsonldContext(constants.VERES_ONE_CONTEXT),
     type: {
       type: 'string',
       enum: ['CreateWebLedgerRecord'],
-      required: true
     },
     record: didDocument,
     proof: {
       type: 'array',
       minItems: 2,
       items: {
+        required: [
+          'type'
+        ],
         type: 'object',
         properties: {
           type: {
             type: 'string',
             enum: [
               'RsaSignature2018', 'Ed25519Signature2018', 'EquihashProof2018'],
-            required: true
           }
         }
       }
@@ -250,27 +255,31 @@ const createOperation = {
 
 const updateOperation = {
   title: 'UpdateWebLedgerRecord',
-  required: true,
+  required: [
+    '@context',
+    'proof',
+    'recordPatch',
+    'type'
+  ],
   type: 'object',
   properties: {
     '@context': schemas.jsonldContext(constants.VERES_ONE_CONTEXT),
     type: {
       type: 'string',
       enum: ['UpdateWebLedgerRecord'],
-      required: true
     },
     recordPatch: didDocumentPatch,
     proof: {
       type: 'array',
       minItems: 2,
       items: {
+        required: ['type'],
         type: 'object',
         properties: {
           type: {
             type: 'string',
             enum: [
               'RsaSignature2018', 'Ed25519Signature2018', 'EquihashProof2018'],
-            required: true
           }
         }
       }
@@ -284,6 +293,5 @@ module.exports.didDocument = () => didDocument;
 module.exports.didDocumentPatch = () => didDocumentPatch;
 module.exports.operation = () => ({
   title: 'WebLedgerOperation',
-  required: true,
-  type: [createOperation, updateOperation]
+  oneOf: [createOperation, updateOperation]
 });
