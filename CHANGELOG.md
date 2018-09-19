@@ -1,5 +1,10 @@
 # veres-one-validator ChangeLog
 
+## 3.0.0 - 2018-09-19
+
+### Changed
+- Use bedrock-validation 3.x.
+
 ## 2.0.0 - 2018-09-19
 
 ### Changed
