@@ -15,12 +15,12 @@ describe('mustValidate API', () => {
       voValidator.mustValidate(
         operation, testConfig, {ledgerNode: mockData.ledgerNode},
         (err, result) => {
-        assertNoError(err);
-        should.exist(result);
-        result.should.be.a('boolean');
-        result.should.be.true;
-        done();
-      });
+          assertNoError(err);
+          should.exist(result);
+          result.should.be.a('boolean');
+          result.should.be.true;
+          done();
+        });
     });
     it('should return false on a WebLedgerConfiguration', done => {
       const ledgerConfiguration = mockData.ledgerConfigurations.alpha;
@@ -29,12 +29,12 @@ describe('mustValidate API', () => {
       voValidator.mustValidate(
         ledgerConfiguration, testConfig, {ledgerNode: mockData.ledgerNode},
         (err, result) => {
-        assertNoError(err);
-        should.exist(result);
-        result.should.be.a('boolean');
-        result.should.be.false;
-        done();
-      });
+          assertNoError(err);
+          should.exist(result);
+          result.should.be.a('boolean');
+          result.should.be.false;
+          done();
+        });
     });
   });
 });

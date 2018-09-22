@@ -94,7 +94,7 @@ describe('validate API', () => {
             })]
         }, done);
       });
-      it('validates an operation with two proper capabilities, no PoW', done => {
+      it('validates an operation w/two proper capabilities, no PoW', done => {
         async.auto({
           registerCapability: callback => didv1.attachInvocationProof({
             operation: mockData.operations.create,
@@ -114,7 +114,7 @@ describe('validate API', () => {
                 .capabilityInvocation[0].publicKey[0].id,
               privateKeyBase58: mockData.privateDidDocuments.alpha
                 .capabilityInvocation[0].publicKey[0]
-                  .privateKey.privateKeyBase58
+                .privateKey.privateKeyBase58
             }, callback)],
           check: ['authorizeCapability', (results, callback) =>
             voValidator.validate(
@@ -238,7 +238,7 @@ describe('validate API', () => {
             })]
         }, done);
       });
-      it.skip('validation fails if the capability invocation proof is not valid', done => {
+      it.skip('fails if the capability invocation proof is not valid', done => {
         async.auto({
           capability: callback => didv1.attachInvocationProof({
             operation: mockData.operations.create,
@@ -283,7 +283,7 @@ describe('validate API', () => {
             })]
         }, done);
       });
-      it.skip('validation fails if incorrect Equihash params were used', done => {
+      it.skip('fails if incorrect Equihash params were used', done => {
         async.auto({
           capability: callback => didv1.attachInvocationProof({
             operation: mockData.operations.create,
@@ -343,15 +343,15 @@ describe('validate API', () => {
           check: ['pow', (results, callback) => {
             delete results.pow['bogus:stuff'];
             voValidator.validate(
-            results.pow,
-            mockData.ledgerConfigurations.alpha.operationValidator[0],
-            {ledgerNode: mockData.ledgerNode},
-            err => {
-              should.exist(err);
-              err.name.should.equal('ValidationError');
-              should.exist(err.details.event);
-              callback();
-            });
+              results.pow,
+              mockData.ledgerConfigurations.alpha.operationValidator[0],
+              {ledgerNode: mockData.ledgerNode},
+              err => {
+                should.exist(err);
+                err.name.should.equal('ValidationError');
+                should.exist(err.details.event);
+                callback();
+              });
           }]
         }, done);
       });
@@ -360,7 +360,7 @@ describe('validate API', () => {
         operation.type = 'UnknownOperation';
         async.auto({
           capability: callback => didv1.attachInvocationProof({
-            operation: operation,
+            operation,
             capability: operation,
             capabilityAction: capabilityActions.register,
             creator: mockData.didDocuments.alpha
@@ -392,12 +392,12 @@ describe('validate API', () => {
             })]
         }, done);
       });
-      it('validation fails if `record.id` is not a valid veres one DID', done => {
+      it('fails if `record.id` is not a valid veres one DID', done => {
         const operation = bedrock.util.clone(mockData.operations.create);
         operation.record.id = 'bogus';
         async.auto({
           capability: callback => didv1.attachInvocationProof({
-            operation: operation,
+            operation,
             capability: operation,
             capabilityAction: capabilityActions.register,
             creator: mockData.didDocuments.alpha
@@ -429,7 +429,7 @@ describe('validate API', () => {
         operation.record.id = 'did:v1:test:nym:bogus';
         async.auto({
           capability: callback => didv1.attachInvocationProof({
-            operation: operation,
+            operation,
             capability: operation,
             capabilityAction: capabilityActions.register,
             creator: mockData.didDocuments.alpha
@@ -522,7 +522,7 @@ describe('validate API', () => {
             })]
         }, done);
       });
-      it('validates an operation with two proper capabilities, no PoW', done => {
+      it('operation with two proper capabilities, no PoW', done => {
         async.auto({
           registerCapability: callback => didv1.attachInvocationProof({
             operation: mockData.operations.update,
@@ -542,7 +542,7 @@ describe('validate API', () => {
                 .capabilityInvocation[0].publicKey[0].id,
               privateKeyBase58: mockData.privateDidDocuments.beta
                 .capabilityInvocation[0].publicKey[0]
-                  .privateKey.privateKeyBase58
+                .privateKey.privateKeyBase58
             }, callback)],
           check: ['authorizeCapability', (results, callback) =>
             voValidator.validate(
@@ -584,7 +584,7 @@ describe('validate API', () => {
             })]
         }, done);
       });
-      it('should fail to validate an operation with an invalid change', done => {
+      it('fails to validate an operation with an invalid change', done => {
         async.auto({
           capability: callback => didv1.attachInvocationProof({
             operation: mockData.operations.updateInvalidChange,

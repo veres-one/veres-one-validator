@@ -13,8 +13,8 @@ describe('validateConfiguration API', () => {
       mockData.ledgerConfigurations.alpha.operationValidator[0];
     voValidator.validateConfiguration(
       testConfig, {ledgerNode: mockData.ledgerNode}, err => {
-      assertNoError(err);
-      done();
-    });
+        assertNoError(err);
+        done();
+      });
   });
 });
