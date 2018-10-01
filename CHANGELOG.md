@@ -1,5 +1,10 @@
 # veres-one-validator ChangeLog
 
+## 4.0.0 - 2018-10-01
+
+### Changed
+- **BREAKING**: Switch to a Promise based API.
+
 ## 3.0.0 - 2018-09-19
 
 ### Changed
