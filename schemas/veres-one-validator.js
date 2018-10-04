@@ -78,7 +78,7 @@ const didDocument = {
   ],
   type: 'object',
   properties: {
-    '@context': schemas.jsonldContext(constants.VERES_ONE_CONTEXT),
+    '@context': schemas.jsonldContext(constants.VERES_ONE_CONTEXT_URL),
     id: did(),
     // FIXME: be more specific with restrictions for all properties below
     invocationTarget: {
@@ -162,7 +162,38 @@ const didDocument = {
             type: 'string',
           }
         }
-      },
+      }
+    },
+    electorPool: {
+      type: 'array',
+      items: {
+        type: 'object',
+        required: [
+          'capability',
+          'id',
+          'type'
+        ],
+        properties: {
+          id: {
+            type: 'string'
+          },
+          type: {
+            oneOf: [{
+              type: 'string',
+              enum: ['Elector']
+            }, {
+              type: 'array',
+              items: {
+                type: 'string',
+                enum: ['Elector', 'RecoveryElector']
+              }
+            }]
+          },
+          capability: {
+            type: 'string'
+          }
+        }
+      }
     }
   },
   additionalProperties: false
@@ -215,7 +246,6 @@ const didDocumentPatch = {
   },
   additionalProperties: false
 };
-
 const createOperation = {
   title: 'CreateWebLedgerRecord',
   required: [
@@ -226,7 +256,7 @@ const createOperation = {
   ],
   type: 'object',
   properties: {
-    '@context': schemas.jsonldContext(constants.VERES_ONE_CONTEXT),
+    '@context': schemas.jsonldContext(constants.VERES_ONE_CONTEXT_URL),
     type: {
       type: 'string',
       enum: ['CreateWebLedgerRecord'],
@@ -263,7 +293,7 @@ const updateOperation = {
   ],
   type: 'object',
   properties: {
-    '@context': schemas.jsonldContext(constants.VERES_ONE_CONTEXT),
+    '@context': schemas.jsonldContext(constants.VERES_ONE_CONTEXT_URL),
     type: {
       type: 'string',
       enum: ['UpdateWebLedgerRecord'],

@@ -13,6 +13,7 @@
   "homepage": "https://github.com/digitalbazaar/veres-one-validator#readme",
   "dependencies": {
     "async": "^2.5.0",
+    "bedrock-ledger-context": "^2.0.0",
     "did-veres-one": "^2.0.0",
     "equihash-signature": "github:digitalbazaar/equihash-signature#master",
     "fast-json-patch": "^2.0.6",
