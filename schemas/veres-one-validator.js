@@ -178,7 +178,7 @@ const didDocument = {
             type: 'string'
           },
           type: {
-            oneOf: [{
+            anyOf: [{
               type: 'string',
               enum: ['Elector']
             }, {
