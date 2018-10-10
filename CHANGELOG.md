@@ -1,5 +1,7 @@
 # veres-one-validator ChangeLog
 
+## 5.0.0 - 2018-10-10
+
 ### Added
 - **BREAKING**: Add `bedrock-ledger-context` peer dependency.
 - Support for elector pool.
