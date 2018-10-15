@@ -18,15 +18,15 @@ const ldDocuments = mock.ldDocuments = {};
 
 mock.ledgerNode = {
   records: {
-    get({maxBlockHeight, recordId}, callback) {
+    async get({maxBlockHeight, recordId}) {
       if(recordId === didDocuments.beta.id) {
-        return callback(null, {
+        return {
           record: ldDocuments[didDocuments.beta.id],
           meta: {sequence: 0}
-        });
+        };
       }
-      callback(new BedrockError(
-        'DID Document not found.', 'NotFoundError', {recordId}));
+      throw new BedrockError(
+        'DID Document not found.', 'NotFoundError', {recordId});
     }
   }
 };

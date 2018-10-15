@@ -5,6 +5,7 @@
 
 const bedrock = require('bedrock');
 const async = require('async');
+const {callbackify} = require('util');
 const config = bedrock.config;
 const cfg = config['veres-one-validator'];
 const didv1 = require('did-veres-one');
@@ -24,6 +25,8 @@ const capabilityActions = {
   update: 'UpdateDidDocument'
 };
 
+const voValidate = callbackify(voValidator.validate);
+
 // TODO: add an extra identity that is an accelerator (separate from alpha
 // and beta)
 
@@ -40,15 +43,21 @@ describe('validate API', () => {
               .capabilityInvocation[0].publicKey[0].id,
             privateKeyBase58: mockData.privateDidDocuments.alpha
               .capabilityInvocation[0].publicKey[0].privateKey.privateKeyBase58
-          }, callback),
+          }, (err, result) => {
+            assertNoError(err);
+            callback(err, result);
+          }),
           pow: ['capability', (results, callback) => didv1.attachEquihashProof({
             operation: results.capability,
             parameters: {
               n: cfg.equihash.equihashParameterN,
               k: cfg.equihash.equihashParameterK
             }
-          }, callback)],
-          check: ['pow', (results, callback) => voValidator.validate(
+          }, (err, result) => {
+            assertNoError(err);
+            callback(err, result);
+          })],
+          check: ['pow', (results, callback) => voValidate(
             results.pow,
             mockData.ledgerConfigurations.alpha.operationValidator[0],
             {ledgerNode: mockData.ledgerNode},
@@ -56,7 +65,10 @@ describe('validate API', () => {
               assertNoError(err);
               callback();
             })]
-        }, done);
+        }, err => {
+          assertNoError(err);
+          done();
+        });
       });
       it('validates an operation with extra LD proof', done => {
         async.auto({
@@ -84,7 +96,7 @@ describe('validate API', () => {
               .authentication[0].publicKey[0].privateKey.privateKeyBase58,
             doc: results.pow
           }, callback)],
-          check: ['extraSign', (results, callback) => voValidator.validate(
+          check: ['extraSign', (results, callback) => voValidate(
             results.extraSign,
             mockData.ledgerConfigurations.alpha.operationValidator[0],
             {ledgerNode: mockData.ledgerNode},
@@ -116,15 +128,14 @@ describe('validate API', () => {
                 .capabilityInvocation[0].publicKey[0]
                 .privateKey.privateKeyBase58
             }, callback)],
-          check: ['authorizeCapability', (results, callback) =>
-            voValidator.validate(
-              results.authorizeCapability,
-              mockData.ledgerConfigurations.alpha.operationValidator[0],
-              {ledgerNode: mockData.ledgerNode},
-              err => {
-                assertNoError(err);
-                callback();
-              })]
+          check: ['authorizeCapability', (results, callback) => voValidate(
+            results.authorizeCapability,
+            mockData.ledgerConfigurations.alpha.operationValidator[0],
+            {ledgerNode: mockData.ledgerNode},
+            err => {
+              assertNoError(err);
+              callback();
+            })]
         }, done);
       });
       it('validation fails if Equihash proof is missing', done => {
@@ -138,7 +149,7 @@ describe('validate API', () => {
             privateKeyBase58: mockData.privateDidDocuments.alpha
               .capabilityInvocation[0].publicKey[0].privateKey.privateKeyBase58
           }, callback),
-          check: ['capability', (results, callback) => voValidator.validate(
+          check: ['capability', (results, callback) => voValidate(
             results.capability,
             mockData.ledgerConfigurations.alpha.operationValidator[0],
             {ledgerNode: mockData.ledgerNode},
@@ -167,7 +178,7 @@ describe('validate API', () => {
               .authentication[0].publicKey[0].privateKey.privateKeyBase58,
             doc: results.capability
           }, callback)],
-          check: ['extraSign', (results, callback) => voValidator.validate(
+          check: ['extraSign', (results, callback) => voValidate(
             results.extraSign,
             mockData.ledgerConfigurations.alpha.operationValidator[0],
             {ledgerNode: mockData.ledgerNode},
@@ -187,7 +198,7 @@ describe('validate API', () => {
               k: cfg.equihash.equihashParameterK
             }
           }, callback),
-          check: ['pow', (results, callback) => voValidator.validate(
+          check: ['pow', (results, callback) => voValidate(
             results.pow,
             mockData.ledgerConfigurations.alpha.operationValidator[0],
             {ledgerNode: mockData.ledgerNode},
@@ -218,7 +229,7 @@ describe('validate API', () => {
               k: cfg.equihash.equihashParameterK
             }
           }, callback)],
-          check: ['pow', (results, callback) => voValidator.validate(
+          check: ['pow', (results, callback) => voValidate(
             results.pow,
             mockData.ledgerConfigurations.alpha.operationValidator[0],
             {ledgerNode: mockData.ledgerNode},
@@ -262,7 +273,7 @@ describe('validate API', () => {
               k: cfg.equihash.equihashParameterK
             }
           }, callback)],
-          check: ['pow', (results, callback) => voValidator.validate(
+          check: ['pow', (results, callback) => voValidate(
             results.pow,
             mockData.ledgerConfigurations.alpha.operationValidator[0],
             {ledgerNode: mockData.ledgerNode},
@@ -302,7 +313,7 @@ describe('validate API', () => {
               k: 4
             }
           }, callback)],
-          check: ['pow', (results, callback) => voValidator.validate(
+          check: ['pow', (results, callback) => voValidate(
             results.pow,
             mockData.ledgerConfigurations.alpha.operationValidator[0],
             {ledgerNode: mockData.ledgerNode},
@@ -342,7 +353,7 @@ describe('validate API', () => {
           }, callback)],
           check: ['pow', (results, callback) => {
             delete results.pow['bogus:stuff'];
-            voValidator.validate(
+            voValidate(
               results.pow,
               mockData.ledgerConfigurations.alpha.operationValidator[0],
               {ledgerNode: mockData.ledgerNode},
@@ -375,7 +386,7 @@ describe('validate API', () => {
               k: cfg.equihash.equihashParameterK
             }
           }, callback)],
-          check: ['pow', (results, callback) => voValidator.validate(
+          check: ['pow', (results, callback) => voValidate(
             results.pow,
             mockData.ledgerConfigurations.alpha.operationValidator[0],
             {ledgerNode: mockData.ledgerNode},
@@ -412,7 +423,7 @@ describe('validate API', () => {
               k: cfg.equihash.equihashParameterK
             }
           }, callback)],
-          check: ['pow', (results, callback) => voValidator.validate(
+          check: ['pow', (results, callback) => voValidate(
             results.pow,
             mockData.ledgerConfigurations.alpha.operationValidator[0],
             {ledgerNode: mockData.ledgerNode},
@@ -444,7 +455,7 @@ describe('validate API', () => {
               k: cfg.equihash.equihashParameterK
             }
           }, callback)],
-          check: ['pow', (results, callback) => voValidator.validate(
+          check: ['pow', (results, callback) => voValidate(
             results.pow,
             mockData.ledgerConfigurations.alpha.operationValidator[0],
             {ledgerNode: mockData.ledgerNode},
@@ -476,7 +487,7 @@ describe('validate API', () => {
               k: cfg.equihash.equihashParameterK
             }
           }, callback)],
-          check: ['pow', (results, callback) => voValidator.validate(
+          check: ['pow', (results, callback) => voValidate(
             results.pow,
             mockData.ledgerConfigurations.alpha.operationValidator[0],
             {ledgerNode: mockData.ledgerNode},
@@ -512,7 +523,7 @@ describe('validate API', () => {
               .authentication[0].publicKey[0].privateKey.privateKeyBase58,
             doc: results.pow
           }, callback)],
-          check: ['extraSign', (results, callback) => voValidator.validate(
+          check: ['extraSign', (results, callback) => voValidate(
             results.extraSign,
             mockData.ledgerConfigurations.alpha.operationValidator[0],
             {ledgerNode: mockData.ledgerNode},
@@ -545,7 +556,7 @@ describe('validate API', () => {
                 .privateKey.privateKeyBase58
             }, callback)],
           check: ['authorizeCapability', (results, callback) =>
-            voValidator.validate(
+            voValidate(
               results.authorizeCapability,
               mockData.ledgerConfigurations.alpha.operationValidator[0],
               {ledgerNode: mockData.ledgerNode},
@@ -573,7 +584,7 @@ describe('validate API', () => {
               k: cfg.equihash.equihashParameterK
             }
           }, callback)],
-          check: ['pow', (results, callback) => voValidator.validate(
+          check: ['pow', (results, callback) => voValidate(
             results.pow,
             mockData.ledgerConfigurations.alpha.operationValidator[0],
             {ledgerNode: mockData.ledgerNode},
@@ -602,7 +613,7 @@ describe('validate API', () => {
               k: cfg.equihash.equihashParameterK
             }
           }, callback)],
-          check: ['pow', (results, callback) => voValidator.validate(
+          check: ['pow', (results, callback) => voValidate(
             results.pow,
             mockData.ledgerConfigurations.alpha.operationValidator[0],
             {ledgerNode: mockData.ledgerNode},

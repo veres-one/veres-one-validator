@@ -3,8 +3,11 @@
  */
 'use strict';
 
+const {callbackify} = require('util');
 const voValidator = require('veres-one-validator');
 const mockData = require('./mock.data');
+
+const voMustValidate = callbackify(voValidator.mustValidate);
 
 describe('mustValidate API', () => {
   describe('operationValidator', () => {
@@ -12,7 +15,7 @@ describe('mustValidate API', () => {
       const operation = mockData.operations.create;
       const testConfig =
         mockData.ledgerConfigurations.alpha.operationValidator[0];
-      voValidator.mustValidate(
+      voMustValidate(
         operation, testConfig, {ledgerNode: mockData.ledgerNode},
         (err, result) => {
           assertNoError(err);
@@ -26,7 +29,7 @@ describe('mustValidate API', () => {
       const ledgerConfiguration = mockData.ledgerConfigurations.alpha;
       const testConfig =
         mockData.ledgerConfigurations.alpha.operationValidator[0];
-      voValidator.mustValidate(
+      voMustValidate(
         ledgerConfiguration, testConfig, {ledgerNode: mockData.ledgerNode},
         (err, result) => {
           assertNoError(err);
