@@ -19,6 +19,7 @@
     "bedrock-test": "^2.0.0",
     "bedrock-validation": "^3.1.0",
     "bedrock-veres-one-context": "^2.0.0",
+    "did-io": "digitalbazaar/did-io#development",
     "equihash-signature": "digitalbazaar/equihash-signature#master",
     "grunt": "^1.0.1",
     "jsonld-signatures": "^2.1.4",

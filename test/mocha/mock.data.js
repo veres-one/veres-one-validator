@@ -4,6 +4,7 @@
 'use strict';
 
 const bedrock = require('bedrock');
+const {constants} = bedrock.config;
 const BedrockError = bedrock.util.BedrockError;
 
 const mock = {};
@@ -32,7 +33,7 @@ mock.ledgerNode = {
 };
 
 privateDidDocuments.alpha = {
-  "@context": "https://w3id.org/veres-one/v1",
+  "@context": constants.VERES_ONE_CONTEXT_URL,
   "id": "did:v1:test:nym:z279tjfMvfjqHvkuqXbFFTB5hqWpWNLfAptnQvUFiRFebJgL",
   "authentication": [
     {
@@ -85,7 +86,7 @@ privateDidDocuments.alpha = {
 };
 
 privateDidDocuments.beta = {
-  "@context": "https://w3id.org/veres-one/v1",
+  "@context": constants.VERES_ONE_CONTEXT_URL,
   "id": "did:v1:test:nym:z279nCCZVzxreYfLw3EtFLtBMSVVY2pA6uxKengriMCdG3DF",
   "authentication": [
     {
@@ -155,7 +156,7 @@ mock.authorizedSigners = {
 };
 
 ledgerConfigurations.alpha = {
-  '@context': 'https://w3id.org/webledger/v1',
+  '@context': constants.WEB_LEDGER_CONTEXT_V1_URL,
   type: 'WebLedgerConfiguration',
   ledger: 'did:v1:c02915fc-672d-4568-8e6e-b12a0b35cbb3',
   consensusMethod: 'UnilateralConsensus2017',
@@ -180,16 +181,22 @@ ledgerConfigurations.alpha = {
 };
 
 operations.create = {
-  '@context': 'https://w3id.org/webledger/v1',
+  '@context': constants.WEB_LEDGER_CONTEXT_V1_URL,
+  type: 'CreateWebLedgerRecord',
+  record: didDocuments.alpha
+};
+
+operations.createElectorPool = {
+  '@context': constants.WEB_LEDGER_CONTEXT_V1_URL,
   type: 'CreateWebLedgerRecord',
   record: didDocuments.alpha
 };
 
 operations.update = {
-  '@context': 'https://w3id.org/webledger/v1',
+  '@context': constants.WEB_LEDGER_CONTEXT_V1_URL,
   type: 'UpdateWebLedgerRecord',
   recordPatch: {
-    '@context': 'https://w3id.org/veres-one/v1',
+    '@context': constants.VERES_ONE_CONTEXT_URL,
     target: didDocuments.beta.id,
     sequence: 0,
     patch: [{
@@ -209,10 +216,10 @@ operations.update = {
 };
 
 operations.updateInvalidPatch = {
-  '@context': 'https://w3id.org/webledger/v1',
+  '@context': constants.WEB_LEDGER_CONTEXT_V1_URL,
   type: 'UpdateWebLedgerRecord',
   recordPatch: {
-    '@context': 'https://w3id.org/veres-one/v1',
+    '@context': constants.VERES_ONE_CONTEXT_URL,
     target: didDocuments.beta.id,
     sequence: 0,
     patch: [{
@@ -222,10 +229,10 @@ operations.updateInvalidPatch = {
 };
 
 operations.updateInvalidChange = {
-  '@context': 'https://w3id.org/webledger/v1',
+  '@context': constants.WEB_LEDGER_CONTEXT_V1_URL,
   type: 'UpdateWebLedgerRecord',
   recordPatch: {
-    '@context': 'https://w3id.org/veres-one/v1',
+    '@context': constants.VERES_ONE_CONTEXT_URL,
     target: didDocuments.beta.id,
     sequence: 0,
     patch: [{
@@ -243,26 +250,26 @@ capabilities.authorizeRequest =
 ldDocuments[didDocuments.alpha.id] = didDocuments.alpha;
 ldDocuments[didDocuments.alpha.capabilityDelegation[0].publicKey.id] =
   Object.assign({
-    "@context": "https://w3id.org/security/v2"
+    "@context": constants.SECURITY_CONTEXT_V2_URL
   }, didDocuments.alpha.capabilityDelegation[0].publicKey);
 ldDocuments[didDocuments.alpha.capabilityInvocation[0].publicKey.id] =
   Object.assign({
-    "@context": "https://w3id.org/security/v2"
+    "@context": constants.SECURITY_CONTEXT_V2_URL
   }, didDocuments.alpha.capabilityInvocation[0].publicKey);
 
 // beta
 ldDocuments[didDocuments.beta.id] = didDocuments.beta;
 ldDocuments[didDocuments.beta.capabilityDelegation[0].publicKey.id] =
   Object.assign({
-    "@context": "https://w3id.org/security/v2"
+    "@context": constants.SECURITY_CONTEXT_V2_URL
   }, didDocuments.beta.capabilityDelegation[0].publicKey);
 ldDocuments[didDocuments.beta.capabilityInvocation[0].publicKey.id] =
   Object.assign({
-    "@context": "https://w3id.org/security/v2"
+    "@context": constants.SECURITY_CONTEXT_V2_URL
   }, didDocuments.beta.capabilityInvocation[0].publicKey);
 
 ldDocuments[capabilities.authorizeRequest] = {
-  "@context": "https://w3id.org/security/v2",
+  "@context": constants.SECURITY_CONTEXT_V2_URL,
   "id": capabilities.authorizeRequest,
   // TODO: add capability properties and improve verification testing
 };
