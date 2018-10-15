@@ -3,7 +3,6 @@
  */
 const bedrock = require('bedrock');
 require('veres-one-validator');
-require('veres-one-context');
 
 require('bedrock-test');
 bedrock.start();
