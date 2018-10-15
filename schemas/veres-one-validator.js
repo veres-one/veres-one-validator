@@ -323,5 +323,5 @@ module.exports.didDocument = () => didDocument;
 module.exports.didDocumentPatch = () => didDocumentPatch;
 module.exports.operation = () => ({
   title: 'WebLedgerOperation',
-  oneOf: [createOperation, updateOperation]
+  anyOf: [createOperation, updateOperation]
 });
