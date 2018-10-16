@@ -6,6 +6,18 @@
 const {constants} = require('bedrock').config;
 const {schemas} = require('bedrock-validation');
 const did = require('./did');
+const urnUuid = require('./urn-uuid');
+
+// TODO: additional validation `caveat`? allowing additional properties now
+const capability = {
+  type: 'object',
+  required: [
+    'id'
+  ],
+  properties: {
+    id: did(),
+  }
+};
 
 const config = {
   title: 'Veres One Validator Config',
@@ -164,37 +176,6 @@ const didDocument = {
         }
       }
     },
-    electorPool: {
-      type: 'array',
-      items: {
-        type: 'object',
-        required: [
-          'capability',
-          'id',
-          'type'
-        ],
-        properties: {
-          id: {
-            type: 'string'
-          },
-          type: {
-            anyOf: [{
-              type: 'string',
-              enum: ['Elector']
-            }, {
-              type: 'array',
-              items: {
-                type: 'string',
-                enum: ['Elector', 'RecoveryElector']
-              }
-            }]
-          },
-          capability: {
-            type: 'string'
-          }
-        }
-      }
-    }
   },
   additionalProperties: false
 };
@@ -246,8 +227,59 @@ const didDocumentPatch = {
   },
   additionalProperties: false
 };
-const createOperation = {
-  title: 'CreateWebLedgerRecord',
+
+const electorPoolDocument = {
+  title: 'ElectorPool Document',
+  required: [
+    // '@context',
+    'id',
+    'electorPool',
+  ],
+  type: 'object',
+  properties: {
+    '@context': schemas.jsonldContext(constants.VERES_ONE_CONTEXT_URL),
+    id: urnUuid(),
+    electorPool: {
+      type: 'array',
+      items: {
+        type: 'object',
+        required: [
+          'capability',
+          'elector',
+          'id',
+          'service',
+          'type',
+        ],
+        properties: {
+          elector: did(),
+          id: urnUuid(),
+          service: urnUuid(),
+          type: {
+            anyOf: [{
+              type: 'string',
+              enum: ['Elector']
+            }, {
+              type: 'array',
+              items: {
+                type: 'string',
+                enum: ['Elector', 'RecoveryElector']
+              }
+            }]
+          },
+          capability: {
+            type: 'array',
+            minItems: 1,
+            items: capability
+          }
+        }
+      }
+    },
+  },
+  additionalProperties: false,
+};
+
+const createDid = {
+  title: 'Create DID',
   required: [
     '@context',
     'proof',
@@ -283,8 +315,45 @@ const createOperation = {
   additionalProperties: false
 };
 
-const updateOperation = {
-  title: 'UpdateWebLedgerRecord',
+const createElectorPool = {
+  title: 'Create ElectorPool',
+  required: [
+    '@context',
+    'proof',
+    'record',
+    'type',
+  ],
+  type: 'object',
+  properties: {
+    '@context': schemas.jsonldContext(constants.VERES_ONE_CONTEXT_URL),
+    type: {
+      type: 'string',
+      enum: ['CreateWebLedgerRecord'],
+    },
+    record: electorPoolDocument,
+    proof: {
+      type: 'array',
+      minItems: 2,
+      items: {
+        required: [
+          'type'
+        ],
+        type: 'object',
+        properties: {
+          type: {
+            type: 'string',
+            enum: [
+              'RsaSignature2018', 'Ed25519Signature2018'],
+          }
+        }
+      }
+    }
+  },
+  additionalProperties: false
+};
+
+const updateDid = {
+  title: 'Update DID',
   required: [
     '@context',
     'proof',
@@ -318,10 +387,12 @@ const updateOperation = {
   additionalProperties: false
 };
 
+const updateElectorPool = {};
+
 module.exports.config = () => config;
 module.exports.didDocument = () => didDocument;
 module.exports.didDocumentPatch = () => didDocumentPatch;
 module.exports.operation = () => ({
   title: 'WebLedgerOperation',
-  anyOf: [createOperation, updateOperation]
+  anyOf: [/*createDid, updateDid, */createElectorPool/*, updateElectorPool*/]
 });

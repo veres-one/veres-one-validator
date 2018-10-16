@@ -5,17 +5,18 @@
 
 const bedrock = require('bedrock');
 const {constants} = bedrock.config;
-const BedrockError = bedrock.util.BedrockError;
+const {BedrockError} = bedrock.util;
 
 const mock = {};
 module.exports = mock;
 
+const capabilities = mock.capabilities = {};
+const didDocuments = mock.didDocuments = {};
+const electorPoolDocument = mock.electorPoolDocument = {};
+const ldDocuments = mock.ldDocuments = {};
 const ledgerConfigurations = mock.ledgerConfigurations = {};
 const operations = mock.operations = {};
-const didDocuments = mock.didDocuments = {};
 const privateDidDocuments = mock.privateDidDocuments = {};
-const capabilities = mock.capabilities = {};
-const ldDocuments = mock.ldDocuments = {};
 
 mock.ledgerNode = {
   records: {
@@ -30,6 +31,26 @@ mock.ledgerNode = {
         'DID Document not found.', 'NotFoundError', {recordId});
     }
   }
+};
+
+electorPoolDocument.alpha = {
+  '@context': constants.VERES_ONE_CONTEXT_URL,
+  id: 'urn:uuid:b3275fed-daf4-4c07-b63a-747fa8857609',
+  // FIXME: this has to be in the v1 context before we can sign documents
+  // veresOneTicketRate: 10, /* TBD */
+  electorPool: [{
+    id: 'urn:uuid:89a62413-0ada-461b-b672-1b28afefaca8',
+    elector: 'did:v1:nym:50f28192-8f52-4bf2-a9b1-d203f6611456',
+    service: 'urn:uuid:50f28192-8f52-4bf2-a9b1-d203f6611456',
+    // other restrictions/capabilities like guarantor, recovery,
+    // or ocap w/ticket caveat
+    capability: [{
+      id: '<id of ocap, e.g. on Veres One, a `did:v1:uuid`>',
+      caveat: [{
+        type: 'VeresOneElectorTicketAgent' /* TBD */
+      }]
+    }]
+  }]
 };
 
 privateDidDocuments.alpha = {
