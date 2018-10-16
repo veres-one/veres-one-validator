@@ -45,7 +45,7 @@ electorPoolDocument.alpha = {
     // other restrictions/capabilities like guarantor, recovery,
     // or ocap w/ticket caveat
     capability: [{
-      id: '<id of ocap, e.g. on Veres One, a `did:v1:uuid`>',
+      id: '<id of ocap, e.g. on Veres One, a `did:v1:uuid`>', // maintainers DID
       caveat: [{
         type: 'VeresOneElectorTicketAgent' /* TBD */
       }]

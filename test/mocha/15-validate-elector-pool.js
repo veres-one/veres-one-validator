@@ -18,6 +18,8 @@ equihashSigs.install(jsigs);
 didv1.use('jsonld', bedrock.jsonld);
 didv1.use('jsonld-signatures', jsigs);
 
+dids.use('jsonld', bedrock.jsonld);
+
 const ldDocuments = new Map();
 
 const ledgerNode = {
