@@ -89,16 +89,18 @@ describe('validate API ElectorPool', () => {
           creator,
           privateKeyBase58
         });
-        // console.log('OOOOOOO', JSON.stringify(operation, null, 2));
+        let err;
         try {
-          const r = await voValidator.validate(
+          await voValidator.validate(
             operation,
             mockData.ledgerConfigurations.alpha.operationValidator[0],
             {ledgerNode});
         } catch(e) {
-          assertNoError(e);
+          err = e;
         }
+        assertNoError(err);
       });
+      it('fails fails to validate an operation without proper proofs');
     });
   });
 });
