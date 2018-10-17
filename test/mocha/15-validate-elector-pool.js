@@ -45,31 +45,34 @@ const capabilityActions = {
   update: 'UpdateDidDocument'
 };
 
-let maintainerDid;
+let maintainerDidFull;
 const v1 = dids.methods.veres();
 describe.only('validate API ElectorPool', () => {
   describe('operationValidator', () => {
     describe('create electorPool operation', () => {
       before(async () => {
-        maintainerDid = await v1.generate();
-        const {doc: maintainerDidDocument} = maintainerDid;
+        maintainerDidFull = await v1.generate();
+        const {doc: maintainerDidDocument} = maintainerDidFull;
         ldDocuments.set(maintainerDidDocument.id, maintainerDidDocument);
       });
       it('validates an operation with proper proof', async () => {
+        const maintainerDid = maintainerDidFull.doc.id;
         const electorPoolDoc = bedrock.util.clone(
           mockData.electorPoolDocument.alpha);
+        electorPoolDoc.electorPool[0].capability[0].id = maintainerDid;
+        electorPoolDoc.electorPool[0].capability[0].invocationTarget = 'xyz';
+        electorPoolDoc.invoker = maintainerDid;
         let operation = v1.client.wrap({didDocument: electorPoolDoc});
-        const invokePublicKey = maintainerDid.doc.capabilityInvocation[0]
+        const invokePublicKey = maintainerDidFull.doc.capabilityInvocation[0]
           .publicKey[0];
         const creator = invokePublicKey.id;
-        console.log('CCCCCCC', creator);
-        console.log('KKKKKK', maintainerDid.keys);
         const {privateKey: privateKeyBase58} =
-          maintainerDid.keys[invokePublicKey.id];
+          maintainerDidFull.keys[invokePublicKey.id];
+
         operation = await v1.attachInvocationProof({
           algorithm: 'Ed25519Signature2018',
           operation,
-          capability: electorPoolDoc.id,
+          capability: maintainerDid,
           // capabilityAction: operation.type,
           capabilityAction: 'RegisterDid',
           creator,
@@ -78,7 +81,7 @@ describe.only('validate API ElectorPool', () => {
         operation = await v1.attachInvocationProof({
           algorithm: 'Ed25519Signature2018',
           operation,
-          capability: electorPoolDoc.id,
+          capability: maintainerDid,
           // capabilityAction: operation.type,
           capabilityAction: 'AuthorizeRequest',
           creator,

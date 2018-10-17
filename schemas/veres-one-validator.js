@@ -8,15 +8,41 @@ const {schemas} = require('bedrock-validation');
 const did = require('./did');
 const urnUuid = require('./urn-uuid');
 
-// TODO: additional validation `caveat`? allowing additional properties now
+const caveat = {
+  additionalProperties: false,
+  required: [
+    'type'
+  ],
+  type: 'object',
+  properties: {
+    type: {
+      type: 'string',
+      // FIXME: enable when term is finalized
+      // enum: ['VeresOneElectorTicketAgent']
+    }
+  }
+};
+
 const capability = {
+  additionalProperties: false,
   type: 'object',
   required: [
-    'id'
+    'caveat',
+    'id',
+    'invocationTarget',
   ],
   properties: {
+    caveat: {
+      type: 'array',
+      minItems: 1,
+      items: caveat,
+    },
     id: did(),
-  }
+    invocationTarget: {
+      // FIXME: more specific pattern?
+      type: 'string',
+    }
+  },
 };
 
 const config = {
@@ -234,11 +260,13 @@ const electorPoolDocument = {
     // '@context',
     'id',
     'electorPool',
+    'invoker'
   ],
   type: 'object',
   properties: {
     '@context': schemas.jsonldContext(constants.VERES_ONE_CONTEXT_URL),
     id: urnUuid(),
+    invoker: did(),
     electorPool: {
       type: 'array',
       items: {
@@ -248,12 +276,14 @@ const electorPoolDocument = {
           'elector',
           'id',
           'service',
-          'type',
+          // FIXME: is type required?
+          // 'type',
         ],
         properties: {
           elector: did(),
           id: urnUuid(),
           service: urnUuid(),
+          // FIXME: is type required?
           type: {
             anyOf: [{
               type: 'string',
@@ -325,7 +355,7 @@ const createElectorPool = {
   ],
   type: 'object',
   properties: {
-    '@context': schemas.jsonldContext(constants.VERES_ONE_CONTEXT_URL),
+    '@context': schemas.jsonldContext(constants.WEB_LEDGER_CONTEXT_V1_URL),
     type: {
       type: 'string',
       enum: ['CreateWebLedgerRecord'],
@@ -394,5 +424,5 @@ module.exports.didDocument = () => didDocument;
 module.exports.didDocumentPatch = () => didDocumentPatch;
 module.exports.operation = () => ({
   title: 'WebLedgerOperation',
-  anyOf: [/*createDid, updateDid, */createElectorPool/*, updateElectorPool*/]
+  anyOf: [createDid, updateDid, createElectorPool/*, updateElectorPool*/]
 });
