@@ -257,7 +257,7 @@ const didDocumentPatch = {
 const electorPoolDocument = {
   title: 'ElectorPool Document',
   required: [
-    // '@context',
+    '@context',
     'id',
     'electorPool',
     'invoker'
