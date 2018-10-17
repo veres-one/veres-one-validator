@@ -60,7 +60,9 @@ describe.only('validate API ElectorPool', () => {
         const electorPoolDoc = bedrock.util.clone(
           mockData.electorPoolDocument.alpha);
         electorPoolDoc.electorPool[0].capability[0].id = maintainerDid;
-        electorPoolDoc.electorPool[0].capability[0].invocationTarget = 'xyz';
+        // the invocationTarget is the ledger ID
+        electorPoolDoc.electorPool[0].capability[0].invocationTarget =
+          'urn:uuid:e9e63a07-15b1-4e8f-b725-a71a362cfd99';
         electorPoolDoc.invoker = maintainerDid;
         let operation = v1.client.wrap({didDocument: electorPoolDoc});
         const invokePublicKey = maintainerDidFull.doc.capabilityInvocation[0]
