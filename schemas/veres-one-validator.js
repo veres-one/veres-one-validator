@@ -209,12 +209,14 @@ const didDocument = {
 const didDocumentPatch = {
   title: 'DID Document Patch',
   required: [
+    '@context',
     'patch',
     'sequence',
     'target'
   ],
   type: 'object',
   properties: {
+    '@context': schemas.jsonldContext(constants.VERES_ONE_CONTEXT_URL),
     target: did(),
     // FIXME: also support `frame` property later
     patch: {
@@ -318,7 +320,7 @@ const createDid = {
   ],
   type: 'object',
   properties: {
-    '@context': schemas.jsonldContext(constants.VERES_ONE_CONTEXT_URL),
+    '@context': schemas.jsonldContext(constants.WEB_LEDGER_CONTEXT_V1_URL),
     type: {
       type: 'string',
       enum: ['CreateWebLedgerRecord'],
@@ -392,7 +394,7 @@ const updateDid = {
   ],
   type: 'object',
   properties: {
-    '@context': schemas.jsonldContext(constants.VERES_ONE_CONTEXT_URL),
+    '@context': schemas.jsonldContext(constants.WEB_LEDGER_CONTEXT_V1_URL),
     type: {
       type: 'string',
       enum: ['UpdateWebLedgerRecord'],

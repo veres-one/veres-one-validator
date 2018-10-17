@@ -47,7 +47,7 @@ const capabilityActions = {
 
 let maintainerDidFull;
 const v1 = dids.methods.veres();
-describe.only('validate API ElectorPool', () => {
+describe('validate API ElectorPool', () => {
   describe('operationValidator', () => {
     describe('create electorPool operation', () => {
       before(async () => {
@@ -89,7 +89,7 @@ describe.only('validate API ElectorPool', () => {
           creator,
           privateKeyBase58
         });
-        console.log('OOOOOOO', JSON.stringify(operation, null, 2));
+        // console.log('OOOOOOO', JSON.stringify(operation, null, 2));
         try {
           const r = await voValidator.validate(
             operation,
