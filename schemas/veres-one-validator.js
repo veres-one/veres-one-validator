@@ -109,6 +109,27 @@ const publicKey = {
   additionalProperties: false
 };
 
+const service = {
+  required: [
+    'id',
+    'serviceEndpoint',
+    'type',
+  ],
+  type: 'object',
+  properties: {
+    id: urnUuid(),
+    type: {
+      type: 'string',
+      // FIXME: this value is TBD
+      enum: ['Continuity2017Peer'],
+    },
+    serviceEndpoint: {
+      // TODO: can this be improved? pattern starting with https://?
+      type: 'string',
+    }
+  }
+};
+
 const didDocument = {
   title: 'DID Document',
   required: [
@@ -182,25 +203,7 @@ const didDocument = {
     service: {
       type: 'array',
       minItems: 1,
-      items: {
-        required: [
-          'id',
-          'serviceEndpoint',
-          'type',
-        ],
-        type: 'object',
-        properties: {
-          id: {
-            type: 'string',
-          },
-          type: {
-            type: 'string',
-          },
-          serviceEndpoint: {
-            type: 'string',
-          }
-        }
-      }
+      items: service,
     },
   },
   additionalProperties: false
@@ -284,7 +287,9 @@ const electorPoolDocument = {
         properties: {
           elector: did(),
           id: urnUuid(),
-          service: urnUuid(),
+          service: {
+            anyOf: [service, urnUuid()]
+          },
           // FIXME: is type required?
           type: {
             anyOf: [{
