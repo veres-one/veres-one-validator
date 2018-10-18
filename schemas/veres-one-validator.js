@@ -220,7 +220,9 @@ const didDocumentPatch = {
   type: 'object',
   properties: {
     '@context': schemas.jsonldContext(constants.VERES_ONE_CONTEXT_URL),
-    target: did(),
+    target: {
+      anyOf: [did(), urnUuid()],
+    },
     // FIXME: also support `frame` property later
     patch: {
       type: 'array',
@@ -424,12 +426,10 @@ const updateDid = {
   additionalProperties: false
 };
 
-const updateElectorPool = {};
-
 module.exports.config = () => config;
 module.exports.didDocument = () => didDocument;
 module.exports.didDocumentPatch = () => didDocumentPatch;
 module.exports.operation = () => ({
   title: 'WebLedgerOperation',
-  anyOf: [createDid, updateDid, createElectorPool/*, updateElectorPool*/]
+  anyOf: [createDid, updateDid, createElectorPool]
 });
