@@ -3,21 +3,20 @@
  */
 'use strict';
 
-const {callbackify} = require('util');
 const voValidator = require('veres-one-validator');
 
 const mockData = require('./mock.data');
 
-const voValidateConfiguration = callbackify(voValidator.validateConfiguration);
-
 describe('validateConfiguration API', () => {
-  it('validates a proper config', done => {
-    const testConfig =
+  it('validates a proper config', async () => {
+    const validatorConfig =
       mockData.ledgerConfigurations.alpha.operationValidator[0];
-    voValidateConfiguration(
-      testConfig, {ledgerNode: mockData.ledgerNode}, err => {
-        assertNoError(err);
-        done();
-      });
+    let err;
+    try {
+      await voValidator.validateConfiguration({validatorConfig});
+    } catch(e) {
+      err = e;
+    }
+    assertNoError(err);
   });
 });

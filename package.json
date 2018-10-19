@@ -16,7 +16,8 @@
     "did-veres-one": "^2.0.0",
     "equihash-signature": "github:digitalbazaar/equihash-signature#master",
     "fast-json-patch": "^2.0.6",
-    "jsonld-signatures": "^2.1.4"
+    "jsonld-signatures": "^2.1.4",
+    "lodash": "^4.17.11"    
   },
   "peerDependencies": {
     "bedrock": "^1.12.0",

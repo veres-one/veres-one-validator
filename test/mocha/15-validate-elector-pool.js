@@ -4,8 +4,6 @@
 'use strict';
 
 const bedrock = require('bedrock');
-const config = bedrock.config;
-const cfg = config['veres-one-validator'];
 const didv1 = require('did-veres-one');
 const dids = require('did-io');
 const voValidator = require('veres-one-validator');
@@ -89,12 +87,22 @@ describe('validate API ElectorPool', () => {
           creator,
           privateKeyBase58
         });
+        const ledgerConfig = bedrock.util.clone(
+          mockData.ledgerConfigurations.alpha);
+        ledgerConfig.electorSelectionMethod = {
+          type: 'VeresOne',
+          // corresponds to electorPoolDocument.alpha
+          electorPool: electorPoolDoc.id,
+        };
         let err;
         try {
-          await voValidator.validate(
-            operation,
-            mockData.ledgerConfigurations.alpha.operationValidator[0],
-            {ledgerNode});
+          await voValidator.validate({
+            ledgerConfig,
+            ledgerNode,
+            validatorInput: operation,
+            validatorConfig: mockData.ledgerConfigurations.alpha
+              .operationValidator[0]
+          });
         } catch(e) {
           err = e;
         }

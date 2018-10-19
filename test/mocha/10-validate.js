@@ -57,14 +57,15 @@ describe('validate API', () => {
             assertNoError(err);
             callback(err, result);
           })],
-          check: ['pow', (results, callback) => voValidate(
-            results.pow,
-            mockData.ledgerConfigurations.alpha.operationValidator[0],
-            {ledgerNode: mockData.ledgerNode},
-            err => {
-              assertNoError(err);
-              callback();
-            })]
+          check: ['pow', (results, callback) => voValidate({
+            ledgerNode: mockData.ledgerNode,
+            validatorInput: results.pow,
+            validatorConfig: mockData.ledgerConfigurations.alpha
+              .operationValidator[0],
+          }, err => {
+            assertNoError(err);
+            callback();
+          })]
         }, err => {
           assertNoError(err);
           done();
@@ -96,14 +97,15 @@ describe('validate API', () => {
               .authentication[0].publicKey[0].privateKey.privateKeyBase58,
             doc: results.pow
           }, callback)],
-          check: ['extraSign', (results, callback) => voValidate(
-            results.extraSign,
-            mockData.ledgerConfigurations.alpha.operationValidator[0],
-            {ledgerNode: mockData.ledgerNode},
-            err => {
-              assertNoError(err);
-              callback();
-            })]
+          check: ['extraSign', (results, callback) => voValidate({
+            ledgerNode: mockData.ledgerNode,
+            validatorInput: results.extraSign,
+            validatorConfig: mockData.ledgerConfigurations.alpha
+              .operationValidator[0],
+          }, err => {
+            assertNoError(err);
+            callback();
+          })]
         }, done);
       });
       it('validates an operation w/two proper capabilities, no PoW', done => {
@@ -128,14 +130,15 @@ describe('validate API', () => {
                 .capabilityInvocation[0].publicKey[0]
                 .privateKey.privateKeyBase58
             }, callback)],
-          check: ['authorizeCapability', (results, callback) => voValidate(
-            results.authorizeCapability,
-            mockData.ledgerConfigurations.alpha.operationValidator[0],
-            {ledgerNode: mockData.ledgerNode},
-            err => {
-              assertNoError(err);
-              callback();
-            })]
+          check: ['authorizeCapability', (results, callback) => voValidate({
+            ledgerNode: mockData.ledgerNode,
+            validatorInput: results.authorizeCapability,
+            validatorConfig: mockData.ledgerConfigurations.alpha
+              .operationValidator[0],
+          }, err => {
+            assertNoError(err);
+            callback();
+          })]
         }, done);
       });
       it('validation fails if Equihash proof is missing', done => {
@@ -149,15 +152,16 @@ describe('validate API', () => {
             privateKeyBase58: mockData.privateDidDocuments.alpha
               .capabilityInvocation[0].publicKey[0].privateKey.privateKeyBase58
           }, callback),
-          check: ['capability', (results, callback) => voValidate(
-            results.capability,
-            mockData.ledgerConfigurations.alpha.operationValidator[0],
-            {ledgerNode: mockData.ledgerNode},
-            err => {
-              should.exist(err);
-              err.name.should.equal('ValidationError');
-              callback();
-            })]
+          check: ['capability', (results, callback) => voValidate({
+            ledgerNode: mockData.ledgerNode,
+            validatorInput: results.capability,
+            validatorConfig: mockData.ledgerConfigurations.alpha
+              .operationValidator[0],
+          }, err => {
+            should.exist(err);
+            err.name.should.equal('ValidationError');
+            callback();
+          })]
         }, done);
       });
       it('validation fails if capability invocation proof and extra LD ' +
@@ -178,15 +182,16 @@ describe('validate API', () => {
               .authentication[0].publicKey[0].privateKey.privateKeyBase58,
             doc: results.capability
           }, callback)],
-          check: ['extraSign', (results, callback) => voValidate(
-            results.extraSign,
-            mockData.ledgerConfigurations.alpha.operationValidator[0],
-            {ledgerNode: mockData.ledgerNode},
-            err => {
-              should.exist(err);
-              err.name.should.equal('PermissionDenied');
-              callback();
-            })]
+          check: ['extraSign', (results, callback) => voValidate({
+            ledgerNode: mockData.ledgerNode,
+            validatorInput: results.extraSign,
+            validatorConfig: mockData.ledgerConfigurations.alpha
+              .operationValidator[0],
+          }, err => {
+            should.exist(err);
+            err.name.should.equal('PermissionDenied');
+            callback();
+          })]
         }, done);
       });
       it('validation fails if capability invocation proof is missing', done => {
@@ -198,15 +203,16 @@ describe('validate API', () => {
               k: cfg.equihash.equihashParameterK
             }
           }, callback),
-          check: ['pow', (results, callback) => voValidate(
-            results.pow,
-            mockData.ledgerConfigurations.alpha.operationValidator[0],
-            {ledgerNode: mockData.ledgerNode},
-            err => {
-              should.exist(err);
-              err.name.should.equal('ValidationError');
-              callback();
-            })]
+          check: ['pow', (results, callback) => voValidate({
+            ledgerNode: mockData.ledgerNode,
+            validatorInput: results.pow,
+            validatorConfig: mockData.ledgerConfigurations.alpha
+              .operationValidator[0],
+          }, err => {
+            should.exist(err);
+            err.name.should.equal('ValidationError');
+            callback();
+          })]
         }, done);
       });
       it.skip('validation fails if the capability invocation proof is not by ' +
@@ -229,24 +235,25 @@ describe('validate API', () => {
               k: cfg.equihash.equihashParameterK
             }
           }, callback)],
-          check: ['pow', (results, callback) => voValidate(
-            results.pow,
-            mockData.ledgerConfigurations.alpha.operationValidator[0],
-            {ledgerNode: mockData.ledgerNode},
-            err => {
-              should.exist(err);
-              err.name.should.equal('ValidationError');
-              should.exist(err.details.keyResults);
-              const keyResults = err.details.keyResults;
-              keyResults.should.be.an('array');
-              keyResults.should.have.length(1);
-              keyResults[0].should.be.an('object');
-              keyResults[0].verified.should.be.false;
-              keyResults[0].publicKey.should.equal(
-                mockData.didDocuments.alpha.capabilityInvocation[0]
-                  .publicKey[0].id);
-              callback();
-            })]
+          check: ['pow', (results, callback) => voValidate({
+            ledgerNode: mockData.ledgerNode,
+            validatorInput: results.pow,
+            validatorConfig: mockData.ledgerConfigurations.alpha
+              .operationValidator[0],
+          }, err => {
+            should.exist(err);
+            err.name.should.equal('ValidationError');
+            should.exist(err.details.keyResults);
+            const keyResults = err.details.keyResults;
+            keyResults.should.be.an('array');
+            keyResults.should.have.length(1);
+            keyResults[0].should.be.an('object');
+            keyResults[0].verified.should.be.false;
+            keyResults[0].publicKey.should.equal(
+              mockData.didDocuments.alpha.capabilityInvocation[0]
+                .publicKey[0].id);
+            callback();
+          })]
         }, done);
       });
       it.skip('fails if the capability invocation proof is not valid', done => {
@@ -273,25 +280,26 @@ describe('validate API', () => {
               k: cfg.equihash.equihashParameterK
             }
           }, callback)],
-          check: ['pow', (results, callback) => voValidate(
-            results.pow,
-            mockData.ledgerConfigurations.alpha.operationValidator[0],
-            {ledgerNode: mockData.ledgerNode},
-            err => {
-              console.log('err', err);
-              should.exist(err);
-              err.name.should.equal('ValidationError');
-              should.exist(err.details.keyResults);
-              const keyResults = err.details.keyResults;
-              keyResults.should.be.an('array');
-              keyResults.should.have.length(1);
-              keyResults[0].should.be.an('object');
-              keyResults[0].verified.should.be.false;
-              keyResults[0].publicKey.should.equal(
-                mockData.didDocuments.alpha.capabilityInvocation[0]
-                  .publicKey[0].id);
-              callback();
-            })]
+          check: ['pow', (results, callback) => voValidate({
+            ledgerNode: mockData.ledgerNode,
+            validatorInput: results.pow,
+            validatorConfig: mockData.ledgerConfigurations.alpha
+              .operationValidator[0],
+          }, err => {
+            console.log('err', err);
+            should.exist(err);
+            err.name.should.equal('ValidationError');
+            should.exist(err.details.keyResults);
+            const keyResults = err.details.keyResults;
+            keyResults.should.be.an('array');
+            keyResults.should.have.length(1);
+            keyResults[0].should.be.an('object');
+            keyResults[0].verified.should.be.false;
+            keyResults[0].publicKey.should.equal(
+              mockData.didDocuments.alpha.capabilityInvocation[0]
+                .publicKey[0].id);
+            callback();
+          })]
         }, done);
       });
       it.skip('fails if incorrect Equihash params were used', done => {
@@ -313,23 +321,24 @@ describe('validate API', () => {
               k: 4
             }
           }, callback)],
-          check: ['pow', (results, callback) => voValidate(
-            results.pow,
-            mockData.ledgerConfigurations.alpha.operationValidator[0],
-            {ledgerNode: mockData.ledgerNode},
-            err => {
-              should.exist(err);
-              err.name.should.equal('ValidationError');
-              should.exist(err.details.event);
-              should.exist(err.details.requiredEquihashParams);
-              const p = err.details.requiredEquihashParams;
-              p.should.be.an('object');
-              p.equihashParameterN.should.equal(
-                cfg.equihash.equihashParameterN);
-              p.equihashParameterK.should.equal(
-                cfg.equihash.equihashParameterK);
-              callback();
-            })]
+          check: ['pow', (results, callback) => voValidate({
+            ledgerNode: mockData.ledgerNode,
+            validatorInput: results.pow,
+            validatorConfig: mockData.ledgerConfigurations.alpha
+              .operationValidator[0],
+          }, err => {
+            should.exist(err);
+            err.name.should.equal('ValidationError');
+            should.exist(err.details.event);
+            should.exist(err.details.requiredEquihashParams);
+            const p = err.details.requiredEquihashParams;
+            p.should.be.an('object');
+            p.equihashParameterN.should.equal(
+              cfg.equihash.equihashParameterN);
+            p.equihashParameterK.should.equal(
+              cfg.equihash.equihashParameterK);
+            callback();
+          })]
         }, done);
       });
       it.skip('validation fails if the Equihash proof is not valid', done => {
@@ -353,16 +362,17 @@ describe('validate API', () => {
           }, callback)],
           check: ['pow', (results, callback) => {
             delete results.pow['bogus:stuff'];
-            voValidate(
-              results.pow,
-              mockData.ledgerConfigurations.alpha.operationValidator[0],
-              {ledgerNode: mockData.ledgerNode},
-              err => {
-                should.exist(err);
-                err.name.should.equal('ValidationError');
-                should.exist(err.details.event);
-                callback();
-              });
+            voValidate({
+              ledgerNode: mockData.ledgerNode,
+              validatorInput: results.pow,
+              validatorConfig: mockData.ledgerConfigurations.alpha
+                .operationValidator[0],
+            }, err => {
+              should.exist(err);
+              err.name.should.equal('ValidationError');
+              should.exist(err.details.event);
+              callback();
+            });
           }]
         }, done);
       });
@@ -386,21 +396,22 @@ describe('validate API', () => {
               k: cfg.equihash.equihashParameterK
             }
           }, callback)],
-          check: ['pow', (results, callback) => voValidate(
-            results.pow,
-            mockData.ledgerConfigurations.alpha.operationValidator[0],
-            {ledgerNode: mockData.ledgerNode},
-            err => {
-              should.exist(err);
-              // FIXME: do we want to use `NotSupportedError` here?
-              //err.name.should.equal('NotSupportedError');
-              err.name.should.equal('ValidationError');
-              // should.exist(err.details.supportedOperation);
-              // err.details.supportedOperation.should.be.an('array');
-              // err.details.supportedOperation.should.have.same.members([
-              //   'CreateWebLedgerRecord']);
-              callback();
-            })]
+          check: ['pow', (results, callback) => voValidate({
+            ledgerNode: mockData.ledgerNode,
+            validatorInput: results.pow,
+            validatorConfig: mockData.ledgerConfigurations.alpha
+              .operationValidator[0],
+          }, err => {
+            should.exist(err);
+            // FIXME: do we want to use `NotSupportedError` here?
+            //err.name.should.equal('NotSupportedError');
+            err.name.should.equal('ValidationError');
+            // should.exist(err.details.supportedOperation);
+            // err.details.supportedOperation.should.be.an('array');
+            // err.details.supportedOperation.should.have.same.members([
+            //   'CreateWebLedgerRecord']);
+            callback();
+          })]
         }, done);
       });
       it('fails if `record.id` is not a valid veres one DID', done => {
@@ -423,15 +434,16 @@ describe('validate API', () => {
               k: cfg.equihash.equihashParameterK
             }
           }, callback)],
-          check: ['pow', (results, callback) => voValidate(
-            results.pow,
-            mockData.ledgerConfigurations.alpha.operationValidator[0],
-            {ledgerNode: mockData.ledgerNode},
-            err => {
-              should.exist(err);
-              err.name.should.equal('ValidationError');
-              callback();
-            })]
+          check: ['pow', (results, callback) => voValidate({
+            ledgerNode: mockData.ledgerNode,
+            validatorInput: results.pow,
+            validatorConfig: mockData.ledgerConfigurations.alpha
+              .operationValidator[0],
+          }, err => {
+            should.exist(err);
+            err.name.should.equal('ValidationError');
+            callback();
+          })]
         }, done);
       });
       it('validation fails if `record.id` is a `nym` with a fingerprint that ' +
@@ -455,15 +467,16 @@ describe('validate API', () => {
               k: cfg.equihash.equihashParameterK
             }
           }, callback)],
-          check: ['pow', (results, callback) => voValidate(
-            results.pow,
-            mockData.ledgerConfigurations.alpha.operationValidator[0],
-            {ledgerNode: mockData.ledgerNode},
-            err => {
-              should.exist(err);
-              err.name.should.equal('ValidationError');
-              callback();
-            })]
+          check: ['pow', (results, callback) => voValidate({
+            ledgerNode: mockData.ledgerNode,
+            validatorInput: results.pow,
+            validatorConfig: mockData.ledgerConfigurations.alpha
+              .operationValidator[0],
+          }, err => {
+            should.exist(err);
+            err.name.should.equal('ValidationError');
+            callback();
+          })]
         }, done);
       });
     });
@@ -487,14 +500,15 @@ describe('validate API', () => {
               k: cfg.equihash.equihashParameterK
             }
           }, callback)],
-          check: ['pow', (results, callback) => voValidate(
-            results.pow,
-            mockData.ledgerConfigurations.alpha.operationValidator[0],
-            {ledgerNode: mockData.ledgerNode},
-            err => {
-              assertNoError(err);
-              callback();
-            })]
+          check: ['pow', (results, callback) => voValidate({
+            ledgerNode: mockData.ledgerNode,
+            validatorInput: results.pow,
+            validatorConfig: mockData.ledgerConfigurations.alpha
+              .operationValidator[0],
+          }, err => {
+            assertNoError(err);
+            callback();
+          })]
         }, done);
       });
       it('validates an operation with extra LD proof', done => {
@@ -523,14 +537,15 @@ describe('validate API', () => {
               .authentication[0].publicKey[0].privateKey.privateKeyBase58,
             doc: results.pow
           }, callback)],
-          check: ['extraSign', (results, callback) => voValidate(
-            results.extraSign,
-            mockData.ledgerConfigurations.alpha.operationValidator[0],
-            {ledgerNode: mockData.ledgerNode},
-            err => {
-              assertNoError(err);
-              callback();
-            })]
+          check: ['extraSign', (results, callback) => voValidate({
+            ledgerNode: mockData.ledgerNode,
+            validatorInput: results.extraSign,
+            validatorConfig: mockData.ledgerConfigurations.alpha
+              .operationValidator[0],
+          }, err => {
+            assertNoError(err);
+            callback();
+          })]
         }, done);
       });
       it('operation with two proper capabilities, no PoW', done => {
@@ -556,14 +571,15 @@ describe('validate API', () => {
                 .privateKey.privateKeyBase58
             }, callback)],
           check: ['authorizeCapability', (results, callback) =>
-            voValidate(
-              results.authorizeCapability,
-              mockData.ledgerConfigurations.alpha.operationValidator[0],
-              {ledgerNode: mockData.ledgerNode},
-              err => {
-                assertNoError(err);
-                callback();
-              })]
+            voValidate({
+              ledgerNode: mockData.ledgerNode,
+              validatorInput: results.authorizeCapability,
+              validatorConfig: mockData.ledgerConfigurations.alpha
+                .operationValidator[0],
+            }, err => {
+              assertNoError(err);
+              callback();
+            })]
         }, done);
       });
       it('should fail to validate an operation with an invalid patch', done => {
@@ -584,15 +600,16 @@ describe('validate API', () => {
               k: cfg.equihash.equihashParameterK
             }
           }, callback)],
-          check: ['pow', (results, callback) => voValidate(
-            results.pow,
-            mockData.ledgerConfigurations.alpha.operationValidator[0],
-            {ledgerNode: mockData.ledgerNode},
-            err => {
-              should.exist(err);
-              err.name.should.equal('ValidationError');
-              callback();
-            })]
+          check: ['pow', (results, callback) => voValidate({
+            ledgerNode: mockData.ledgerNode,
+            validatorInput: results.pow,
+            validatorConfig: mockData.ledgerConfigurations.alpha
+              .operationValidator[0],
+          }, err => {
+            should.exist(err);
+            err.name.should.equal('ValidationError');
+            callback();
+          })]
         }, done);
       });
       it('fails to validate an operation with an invalid change', done => {
@@ -613,15 +630,16 @@ describe('validate API', () => {
               k: cfg.equihash.equihashParameterK
             }
           }, callback)],
-          check: ['pow', (results, callback) => voValidate(
-            results.pow,
-            mockData.ledgerConfigurations.alpha.operationValidator[0],
-            {ledgerNode: mockData.ledgerNode},
-            err => {
-              should.exist(err);
-              err.name.should.equal('ValidationError');
-              callback();
-            })]
+          check: ['pow', (results, callback) => voValidate({
+            ledgerNode: mockData.ledgerNode,
+            validatorInput: results.pow,
+            validatorConfig: mockData.ledgerConfigurations.alpha
+              .operationValidator[0],
+          }, err => {
+            should.exist(err);
+            err.name.should.equal('ValidationError');
+            callback();
+          })]
         }, done);
       });
     });
