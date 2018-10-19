@@ -60,17 +60,24 @@ const config = {
     validatorFilter: {
       title: 'Validator Type Filter',
       type: 'array',
+      minItems: 1,
+      maxItems: 1,
       items: {
         required: ['type', 'validatorFilterByType'],
         type: 'object',
         properties: {
           type: {
             type: 'string',
+            enum: ['ValidatorFilterByType']
           },
           validatorFilterByType: {
             type: 'array',
+            minItems: 2,
+            maxItems: 2,
+            uniqueItems: true,
             items: {
-              type: 'string'
+              type: 'string',
+              enum: ['CreateWebLedgerRecord', 'UpdateWebLedgerRecord']
             },
           }
         },

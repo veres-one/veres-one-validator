@@ -181,12 +181,12 @@ ledgerConfigurations.alpha = {
   '@context': constants.WEB_LEDGER_CONTEXT_V1_URL,
   type: 'WebLedgerConfiguration',
   ledger: 'did:v1:c02915fc-672d-4568-8e6e-b12a0b35cbb3',
-  consensusMethod: 'UnilateralConsensus2017',
+  consensusMethod: 'Continuity2017',
   operationValidator: [{
     type: 'VeresOneValidator2017',
     validatorFilter: [{
       type: 'ValidatorFilterByType',
-      validatorFilterByType: ['CreateWebLedgerRecord']
+      validatorFilterByType: ['CreateWebLedgerRecord', 'UpdateWebLedgerRecord']
     }]
   }]/*,
   ledgerConfigurationValidator: [{
