@@ -125,6 +125,7 @@ const service = {
   type: 'object',
   properties: {
     id: urnUuid(),
+    // FIXME: are other types of services allowed on V1?
     type: {
       type: 'string',
       // FIXME: this value is TBD
