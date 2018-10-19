@@ -12,7 +12,7 @@
     "bedrock-injector": "^1.0.0",
     "bedrock-jobs": "^2.0.3",
     "bedrock-ledger-context": "^3.0.0",
-    "bedrock-ledger-node": "^1.0.0",
+    "bedrock-ledger-node": "^3.0.0",
     "bedrock-ledger-storage-mongodb": "^1.0.0",
     "bedrock-mongodb": "^5.0.0",
     "bedrock-permission": "^2.5.3",
