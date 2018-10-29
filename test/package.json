@@ -14,6 +14,7 @@
     "bedrock-ledger-context": "^3.0.0",
     "bedrock-ledger-node": "^3.0.0",
     "bedrock-ledger-storage-mongodb": "^1.0.0",
+    "bedrock-ledger-utils": "github:digitalbazaar/bedrock-ledger-utils#implementation",
     "bedrock-mongodb": "^5.0.0",
     "bedrock-permission": "^2.5.3",
     "bedrock-test": "^2.0.0",
@@ -23,6 +24,7 @@
     "equihash-signature": "digitalbazaar/equihash-signature#master",
     "grunt": "^1.0.1",
     "jsonld-signatures": "^2.1.4",
+    "uuid": "^3.3.2",
     "veres-one-validator": "file:.."
   }
 }

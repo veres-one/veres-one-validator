@@ -437,6 +437,7 @@ const updateDid = {
 module.exports.config = () => config;
 module.exports.didDocument = () => didDocument;
 module.exports.didDocumentPatch = () => didDocumentPatch;
+module.exports.electorPoolDocument = () => electorPoolDocument;
 module.exports.operation = () => ({
   title: 'WebLedgerOperation',
   anyOf: [createDid, updateDid, createElectorPool]

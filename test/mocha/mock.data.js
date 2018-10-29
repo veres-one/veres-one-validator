@@ -5,6 +5,7 @@
 
 const bedrock = require('bedrock');
 const {constants} = bedrock.config;
+const uuid = require('uuid/v4');
 const {BedrockError} = bedrock.util;
 
 const mock = {};
@@ -32,6 +33,14 @@ mock.ledgerNode = {
     }
   }
 };
+
+const electorEndpoint = mock.electorEndpoint = [];
+
+// NOTE: actual endpoints terminate with a base58 encoded public key
+for(let i = 0; i < 10; ++i) {
+  electorEndpoint.push('https://example.com/consensus/continuity2017/voters/' +
+    uuid());
+}
 
 electorPoolDocument.alpha = {
   '@context': constants.VERES_ONE_CONTEXT_URL,
