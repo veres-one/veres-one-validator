@@ -189,7 +189,7 @@ describe('validate API', () => {
               .operationValidator[0],
           }, err => {
             should.exist(err);
-            err.name.should.equal('PermissionDenied');
+            err.name.should.equal('NotAllowedError');
             callback();
           })]
         }, done);
