@@ -8,14 +8,21 @@ const async = require('async');
 const {callbackify} = require('util');
 const config = bedrock.config;
 const cfg = config['veres-one-validator'];
-const didv1 = require('did-veres-one');
+const didv1 = new (require('did-veres-one')).VeresOne();
 const voValidator = require('veres-one-validator');
 const equihashSigs = require('equihash-signature');
 const jsigs = require('jsonld-signatures');
-jsigs.use('jsonld', bedrock.jsonld);
+
 equihashSigs.install(jsigs);
-didv1.use('jsonld', bedrock.jsonld);
-didv1.use('jsonld-signatures', jsigs);
+
+jsigs.use('jsonld', bedrock.jsonld);
+// FIXME: TEMPORARY, JUST USE `USE` API WHEN AVAILABLE
+didv1.injector.use('jsonld-signatures', jsigs);
+
+// FIXME: update these test to async/await
+const attachInvocationProof = callbackify(didv1.attachInvocationProof)
+  .bind(didv1);
+const attachEquihashProof = callbackify(didv1.attachEquihashProof).bind(didv1);
 
 const mockData = require('./mock.data');
 
@@ -35,7 +42,7 @@ describe('validate API', () => {
     describe('create operation', () => {
       it('validates an operation with proper capability + PoW', done => {
         async.auto({
-          capability: callback => didv1.attachInvocationProof({
+          capability: callback => attachInvocationProof({
             operation: mockData.operations.create,
             capability: mockData.didDocuments.alpha,
             capabilityAction: capabilityActions.register,
@@ -47,7 +54,7 @@ describe('validate API', () => {
             assertNoError(err);
             callback(err, result);
           }),
-          pow: ['capability', (results, callback) => didv1.attachEquihashProof({
+          pow: ['capability', (results, callback) => attachEquihashProof({
             operation: results.capability,
             parameters: {
               n: cfg.equihash.equihashParameterN,
@@ -73,7 +80,7 @@ describe('validate API', () => {
       });
       it('validates an operation with extra LD proof', done => {
         async.auto({
-          capability: callback => didv1.attachInvocationProof({
+          capability: callback => attachInvocationProof({
             operation: mockData.operations.create,
             capability: mockData.didDocuments.alpha,
             capabilityAction: capabilityActions.register,
@@ -110,7 +117,7 @@ describe('validate API', () => {
       });
       it('validates an operation w/two proper capabilities, no PoW', done => {
         async.auto({
-          registerCapability: callback => didv1.attachInvocationProof({
+          registerCapability: callback => attachInvocationProof({
             operation: mockData.operations.create,
             capability: mockData.didDocuments.alpha,
             capabilityAction: capabilityActions.register,
@@ -120,7 +127,7 @@ describe('validate API', () => {
               .capabilityInvocation[0].publicKey[0].privateKey.privateKeyBase58
           }, callback),
           authorizeCapability: ['registerCapability', (results, callback) =>
-            didv1.attachInvocationProof({
+            attachInvocationProof({
               operation: results.registerCapability,
               capability: mockData.capabilities.authorizeRequest,
               capabilityAction: capabilityActions.authorize,
@@ -143,7 +150,7 @@ describe('validate API', () => {
       });
       it('validation fails if Equihash proof is missing', done => {
         async.auto({
-          capability: callback => didv1.attachInvocationProof({
+          capability: callback => attachInvocationProof({
             operation: mockData.operations.create,
             capability: mockData.didDocuments.alpha,
             capabilityAction: capabilityActions.register,
@@ -167,7 +174,7 @@ describe('validate API', () => {
       it('validation fails if capability invocation proof and extra LD ' +
         'proof, but no Equihash', done => {
         async.auto({
-          capability: callback => didv1.attachInvocationProof({
+          capability: callback => attachInvocationProof({
             operation: mockData.operations.create,
             capability: mockData.didDocuments.alpha,
             capabilityAction: capabilityActions.register,
@@ -196,7 +203,7 @@ describe('validate API', () => {
       });
       it('validation fails if capability invocation proof is missing', done => {
         async.auto({
-          pow: callback => didv1.attachEquihashProof({
+          pow: callback => attachEquihashProof({
             operation: mockData.operations.create,
             parameters: {
               n: cfg.equihash.equihashParameterN,
@@ -218,7 +225,7 @@ describe('validate API', () => {
       it.skip('validation fails if the capability invocation proof is not by ' +
         'an authorized invocation key', done => {
         async.auto({
-          capability: callback => didv1.attachInvocationProof({
+          capability: callback => attachInvocationProof({
             operation: mockData.operations.create,
             capability: mockData.didDocuments.alpha,
             capabilityAction: capabilityActions.register,
@@ -228,7 +235,7 @@ describe('validate API', () => {
             privateKeyBase58: mockData.privateDidDocuments.alpha
               .authentication[0].publicKey[0].privateKey.privateKeyBase58
           }, callback),
-          pow: ['capability', (results, callback) => didv1.attachEquihashProof({
+          pow: ['capability', (results, callback) => attachEquihashProof({
             operation: results.capability,
             parameters: {
               n: cfg.equihash.equihashParameterN,
@@ -258,7 +265,7 @@ describe('validate API', () => {
       });
       it.skip('fails if the capability invocation proof is not valid', done => {
         async.auto({
-          capability: callback => didv1.attachInvocationProof({
+          capability: callback => attachInvocationProof({
             operation: mockData.operations.create,
             capability: mockData.didDocuments.alpha,
             capabilityAction: capabilityActions.register,
@@ -273,7 +280,7 @@ describe('validate API', () => {
             result.proof['bogus:stuff'] = 'injection';
             callback(null, result);
           }),
-          pow: ['capability', (results, callback) => didv1.attachEquihashProof({
+          pow: ['capability', (results, callback) => attachEquihashProof({
             operation: results.capability,
             parameters: {
               n: cfg.equihash.equihashParameterN,
@@ -304,7 +311,7 @@ describe('validate API', () => {
       });
       it.skip('fails if incorrect Equihash params were used', done => {
         async.auto({
-          capability: callback => didv1.attachInvocationProof({
+          capability: callback => attachInvocationProof({
             operation: mockData.operations.create,
             capability: mockData.didDocuments.alpha,
             capabilityAction: capabilityActions.register,
@@ -313,7 +320,7 @@ describe('validate API', () => {
             privateKeyBase58: mockData.privateDidDocuments.alpha
               .capabilityInvocation[0].publicKey[0].privateKey.privateKeyBase58
           }, callback),
-          pow: ['capability', (results, callback) => didv1.attachEquihashProof({
+          pow: ['capability', (results, callback) => attachEquihashProof({
             operation: results.capability,
             parameters: {
               // NOTE: incorrect parameters are used here
@@ -343,7 +350,7 @@ describe('validate API', () => {
       });
       it.skip('validation fails if the Equihash proof is not valid', done => {
         async.auto({
-          capability: callback => didv1.attachInvocationProof({
+          capability: callback => attachInvocationProof({
             operation: mockData.operations.create,
             capability: mockData.didDocuments.alpha,
             capabilityAction: capabilityActions.register,
@@ -352,7 +359,7 @@ describe('validate API', () => {
             privateKeyBase58: mockData.privateDidDocuments.alpha
               .capabilityInvocation[0].publicKey[0].privateKey.privateKeyBase58
           }, callback),
-          pow: ['capability', (results, callback) => didv1.attachEquihashProof({
+          pow: ['capability', (results, callback) => attachEquihashProof({
             operation: Object.assign(
               {'bogus:stuff': 'invalid'}, results.capability),
             parameters: {
@@ -380,7 +387,7 @@ describe('validate API', () => {
         const operation = bedrock.util.clone(mockData.operations.create);
         operation.type = 'UnknownOperation';
         async.auto({
-          capability: callback => didv1.attachInvocationProof({
+          capability: callback => attachInvocationProof({
             operation,
             capability: operation,
             capabilityAction: capabilityActions.register,
@@ -389,7 +396,7 @@ describe('validate API', () => {
             privateKeyBase58: mockData.privateDidDocuments.alpha
               .capabilityInvocation[0].publicKey[0].privateKey.privateKeyBase58
           }, callback),
-          pow: ['capability', (results, callback) => didv1.attachEquihashProof({
+          pow: ['capability', (results, callback) => attachEquihashProof({
             operation: results.capability,
             parameters: {
               n: cfg.equihash.equihashParameterN,
@@ -418,7 +425,7 @@ describe('validate API', () => {
         const operation = bedrock.util.clone(mockData.operations.create);
         operation.record.id = 'bogus';
         async.auto({
-          capability: callback => didv1.attachInvocationProof({
+          capability: callback => attachInvocationProof({
             operation,
             capability: operation,
             capabilityAction: capabilityActions.register,
@@ -427,7 +434,7 @@ describe('validate API', () => {
             privateKeyBase58: mockData.privateDidDocuments.alpha
               .capabilityInvocation[0].publicKey[0].privateKey.privateKeyBase58
           }, callback),
-          pow: ['capability', (results, callback) => didv1.attachEquihashProof({
+          pow: ['capability', (results, callback) => attachEquihashProof({
             operation: results.capability,
             parameters: {
               n: cfg.equihash.equihashParameterN,
@@ -451,7 +458,7 @@ describe('validate API', () => {
         const operation = bedrock.util.clone(mockData.operations.create);
         operation.record.id = 'did:v1:test:nym:bogus';
         async.auto({
-          capability: callback => didv1.attachInvocationProof({
+          capability: callback => attachInvocationProof({
             operation,
             capability: operation,
             capabilityAction: capabilityActions.register,
@@ -460,7 +467,7 @@ describe('validate API', () => {
             privateKeyBase58: mockData.privateDidDocuments.alpha
               .capabilityInvocation[0].publicKey[0].privateKey.privateKeyBase58
           }, callback),
-          pow: ['capability', (results, callback) => didv1.attachEquihashProof({
+          pow: ['capability', (results, callback) => attachEquihashProof({
             operation: results.capability,
             parameters: {
               n: cfg.equihash.equihashParameterN,
@@ -484,7 +491,7 @@ describe('validate API', () => {
     describe('update operation', () => {
       it('validates an operation with capability proof + PoW', done => {
         async.auto({
-          capability: callback => didv1.attachInvocationProof({
+          capability: callback => attachInvocationProof({
             operation: mockData.operations.update,
             capability: mockData.didDocuments.beta,
             capabilityAction: capabilityActions.update,
@@ -493,7 +500,7 @@ describe('validate API', () => {
             privateKeyBase58: mockData.privateDidDocuments.beta
               .capabilityInvocation[0].publicKey[0].privateKey.privateKeyBase58
           }, callback),
-          pow: ['capability', (results, callback) => didv1.attachEquihashProof({
+          pow: ['capability', (results, callback) => attachEquihashProof({
             operation: results.capability,
             parameters: {
               n: cfg.equihash.equihashParameterN,
@@ -513,7 +520,7 @@ describe('validate API', () => {
       });
       it('validates an operation with extra LD proof', done => {
         async.auto({
-          capability: callback => didv1.attachInvocationProof({
+          capability: callback => attachInvocationProof({
             operation: mockData.operations.update,
             capability: mockData.didDocuments.beta,
             capabilityAction: capabilityActions.update,
@@ -550,7 +557,7 @@ describe('validate API', () => {
       });
       it('operation with two proper capabilities, no PoW', done => {
         async.auto({
-          registerCapability: callback => didv1.attachInvocationProof({
+          registerCapability: callback => attachInvocationProof({
             operation: mockData.operations.update,
             capability: mockData.didDocuments.beta,
             capabilityAction: capabilityActions.update,
@@ -560,7 +567,7 @@ describe('validate API', () => {
               .capabilityInvocation[0].publicKey[0].privateKey.privateKeyBase58
           }, callback),
           authorizeCapability: ['registerCapability', (results, callback) =>
-            didv1.attachInvocationProof({
+            attachInvocationProof({
               operation: results.registerCapability,
               capability: mockData.capabilities.authorizeRequest,
               capabilityAction: capabilityActions.authorize,
@@ -584,7 +591,7 @@ describe('validate API', () => {
       });
       it('should fail to validate an operation with an invalid patch', done => {
         async.auto({
-          capability: callback => didv1.attachInvocationProof({
+          capability: callback => attachInvocationProof({
             operation: mockData.operations.updateInvalidPatch,
             capability: mockData.didDocuments.beta,
             capabilityAction: capabilityActions.update,
@@ -593,7 +600,7 @@ describe('validate API', () => {
             privateKeyBase58: mockData.privateDidDocuments.beta
               .capabilityInvocation[0].publicKey[0].privateKey.privateKeyBase58
           }, callback),
-          pow: ['capability', (results, callback) => didv1.attachEquihashProof({
+          pow: ['capability', (results, callback) => attachEquihashProof({
             operation: results.capability,
             parameters: {
               n: cfg.equihash.equihashParameterN,
@@ -614,7 +621,7 @@ describe('validate API', () => {
       });
       it('fails to validate an operation with an invalid change', done => {
         async.auto({
-          capability: callback => didv1.attachInvocationProof({
+          capability: callback => attachInvocationProof({
             operation: mockData.operations.updateInvalidChange,
             capability: mockData.didDocuments.beta,
             capabilityAction: capabilityActions.update,
@@ -623,7 +630,7 @@ describe('validate API', () => {
             privateKeyBase58: mockData.privateDidDocuments.beta
               .capabilityInvocation[0].publicKey[0].privateKey.privateKeyBase58
           }, callback),
-          pow: ['capability', (results, callback) => didv1.attachEquihashProof({
+          pow: ['capability', (results, callback) => attachEquihashProof({
             operation: results.capability,
             parameters: {
               n: cfg.equihash.equihashParameterN,

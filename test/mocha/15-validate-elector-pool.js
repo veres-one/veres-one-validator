@@ -5,8 +5,7 @@
 
 const bedrock = require('bedrock');
 const {constants} = bedrock.config;
-const didv1 = require('did-veres-one');
-const dids = require('did-io');
+const didv1 = new (require('did-veres-one')).VeresOne();
 const voValidator = require('veres-one-validator');
 const equihashSigs = require('equihash-signature');
 const jsigs = require('jsonld-signatures');
@@ -16,10 +15,9 @@ const {BedrockError} = bedrock.util;
 
 jsigs.use('jsonld', bedrock.jsonld);
 equihashSigs.install(jsigs);
-didv1.use('jsonld', bedrock.jsonld);
-didv1.use('jsonld-signatures', jsigs);
 
-dids.use('jsonld', bedrock.jsonld);
+// FIXME: use `use` API when available
+didv1.injector.use('jsonld-signatures', jsigs);
 
 const continuityServiceType = 'Continuity2017Peer';
 const ldDocuments = new Map();
@@ -50,14 +48,13 @@ const capabilityActions = {
 let maintainerDidDocumentFull;
 let electorDidDocumentFull;
 let electorServiceId;
-const v1 = dids.methods.veres();
 describe('validate API ElectorPool', () => {
   describe('operationValidator', () => {
     beforeEach(async () => {
-      maintainerDidDocumentFull = await v1.generate();
+      maintainerDidDocumentFull = await didv1.generate();
       const {doc: maintainerDidDocument} = maintainerDidDocumentFull;
       ldDocuments.set(maintainerDidDocument.id, maintainerDidDocument);
-      electorDidDocumentFull = await v1.generate();
+      electorDidDocumentFull = await didv1.generate();
       const {doc: electorDidDocument} = electorDidDocumentFull;
       electorServiceId = _generateUrnUuid();
       electorDidDocument.service = [{
@@ -71,10 +68,10 @@ describe('validate API ElectorPool', () => {
       it('validates op with proper proof', async () => {
         const {id: maintainerDid} = maintainerDidDocumentFull.doc;
         const electorPoolDoc = _generateElectorPoolDoc();
-        let operation = v1.client.wrap({didDocument: electorPoolDoc});
+        let operation = didv1.client.wrap({didDocument: electorPoolDoc});
         const {creator, privateKeyBase58} = _getMaintainerKeys();
 
-        operation = await v1.attachInvocationProof({
+        operation = await didv1.attachInvocationProof({
           algorithm: 'Ed25519Signature2018',
           operation,
           capability: maintainerDid,
@@ -83,7 +80,7 @@ describe('validate API ElectorPool', () => {
           creator,
           privateKeyBase58
         });
-        operation = await v1.attachInvocationProof({
+        operation = await didv1.attachInvocationProof({
           algorithm: 'Ed25519Signature2018',
           operation,
           capability: maintainerDid,
@@ -119,10 +116,10 @@ describe('validate API ElectorPool', () => {
         const incorrectServiceId = _generateUrnUuid();
         electorPoolDoc.electorPool[0].service = incorrectServiceId;
 
-        let operation = v1.client.wrap({didDocument: electorPoolDoc});
+        let operation = didv1.client.wrap({didDocument: electorPoolDoc});
         const {creator, privateKeyBase58} = _getMaintainerKeys();
 
-        operation = await v1.attachInvocationProof({
+        operation = await didv1.attachInvocationProof({
           algorithm: 'Ed25519Signature2018',
           operation,
           capability: maintainerDid,
@@ -131,7 +128,7 @@ describe('validate API ElectorPool', () => {
           creator,
           privateKeyBase58
         });
-        operation = await v1.attachInvocationProof({
+        operation = await didv1.attachInvocationProof({
           algorithm: 'Ed25519Signature2018',
           operation,
           capability: maintainerDid,
@@ -164,12 +161,12 @@ describe('validate API ElectorPool', () => {
       it('fails on op w/missing RegisterDid capability', async () => {
         const {id: maintainerDid} = maintainerDidDocumentFull.doc;
         const electorPoolDoc = _generateElectorPoolDoc();
-        let operation = v1.client.wrap({didDocument: electorPoolDoc});
+        let operation = didv1.client.wrap({didDocument: electorPoolDoc});
         const {creator, privateKeyBase58} = _getMaintainerKeys();
 
         // no RegisterDid proof added
 
-        operation = await v1.attachInvocationProof({
+        operation = await didv1.attachInvocationProof({
           algorithm: 'Ed25519Signature2018',
           operation,
           capability: maintainerDid,
@@ -202,12 +199,12 @@ describe('validate API ElectorPool', () => {
       it('fails on op w/missing AuthorizeRequest capability', async () => {
         const {id: maintainerDid} = maintainerDidDocumentFull.doc;
         const electorPoolDoc = _generateElectorPoolDoc();
-        let operation = v1.client.wrap({didDocument: electorPoolDoc});
+        let operation = didv1.client.wrap({didDocument: electorPoolDoc});
         const {creator, privateKeyBase58} = _getMaintainerKeys();
 
         // no AuthorizeRequest proof added
 
-        operation = await v1.attachInvocationProof({
+        operation = await didv1.attachInvocationProof({
           algorithm: 'Ed25519Signature2018',
           operation,
           capability: maintainerDid,
@@ -240,12 +237,12 @@ describe('validate API ElectorPool', () => {
       it('fails on op w/two RegisterDid capability proofs', async () => {
         const {id: maintainerDid} = maintainerDidDocumentFull.doc;
         const electorPoolDoc = _generateElectorPoolDoc();
-        let operation = v1.client.wrap({didDocument: electorPoolDoc});
+        let operation = didv1.client.wrap({didDocument: electorPoolDoc});
         const {creator, privateKeyBase58} = _getMaintainerKeys();
 
         // no AuthorizeRequest proof added
 
-        operation = await v1.attachInvocationProof({
+        operation = await didv1.attachInvocationProof({
           algorithm: 'Ed25519Signature2018',
           operation,
           capability: maintainerDid,
@@ -253,7 +250,7 @@ describe('validate API ElectorPool', () => {
           creator,
           privateKeyBase58
         });
-        operation = await v1.attachInvocationProof({
+        operation = await didv1.attachInvocationProof({
           algorithm: 'Ed25519Signature2018',
           operation,
           capability: maintainerDid,
@@ -286,12 +283,12 @@ describe('validate API ElectorPool', () => {
       it('fails on op w/two AuthorizeRequest capability proofs', async () => {
         const {id: maintainerDid} = maintainerDidDocumentFull.doc;
         const electorPoolDoc = _generateElectorPoolDoc();
-        let operation = v1.client.wrap({didDocument: electorPoolDoc});
+        let operation = didv1.client.wrap({didDocument: electorPoolDoc});
         const {creator, privateKeyBase58} = _getMaintainerKeys();
 
         // no RegisterDid proof added
 
-        operation = await v1.attachInvocationProof({
+        operation = await didv1.attachInvocationProof({
           algorithm: 'Ed25519Signature2018',
           operation,
           capability: maintainerDid,
@@ -299,7 +296,7 @@ describe('validate API ElectorPool', () => {
           creator,
           privateKeyBase58
         });
-        operation = await v1.attachInvocationProof({
+        operation = await didv1.attachInvocationProof({
           algorithm: 'Ed25519Signature2018',
           operation,
           capability: maintainerDid,
@@ -335,11 +332,11 @@ describe('validate API ElectorPool', () => {
         const {id: maintainerDid} = maintainerDidDocumentFull.doc;
         const {id: electorDid} = electorDidDocumentFull.doc;
         const electorPoolDoc = _generateElectorPoolDoc();
-        let operation = v1.client.wrap({didDocument: electorPoolDoc});
+        let operation = didv1.client.wrap({didDocument: electorPoolDoc});
         const {creator, privateKeyBase58} = _getMaintainerKeys();
 
         // replacing electorDid with maintainerDid
-        operation = await v1.attachInvocationProof({
+        operation = await didv1.attachInvocationProof({
           algorithm: 'Ed25519Signature2018',
           operation,
           capability: electorDid,
@@ -347,7 +344,7 @@ describe('validate API ElectorPool', () => {
           creator,
           privateKeyBase58
         });
-        operation = await v1.attachInvocationProof({
+        operation = await didv1.attachInvocationProof({
           algorithm: 'Ed25519Signature2018',
           operation,
           capability: maintainerDid,
@@ -431,7 +428,7 @@ describe('validate API ElectorPool', () => {
 
         // FIXME: what are proper proofs for an update operation?
 
-        operation = await v1.attachInvocationProof({
+        operation = await didv1.attachInvocationProof({
           algorithm: 'Ed25519Signature2018',
           operation,
           capability: maintainerDid,
@@ -440,7 +437,7 @@ describe('validate API ElectorPool', () => {
           creator,
           privateKeyBase58
         });
-        operation = await v1.attachInvocationProof({
+        operation = await didv1.attachInvocationProof({
           algorithm: 'Ed25519Signature2018',
           operation,
           capability: maintainerDid,
