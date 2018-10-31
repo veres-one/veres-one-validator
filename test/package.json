@@ -20,7 +20,7 @@
     "bedrock-test": "^2.0.0",
     "bedrock-validation": "^3.1.0",
     "bedrock-veres-one-context": "^3.0.0",
-    "did-veres-one": "veres-one/did-veres-one#extract-from-did-io",
+    "did-veres-one": "veres-one/did-veres-one#rc-3.0.3",
     "equihash-signature": "digitalbazaar/equihash-signature#master",
     "grunt": "^1.0.1",
     "jsonld-signatures": "^2.1.4",
