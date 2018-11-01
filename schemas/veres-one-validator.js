@@ -422,6 +422,11 @@ const ledgerConfiguration = {
   additionalProperties: false,
   required: [
     '@context',
+    'consensusMethod',
+    'electorSelectionMethod',
+    'ledger',
+    'ledgerConfigurationValidator',
+    'operationValidator',
     'type',
   ],
   type: 'object',
@@ -431,18 +436,19 @@ const ledgerConfiguration = {
       type: 'string',
       enum: ['Continuity2017'],
     },
-    electorCount: {
-      type: 'integer',
-      minimum: 1,
-    },
     electorSelectionMethod: {
       additionalProperties: false,
       required: [
+        'electorCount',
         'electorPool',
         'type',
       ],
       type: 'object',
       properties: {
+        electorCount: {
+          type: 'integer',
+          minimum: 1,
+        },
         electorPool: urnUuid(),
         type: {
           type: 'string',
