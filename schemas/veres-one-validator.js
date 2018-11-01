@@ -50,7 +50,7 @@ const config = {
   title: 'Veres One Validator Config',
   required: [
     'type',
-    'validatorFilter',
+    // 'validatorFilter',
   ],
   type: 'object',
   properties: {
@@ -64,7 +64,10 @@ const config = {
       minItems: 1,
       maxItems: 1,
       items: {
-        required: ['type', 'validatorFilterByType'],
+        required: [
+          'type',
+          'validatorFilterByType'
+        ],
         type: 'object',
         properties: {
           type: {
@@ -414,10 +417,116 @@ const updateDid = {
   additionalProperties: false
 };
 
+const ledgerConfiguration = {
+  title: 'WebLedgerConfiguration',
+  additionalProperties: false,
+  required: [
+    '@context',
+    'type',
+  ],
+  type: 'object',
+  properties: {
+    '@context': schemas.jsonldContext(constants.WEB_LEDGER_CONTEXT_V1_URL),
+    consensusMethod: {
+      type: 'string',
+      enum: ['Continuity2017'],
+    },
+    electorCount: {
+      type: 'integer',
+      minimum: 1,
+    },
+    electorSelectionMethod: {
+      additionalProperties: false,
+      required: [
+        'electorPool',
+        'type',
+      ],
+      type: 'object',
+      properties: {
+        electorPool: urnUuid(),
+        type: {
+          type: 'string',
+          enum: ['VeresOne']
+        }
+      }
+    },
+    ledger: {
+      // FIXME: enforce? did:v1:eb8c22dc-bde6-4315-92e2-59bd3f3c7d59
+      type: 'string',
+    },
+    ledgerConfigurationValidator: {
+      type: 'array',
+      maxItems: 1,
+      minItems: 1,
+      items: {
+        additionalProperties: false,
+        required: ['type'],
+        type: 'object',
+        properties: {
+          type: {
+            type: 'string',
+            enum: ['VeresOneValidator2017'],
+          }
+        }
+      }
+    },
+    operationValidator: {
+      type: 'array',
+      maxItems: 1,
+      minItems: 1,
+      items: {
+        additionalProperties: false,
+        required: [
+          'type',
+          'validatorFilter',
+        ],
+        type: 'object',
+        properties: {
+          type: {
+            type: 'string',
+            enum: ['VeresOneValidator2017'],
+          },
+          validatorFilter: {
+            type: 'array',
+            maxItems: 1,
+            minItems: 1,
+            items: {
+              additionalProperties: false,
+              required: ['type', 'validatorFilterByType'],
+              type: 'object',
+              properties: {
+                type: {
+                  type: 'string',
+                  enum: ['ValidatorFilterByType'],
+                },
+                validatorFilterByType: {
+                  type: 'array',
+                  maxItems: 2,
+                  minItems: 2,
+                  uniqueItems: true,
+                  items: {
+                    type: 'string',
+                    enum: ['CreateWebLedgerRecord', 'UpdateWebLedgerRecord'],
+                  },
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    type: {
+      type: 'string',
+      enum: ['WebLedgerConfiguration']
+    }
+  },
+};
+
 module.exports.config = () => config;
 module.exports.didDocument = () => didDocument;
 module.exports.didDocumentPatch = () => didDocumentPatch;
 module.exports.electorPoolDocument = () => electorPoolDocument;
+module.exports.ledgerConfiguration = () => ledgerConfiguration;
 module.exports.operation = () => ({
   title: 'WebLedgerOperation',
   anyOf: [createDid, updateDid, createElectorPool]
