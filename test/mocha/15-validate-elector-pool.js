@@ -56,7 +56,7 @@ describe('validate API ElectorPool', () => {
       ldDocuments.set(maintainerDidDocument.id, maintainerDidDocument);
       electorDidDocumentFull = await didv1.generate();
       const {doc: electorDidDocument} = electorDidDocumentFull;
-      electorServiceId = _generateUrnUuid();
+      electorServiceId = `${electorDidDocument.id};service=MyServiceName`;
       electorDidDocument.service = [{
         id: electorServiceId,
         type: continuityServiceType,
@@ -113,7 +113,7 @@ describe('validate API ElectorPool', () => {
         const {id: maintainerDid} = maintainerDidDocumentFull.doc;
         const electorPoolDoc = _generateElectorPoolDoc();
 
-        const incorrectServiceId = _generateUrnUuid();
+        const incorrectServiceId = `${maintainerDid};service=Unknown`;
         electorPoolDoc.electorPool[0].service = incorrectServiceId;
 
         let operation = didv1.client.wrap({didDocument: electorPoolDoc});
@@ -391,14 +391,18 @@ describe('validate API ElectorPool', () => {
         electorPoolDoc.invoker = maintainerDid;
         ldDocuments.set(electorPoolDoc.id, bedrock.util.clone(electorPoolDoc));
         const observer = jsonpatch.observe(electorPoolDoc);
-        const newServiceId = _generateUrnUuid();
+        const elector =
+          'did:v1:test:nym:z279squ73dJ3q21jAEk3FRrr37UdX5xo8FXWA74anmPnvzfx';
+
+        // FIXME: should inline serviceIds be did: URI's?
+        const newServiceId = `${elector};service=TheServiceId`;
+
         const newServiceEndpoint = mockData.electorEndpoint[1];
         const {capability} = electorPoolDoc.electorPool[0];
         // using an inline service descriptor
         electorPoolDoc.electorPool.push({
           // elector DID is not dereferenced in this case
-          elector:
-            'did:v1:test:nym:z279squ73dJ3q21jAEk3FRrr37UdX5xo8FXWA74anmPnvzfx',
+          elector,
           capability,
           id: _generateUrnUuid(),
           service: {

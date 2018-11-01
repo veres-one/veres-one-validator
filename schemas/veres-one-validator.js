@@ -7,6 +7,7 @@ const {constants} = require('bedrock').config;
 const {schemas} = require('bedrock-validation');
 const did = require('./did');
 const urnUuid = require('./urn-uuid');
+const {serviceDescriptor, serviceId} = require('./service');
 
 const caveat = {
   additionalProperties: false,
@@ -116,30 +117,9 @@ const publicKey = {
   additionalProperties: false
 };
 
-const service = {
-  required: [
-    'id',
-    'serviceEndpoint',
-    'type',
-  ],
-  type: 'object',
-  properties: {
-    id: urnUuid(),
-    // FIXME: are other types of services allowed on V1?
-    type: {
-      type: 'string',
-      // FIXME: this value is TBD
-      enum: ['Continuity2017Peer'],
-    },
-    serviceEndpoint: {
-      // TODO: can this be improved? pattern starting with https://?
-      type: 'string',
-    }
-  }
-};
-
 const didDocument = {
   title: 'DID Document',
+  // FIXME: what *are* required properties?
   required: [
     'id',
   ],
@@ -211,7 +191,7 @@ const didDocument = {
     service: {
       type: 'array',
       minItems: 1,
-      items: service,
+      items: serviceDescriptor(),
     },
   },
   additionalProperties: false
@@ -298,7 +278,7 @@ const electorPoolDocument = {
           elector: did(),
           id: urnUuid(),
           service: {
-            anyOf: [service, urnUuid()]
+            anyOf: [serviceDescriptor(), serviceId()]
           },
           // FIXME: is type required?
           type: {
