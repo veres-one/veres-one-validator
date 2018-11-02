@@ -426,7 +426,7 @@ const updateDid = {
 };
 
 const ledgerConfiguration = {
-  title: 'WebLedgerConfiguration',
+  title: 'Veres One WebLedgerConfiguration',
   additionalProperties: false,
   required: [
     '@context',
