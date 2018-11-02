@@ -9,6 +9,14 @@ const did = require('./did');
 const urnUuid = require('./urn-uuid');
 const {serviceDescriptor, serviceId} = require('./service');
 
+const electorTypes = [
+  // FIXME: Continuity2017Peer is also being used to the `service.type` in
+  // elector'S DID document service descriptors.  Is that right?
+  'Continuity2017Peer',
+  'Continuity2017GuarantorElector',
+  'Continuity2017RecoveryElector',
+];
+
 const caveat = {
   additionalProperties: false,
   required: [
@@ -274,8 +282,7 @@ const electorPoolDocument = {
           'elector',
           'id',
           'service',
-          // FIXME: is type required?
-          // 'type',
+          'type',
         ],
         properties: {
           elector: did(),
@@ -283,16 +290,17 @@ const electorPoolDocument = {
           service: {
             anyOf: [serviceDescriptor(), serviceId()]
           },
-          // FIXME: is type required?
           type: {
             anyOf: [{
               type: 'string',
-              enum: ['Elector']
+              enum: electorTypes,
             }, {
               type: 'array',
+              minItems: 1,
+              uniqueItems: true,
               items: {
                 type: 'string',
-                enum: ['Elector', 'RecoveryElector']
+                enum: electorTypes,
               }
             }]
           },
