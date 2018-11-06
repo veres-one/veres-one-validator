@@ -21,10 +21,10 @@
   },
   "peerDependencies": {
     "bedrock": "^1.12.0",
-    "bedrock-ledger-context": "^3.0.0",
+    "bedrock-ledger-context": "^5.0.0",
     "bedrock-ledger-node": "^3.0.0",
     "bedrock-ledger-utils": "^1.0.0",
     "bedrock-validation": "^3.1.0",
-    "bedrock-veres-one-context": "^3.0.0"
+    "bedrock-veres-one-context": "^5.0.0"
   }
 }
