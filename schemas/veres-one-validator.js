@@ -9,11 +9,6 @@ const did = require('./did');
 const urnUuid = require('./urn-uuid');
 const {serviceDescriptor, serviceId} = require('./service');
 
-const electorTypes = [
-  'Continuity2017Elector',
-  'Continuity2017GuarantorElector',
-];
-
 const caveat = {
   additionalProperties: false,
   required: [
@@ -257,6 +252,19 @@ const didDocumentPatch = {
   additionalProperties: false
 };
 
+const ContinuityElectorTypes = {
+  type: 'string',
+  enum: [
+    'Continuity2017Elector',
+    'Continuity2017GuarantorElector',
+  ],
+};
+
+const Continuity2017Elector = {
+  type: 'string',
+  enum: ['Continuity2017Elector'],
+};
+
 const electorPoolDocument = {
   title: 'ElectorPool Document',
   required: [
@@ -289,18 +297,19 @@ const electorPoolDocument = {
             anyOf: [serviceDescriptor(), serviceId()]
           },
           type: {
-            anyOf: [{
-              type: 'string',
-              enum: electorTypes,
-            }, {
-              type: 'array',
-              minItems: 1,
-              uniqueItems: true,
-              items: {
-                type: 'string',
-                enum: electorTypes,
-              }
-            }]
+            anyOf: [
+              Continuity2017Elector, {
+                type: 'array',
+                maxItems: 1,
+                minItems: 1,
+                items: Continuity2017Elector
+              }, {
+                type: 'array',
+                maxItems: 2,
+                minItems: 2,
+                uniqueItems: true,
+                items: ContinuityElectorTypes
+              }]
           },
           capability: {
             type: 'array',
