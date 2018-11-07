@@ -27,7 +27,7 @@ describe('mustValidate API', () => {
       result.should.be.a('boolean');
       result.should.be.true;
     });
-    it('should return false on a WebLedgerConfiguration', async () => {
+    it('should return true on a WebLedgerConfiguration', async () => {
       const ledgerConfiguration = mockData.ledgerConfigurations.alpha;
       const testConfig =
         mockData.ledgerConfigurations.alpha.operationValidator[0];
@@ -44,7 +44,7 @@ describe('mustValidate API', () => {
       assertNoError(err);
       should.exist(result);
       result.should.be.a('boolean');
-      result.should.be.false;
+      result.should.be.true;
     });
   });
 });

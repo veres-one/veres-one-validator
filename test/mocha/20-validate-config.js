@@ -8,7 +8,7 @@ const voValidator = require('veres-one-validator');
 const mockData = require('./mock.data');
 
 describe('validateConfiguration API', () => {
-  it('validates a proper config', async () => {
+  it('validates a proper validator config', async () => {
     const validatorConfig =
       mockData.ledgerConfigurations.alpha.operationValidator[0];
     let err;

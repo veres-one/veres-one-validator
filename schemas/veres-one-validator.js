@@ -10,11 +10,8 @@ const urnUuid = require('./urn-uuid');
 const {serviceDescriptor, serviceId} = require('./service');
 
 const electorTypes = [
-  // FIXME: Continuity2017Peer is also being used to the `service.type` in
-  // elector'S DID document service descriptors.  Is that right?
-  'Continuity2017Peer',
+  'Continuity2017Elector',
   'Continuity2017GuarantorElector',
-  'Continuity2017RecoveryElector',
 ];
 
 const caveat = {
@@ -266,7 +263,8 @@ const electorPoolDocument = {
     '@context',
     'id',
     'electorPool',
-    'invoker'
+    'invoker',
+    'maximumElectorCount'
   ],
   type: 'object',
   properties: {
@@ -312,6 +310,10 @@ const electorPoolDocument = {
         }
       }
     },
+    maximumElectorCount: {
+      type: 'integer',
+      minimum: 1,
+    }
   },
   additionalProperties: false,
 };
@@ -447,13 +449,13 @@ const ledgerConfiguration = {
     electorSelectionMethod: {
       additionalProperties: false,
       required: [
-        'electorCount',
+        // maximumElectorCount is *not* required in the configuration
         'electorPool',
         'type',
       ],
       type: 'object',
       properties: {
-        electorCount: {
+        maximumElectorCount: {
           type: 'integer',
           minimum: 1,
         },

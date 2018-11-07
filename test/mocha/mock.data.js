@@ -52,6 +52,7 @@ electorPoolDocument.alpha = {
     id: 'urn:uuid:89a62413-0ada-461b-b672-1b28afefaca8',
     elector: 'did:v1:test:nym:50f28192-8f52-4bf2-a9b1-d203f6611456',
     service: 'urn:uuid:50f28192-8f52-4bf2-a9b1-d203f6611456',
+    type: ['Continuity2017GuarantorElector', 'Continuity2017Elector'],
     // other restrictions/capabilities like guarantor, recovery,
     // or ocap w/ticket caveat
     capability: [{
@@ -60,7 +61,8 @@ electorPoolDocument.alpha = {
         type: 'VeresOneElectorTicketAgent' /* TBD */
       }]
     }]
-  }]
+  }],
+  maximumElectorCount: 10,
 };
 
 privateDidDocuments.alpha = {

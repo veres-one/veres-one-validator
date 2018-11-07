@@ -405,6 +405,7 @@ describe('validate API ElectorPool', () => {
           elector,
           capability,
           id: _generateUrnUuid(),
+          type: ['Continuity2017GuarantorElector', 'Continuity2017Elector'],
           service: {
             id: newServiceId,
             serviceEndpoint: newServiceEndpoint,
