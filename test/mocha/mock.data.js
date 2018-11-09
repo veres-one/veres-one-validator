@@ -199,8 +199,12 @@ ledgerConfigurations.alpha = {
       type: 'ValidatorFilterByType',
       validatorFilterByType: ['CreateWebLedgerRecord', 'UpdateWebLedgerRecord']
     }]
-  }]/*,
+  }],
   ledgerConfigurationValidator: [{
+    type: 'VeresOneValidator2017',
+  }, /*{
+    // FIXME: enable signature validation on configuration as well.  How
+    // are keys dereferenced?
     type: 'SignatureValidator2017',
     validatorFilter: [{
       type: 'ValidatorFilterByType',
@@ -210,7 +214,7 @@ ledgerConfigurations.alpha = {
       'did:v1:53ebca61-5687-4558-b90a-03167e4c2838'
     ],
     minimumSignaturesRequired: 1
-  }]*/
+  }*/],
 };
 
 operations.create = {

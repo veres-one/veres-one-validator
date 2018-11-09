@@ -446,6 +446,7 @@ const ledgerConfiguration = {
     'ledger',
     'ledgerConfigurationValidator',
     'operationValidator',
+    'proof',
     'type',
   ],
   type: 'object',
@@ -539,6 +540,10 @@ const ledgerConfiguration = {
           }
         }
       }
+    },
+    proof: {
+      // the proofs are validated by bedrock-ledger-validator-signature
+      type: 'array',
     },
     type: {
       type: 'string',
