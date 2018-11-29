@@ -16,7 +16,6 @@ const {BedrockError} = bedrock.util;
 jsigs.use('jsonld', bedrock.jsonld);
 equihashSigs.install(jsigs);
 
-// FIXME: use `use` API when available
 didv1.injector.use('jsonld-signatures', jsigs);
 
 const continuityServiceType = 'Continuity2017Peer';
@@ -144,8 +143,9 @@ describe('validate API ElectorPool', () => {
           electorPool: electorPoolDoc.id,
         };
         let err;
+        let result;
         try {
-          await voValidator.validate({
+          result = await voValidator.validate({
             ledgerConfig,
             ledgerNode,
             validatorInput: operation,
@@ -155,8 +155,9 @@ describe('validate API ElectorPool', () => {
         } catch(e) {
           err = e;
         }
-        should.exist(err);
-        err.name.should.equal('NotFoundError');
+        assertNoError(err);
+        result.valid.should.be.false;
+        result.error.name.should.equal('NotFoundError');
       });
       it('fails on op w/missing RegisterDid capability', async () => {
         const {id: maintainerDid} = maintainerDidDocumentFull.doc;
@@ -182,8 +183,9 @@ describe('validate API ElectorPool', () => {
           electorPool: electorPoolDoc.id,
         };
         let err;
+        let result;
         try {
-          await voValidator.validate({
+          result = await voValidator.validate({
             ledgerConfig,
             ledgerNode,
             validatorInput: operation,
@@ -193,9 +195,13 @@ describe('validate API ElectorPool', () => {
         } catch(e) {
           err = e;
         }
-        should.exist(err);
-        err.name.should.equal('ValidationError');
+        assertNoError(err);
+        result.valid.should.be.false;
+        result.error.name.should.equal('NotAllowedError');
       });
+
+      // FIXME: this test is known to be failing due to issues related to
+      // _checkProofCombination in index.js. See FIXME there.
       it('fails on op w/missing AuthorizeRequest capability', async () => {
         const {id: maintainerDid} = maintainerDidDocumentFull.doc;
         const electorPoolDoc = _generateElectorPoolDoc();
@@ -220,8 +226,9 @@ describe('validate API ElectorPool', () => {
           electorPool: electorPoolDoc.id,
         };
         let err;
+        let result;
         try {
-          await voValidator.validate({
+          result = await voValidator.validate({
             ledgerConfig,
             ledgerNode,
             validatorInput: operation,
@@ -231,9 +238,12 @@ describe('validate API ElectorPool', () => {
         } catch(e) {
           err = e;
         }
-        should.exist(err);
-        err.name.should.equal('ValidationError');
+        assertNoError(err);
+        result.valid.should.be.false;
+        result.error.name.should.equal('ValidationError');
       });
+      // FIXME: this test is known to be failing due to issues related to
+      // _checkProofCombination in index.js. See FIXME there.
       it('fails on op w/two RegisterDid capability proofs', async () => {
         const {id: maintainerDid} = maintainerDidDocumentFull.doc;
         const electorPoolDoc = _generateElectorPoolDoc();
@@ -266,8 +276,9 @@ describe('validate API ElectorPool', () => {
           electorPool: electorPoolDoc.id,
         };
         let err;
+        let result;
         try {
-          await voValidator.validate({
+          result = await voValidator.validate({
             ledgerConfig,
             ledgerNode,
             validatorInput: operation,
@@ -277,8 +288,9 @@ describe('validate API ElectorPool', () => {
         } catch(e) {
           err = e;
         }
-        should.exist(err);
-        err.name.should.equal('NotAllowedError');
+        assertNoError(err);
+        result.valid.should.be.false;
+        result.error.name.should.equal('NotAllowedError');
       });
       it('fails on op w/two AuthorizeRequest capability proofs', async () => {
         const {id: maintainerDid} = maintainerDidDocumentFull.doc;
@@ -312,8 +324,9 @@ describe('validate API ElectorPool', () => {
           electorPool: electorPoolDoc.id,
         };
         let err;
+        let result;
         try {
-          await voValidator.validate({
+          result = await voValidator.validate({
             ledgerConfig,
             ledgerNode,
             validatorInput: operation,
@@ -323,8 +336,9 @@ describe('validate API ElectorPool', () => {
         } catch(e) {
           err = e;
         }
-        should.exist(err);
-        err.name.should.equal('NotAllowedError');
+        assertNoError(err);
+        result.valid.should.be.false;
+        result.error.name.should.equal('NotAllowedError');
       });
       // FIXME: enable when ocapld integration is complete
       // test should be failing, but currently passes
@@ -417,7 +431,11 @@ describe('validate API ElectorPool', () => {
         let operation = {
           '@context': constants.WEB_LEDGER_CONTEXT_V1_URL,
           recordPatch: {
-            '@context': constants.VERES_ONE_CONTEXT_URL,
+            // FIXME: use constant and cached version when available
+            "@context": [
+              'https://w3id.org/did/v0.11',
+              constants.VERES_ONE_CONTEXT_URL
+            ],
             patch,
             sequence: 0,
             target: electorPoolDoc.id,
@@ -459,8 +477,9 @@ describe('validate API ElectorPool', () => {
           electorPool: electorPoolDoc.id,
         };
         let err;
+        let result;
         try {
-          await voValidator.validate({
+          result = await voValidator.validate({
             ledgerConfig,
             ledgerNode,
             validatorInput: operation,
@@ -471,6 +490,8 @@ describe('validate API ElectorPool', () => {
           err = e;
         }
         assertNoError(err);
+        assertNoError(result.error);
+        result.valid.should.be.true;
       });
     }); // end update electorPool operation
   });

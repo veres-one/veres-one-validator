@@ -120,6 +120,12 @@ const publicKey = {
   additionalProperties: false
 };
 
+const didDocumentContext = schemas.jsonldContext([
+  // FIXME: use constant when available
+  'https://w3id.org/did/v0.11',
+  constants.VERES_ONE_CONTEXT_URL,
+]);
+
 const didDocument = {
   title: 'DID Document',
   // FIXME: what *are* required properties?
@@ -128,7 +134,7 @@ const didDocument = {
   ],
   type: 'object',
   properties: {
-    '@context': schemas.jsonldContext(constants.VERES_ONE_CONTEXT_URL),
+    '@context': didDocumentContext,
     id: did(),
     // FIXME: be more specific with restrictions for all properties below
     invocationTarget: {
@@ -210,7 +216,7 @@ const didDocumentPatch = {
   ],
   type: 'object',
   properties: {
-    '@context': schemas.jsonldContext(constants.VERES_ONE_CONTEXT_URL),
+    '@context': didDocumentContext,
     target: {
       anyOf: [did(), urnUuid()],
     },
@@ -327,6 +333,20 @@ const electorPoolDocument = {
   additionalProperties: false,
 };
 
+const proof = {
+  required: [
+    'type'
+  ],
+  type: 'object',
+  properties: {
+    type: {
+      type: 'string',
+      enum: [
+        'RsaSignature2018', 'Ed25519Signature2018'],
+    }
+  }
+};
+
 const createDid = {
   title: 'Create DID',
   required: [
@@ -337,28 +357,20 @@ const createDid = {
   ],
   type: 'object',
   properties: {
+    // TODO: require did context
     '@context': schemas.jsonldContext(constants.WEB_LEDGER_CONTEXT_V1_URL),
     type: {
       type: 'string',
       enum: ['CreateWebLedgerRecord'],
     },
     record: didDocument,
+    // FIXME: make sure this is correct
     proof: {
-      type: 'array',
-      minItems: 2,
-      items: {
-        required: [
-          'type'
-        ],
-        type: 'object',
-        properties: {
-          type: {
-            type: 'string',
-            enum: [
-              'RsaSignature2018', 'Ed25519Signature2018', 'EquihashProof2018'],
-          }
-        }
-      }
+      anyOf: [proof, {
+        type: 'array',
+        minItems: 1,
+        items: proof,
+      }]
     }
   },
   additionalProperties: false
@@ -381,21 +393,11 @@ const createElectorPool = {
     },
     record: electorPoolDocument,
     proof: {
-      type: 'array',
-      minItems: 2,
-      items: {
-        required: [
-          'type'
-        ],
-        type: 'object',
-        properties: {
-          type: {
-            type: 'string',
-            enum: [
-              'RsaSignature2018', 'Ed25519Signature2018'],
-          }
-        }
-      }
+      anyOf: [proof, {
+        type: 'array',
+        minItems: 1,
+        items: proof,
+      }]
     }
   },
   additionalProperties: false
@@ -418,19 +420,11 @@ const updateDid = {
     },
     recordPatch: didDocumentPatch,
     proof: {
-      type: 'array',
-      minItems: 2,
-      items: {
-        required: ['type'],
-        type: 'object',
-        properties: {
-          type: {
-            type: 'string',
-            enum: [
-              'RsaSignature2018', 'Ed25519Signature2018', 'EquihashProof2018'],
-          }
-        }
-      }
+      anyOf: [proof, {
+        type: 'array',
+        minItems: 1,
+        items: proof,
+      }]
     }
   },
   additionalProperties: false
@@ -542,6 +536,7 @@ const ledgerConfiguration = {
       }
     },
     proof: {
+      // FIXME: needs confirmation still TBD
       // the proofs are validated by bedrock-ledger-validator-signature
       type: 'array',
     },

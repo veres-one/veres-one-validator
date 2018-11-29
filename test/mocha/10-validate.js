@@ -16,13 +16,11 @@ const jsigs = require('jsonld-signatures');
 equihashSigs.install(jsigs);
 
 jsigs.use('jsonld', bedrock.jsonld);
-// FIXME: TEMPORARY, JUST USE `USE` API WHEN AVAILABLE
 didv1.injector.use('jsonld-signatures', jsigs);
 
 // FIXME: update these test to async/await
 const attachInvocationProof = callbackify(didv1.attachInvocationProof)
   .bind(didv1);
-const attachEquihashProof = callbackify(didv1.attachEquihashProof).bind(didv1);
 
 const mockData = require('./mock.data');
 
@@ -40,7 +38,7 @@ const voValidate = callbackify(voValidator.validate);
 describe('validate API', () => {
   describe('operationValidator', () => {
     describe('create operation', () => {
-      it('validates an operation with proper capability + PoW', done => {
+      it('validates an operation with proper capability', done => {
         async.auto({
           capability: callback => attachInvocationProof({
             operation: mockData.operations.create,
@@ -54,23 +52,15 @@ describe('validate API', () => {
             assertNoError(err);
             callback(err, result);
           }),
-          pow: ['capability', (results, callback) => attachEquihashProof({
-            operation: results.capability,
-            parameters: {
-              n: cfg.equihash.equihashParameterN,
-              k: cfg.equihash.equihashParameterK
-            }
-          }, (err, result) => {
-            assertNoError(err);
-            callback(err, result);
-          })],
-          check: ['pow', (results, callback) => voValidate({
+          check: ['capability', (results, callback) => voValidate({
             ledgerNode: mockData.ledgerNode,
-            validatorInput: results.pow,
+            validatorInput: results.capability,
             validatorConfig: mockData.ledgerConfigurations.alpha
               .operationValidator[0],
-          }, err => {
+          }, (err, result) => {
             assertNoError(err);
+            should.not.exist(result.error);
+            result.valid.should.be.true;
             callback();
           })]
         }, err => {
@@ -89,33 +79,27 @@ describe('validate API', () => {
             privateKeyBase58: mockData.privateDidDocuments.alpha
               .capabilityInvocation[0].publicKey[0].privateKey.privateKeyBase58
           }, callback),
-          pow: ['capability', (results, callback) => jsigs.sign(
-            results.capability, {
-              algorithm: 'EquihashProof2018',
-              parameters: {
-                n: cfg.equihash.equihashParameterN,
-                k: cfg.equihash.equihashParameterK
-              }
-            }, callback)],
           // add a random additional LD signature
-          extraSign: ['pow', (results, callback) => signDocument({
+          extraSign: ['capability', (results, callback) => signDocument({
             creator: mockData.authorizedSigners.beta,
             privateKeyBase58: mockData.privateDidDocuments.beta
               .authentication[0].publicKey[0].privateKey.privateKeyBase58,
-            doc: results.pow
+            doc: results.capability
           }, callback)],
           check: ['extraSign', (results, callback) => voValidate({
             ledgerNode: mockData.ledgerNode,
             validatorInput: results.extraSign,
             validatorConfig: mockData.ledgerConfigurations.alpha
               .operationValidator[0],
-          }, err => {
+          }, (err, result) => {
             assertNoError(err);
+            should.not.exist(result.error);
+            result.valid.should.be.true;
             callback();
           })]
         }, done);
       });
-      it('validates an operation w/two proper capabilities, no PoW', done => {
+      it('validates an operation w/two proper capabilities', done => {
         async.auto({
           registerCapability: callback => attachInvocationProof({
             operation: mockData.operations.create,
@@ -142,82 +126,10 @@ describe('validate API', () => {
             validatorInput: results.authorizeCapability,
             validatorConfig: mockData.ledgerConfigurations.alpha
               .operationValidator[0],
-          }, err => {
+          }, (err, result) => {
             assertNoError(err);
-            callback();
-          })]
-        }, done);
-      });
-      it('validation fails if Equihash proof is missing', done => {
-        async.auto({
-          capability: callback => attachInvocationProof({
-            operation: mockData.operations.create,
-            capability: mockData.didDocuments.alpha,
-            capabilityAction: capabilityActions.register,
-            creator: mockData.didDocuments.alpha
-              .capabilityInvocation[0].publicKey[0].id,
-            privateKeyBase58: mockData.privateDidDocuments.alpha
-              .capabilityInvocation[0].publicKey[0].privateKey.privateKeyBase58
-          }, callback),
-          check: ['capability', (results, callback) => voValidate({
-            ledgerNode: mockData.ledgerNode,
-            validatorInput: results.capability,
-            validatorConfig: mockData.ledgerConfigurations.alpha
-              .operationValidator[0],
-          }, err => {
-            should.exist(err);
-            err.name.should.equal('ValidationError');
-            callback();
-          })]
-        }, done);
-      });
-      it('validation fails if capability invocation proof and extra LD ' +
-        'proof, but no Equihash', done => {
-        async.auto({
-          capability: callback => attachInvocationProof({
-            operation: mockData.operations.create,
-            capability: mockData.didDocuments.alpha,
-            capabilityAction: capabilityActions.register,
-            creator: mockData.didDocuments.alpha
-              .capabilityInvocation[0].publicKey[0].id,
-            privateKeyBase58: mockData.privateDidDocuments.alpha
-              .capabilityInvocation[0].publicKey[0].privateKey.privateKeyBase58
-          }, callback),
-          extraSign: ['capability', (results, callback) => signDocument({
-            creator: mockData.authorizedSigners.beta,
-            privateKeyBase58: mockData.privateDidDocuments.beta
-              .authentication[0].publicKey[0].privateKey.privateKeyBase58,
-            doc: results.capability
-          }, callback)],
-          check: ['extraSign', (results, callback) => voValidate({
-            ledgerNode: mockData.ledgerNode,
-            validatorInput: results.extraSign,
-            validatorConfig: mockData.ledgerConfigurations.alpha
-              .operationValidator[0],
-          }, err => {
-            should.exist(err);
-            err.name.should.equal('NotAllowedError');
-            callback();
-          })]
-        }, done);
-      });
-      it('validation fails if capability invocation proof is missing', done => {
-        async.auto({
-          pow: callback => attachEquihashProof({
-            operation: mockData.operations.create,
-            parameters: {
-              n: cfg.equihash.equihashParameterN,
-              k: cfg.equihash.equihashParameterK
-            }
-          }, callback),
-          check: ['pow', (results, callback) => voValidate({
-            ledgerNode: mockData.ledgerNode,
-            validatorInput: results.pow,
-            validatorConfig: mockData.ledgerConfigurations.alpha
-              .operationValidator[0],
-          }, err => {
-            should.exist(err);
-            err.name.should.equal('ValidationError');
+            should.not.exist(result.error);
+            result.valid.should.be.true;
             callback();
           })]
         }, done);
@@ -396,27 +308,16 @@ describe('validate API', () => {
             privateKeyBase58: mockData.privateDidDocuments.alpha
               .capabilityInvocation[0].publicKey[0].privateKey.privateKeyBase58
           }, callback),
-          pow: ['capability', (results, callback) => attachEquihashProof({
-            operation: results.capability,
-            parameters: {
-              n: cfg.equihash.equihashParameterN,
-              k: cfg.equihash.equihashParameterK
-            }
-          }, callback)],
-          check: ['pow', (results, callback) => voValidate({
+          check: ['capability', (results, callback) => voValidate({
             ledgerNode: mockData.ledgerNode,
-            validatorInput: results.pow,
+            validatorInput: results.capability,
             validatorConfig: mockData.ledgerConfigurations.alpha
               .operationValidator[0],
-          }, err => {
-            should.exist(err);
-            // FIXME: do we want to use `NotSupportedError` here?
-            //err.name.should.equal('NotSupportedError');
-            err.name.should.equal('ValidationError');
-            // should.exist(err.details.supportedOperation);
-            // err.details.supportedOperation.should.be.an('array');
-            // err.details.supportedOperation.should.have.same.members([
-            //   'CreateWebLedgerRecord']);
+          }, (err, result) => {
+            assertNoError(err);
+            should.exist(result.error);
+            result.valid.should.be.false;
+            result.error.name.should.equal('ValidationError');
             callback();
           })]
         }, done);
@@ -434,21 +335,15 @@ describe('validate API', () => {
             privateKeyBase58: mockData.privateDidDocuments.alpha
               .capabilityInvocation[0].publicKey[0].privateKey.privateKeyBase58
           }, callback),
-          pow: ['capability', (results, callback) => attachEquihashProof({
-            operation: results.capability,
-            parameters: {
-              n: cfg.equihash.equihashParameterN,
-              k: cfg.equihash.equihashParameterK
-            }
-          }, callback)],
-          check: ['pow', (results, callback) => voValidate({
+          check: ['capability', (results, callback) => voValidate({
             ledgerNode: mockData.ledgerNode,
-            validatorInput: results.pow,
+            validatorInput: results.capability,
             validatorConfig: mockData.ledgerConfigurations.alpha
               .operationValidator[0],
-          }, err => {
-            should.exist(err);
-            err.name.should.equal('ValidationError');
+          }, (err, result) => {
+            should.not.exist(err);
+            result.valid.should.be.false;
+            result.error.name.should.equal('ValidationError');
             callback();
           })]
         }, done);
@@ -467,21 +362,15 @@ describe('validate API', () => {
             privateKeyBase58: mockData.privateDidDocuments.alpha
               .capabilityInvocation[0].publicKey[0].privateKey.privateKeyBase58
           }, callback),
-          pow: ['capability', (results, callback) => attachEquihashProof({
-            operation: results.capability,
-            parameters: {
-              n: cfg.equihash.equihashParameterN,
-              k: cfg.equihash.equihashParameterK
-            }
-          }, callback)],
-          check: ['pow', (results, callback) => voValidate({
+          check: ['capability', (results, callback) => voValidate({
             ledgerNode: mockData.ledgerNode,
-            validatorInput: results.pow,
+            validatorInput: results.capability,
             validatorConfig: mockData.ledgerConfigurations.alpha
               .operationValidator[0],
-          }, err => {
-            should.exist(err);
-            err.name.should.equal('ValidationError');
+          }, (err, result) => {
+            should.not.exist(err);
+            result.valid.should.be.false;
+            result.error.name.should.equal('ValidationError');
             callback();
           })]
         }, done);
@@ -489,7 +378,18 @@ describe('validate API', () => {
     });
 
     describe('update operation', () => {
-      it('validates an operation with capability proof + PoW', done => {
+      let storeExistingDids;
+      before(() => {
+        // the mock records.get needs to return document for alpha so that the
+        // signature can be verified. alpha is the extra signer in tests.
+        storeExistingDids = bedrock.util.clone(mockData.existingDids);
+        const alphaId = mockData.didDocuments.alpha.id;
+        mockData.existingDids[alphaId] = mockData.ldDocuments[alphaId];
+      });
+      after(() => {
+        mockData.existingDids = storeExistingDids;
+      });
+      it('validates an operation with capability proof', done => {
         async.auto({
           capability: callback => attachInvocationProof({
             operation: mockData.operations.update,
@@ -500,20 +400,15 @@ describe('validate API', () => {
             privateKeyBase58: mockData.privateDidDocuments.beta
               .capabilityInvocation[0].publicKey[0].privateKey.privateKeyBase58
           }, callback),
-          pow: ['capability', (results, callback) => attachEquihashProof({
-            operation: results.capability,
-            parameters: {
-              n: cfg.equihash.equihashParameterN,
-              k: cfg.equihash.equihashParameterK
-            }
-          }, callback)],
-          check: ['pow', (results, callback) => voValidate({
+          check: ['capability', (results, callback) => voValidate({
             ledgerNode: mockData.ledgerNode,
-            validatorInput: results.pow,
+            validatorInput: results.capability,
             validatorConfig: mockData.ledgerConfigurations.alpha
               .operationValidator[0],
-          }, err => {
+          }, (err, result) => {
             assertNoError(err);
+            should.not.exist(result.error);
+            result.valid.should.be.true;
             callback();
           })]
         }, done);
@@ -529,64 +424,24 @@ describe('validate API', () => {
             privateKeyBase58: mockData.privateDidDocuments.beta
               .capabilityInvocation[0].publicKey[0].privateKey.privateKeyBase58
           }, callback),
-          pow: ['capability', (results, callback) => jsigs.sign(
-            results.capability, {
-              algorithm: 'EquihashProof2018',
-              parameters: {
-                n: cfg.equihash.equihashParameterN,
-                k: cfg.equihash.equihashParameterK
-              }
-            }, callback)],
           // add a random additional LD signature
-          extraSign: ['pow', (results, callback) => signDocument({
+          extraSign: ['capability', (results, callback) => signDocument({
             creator: mockData.authorizedSigners.alpha,
             privateKeyBase58: mockData.privateDidDocuments.alpha
               .authentication[0].publicKey[0].privateKey.privateKeyBase58,
-            doc: results.pow
+            doc: results.capability
           }, callback)],
           check: ['extraSign', (results, callback) => voValidate({
             ledgerNode: mockData.ledgerNode,
             validatorInput: results.extraSign,
             validatorConfig: mockData.ledgerConfigurations.alpha
               .operationValidator[0],
-          }, err => {
+          }, (err, result) => {
             assertNoError(err);
+            should.not.exist(result.error);
+            result.valid.should.be.true;
             callback();
           })]
-        }, done);
-      });
-      it('operation with two proper capabilities, no PoW', done => {
-        async.auto({
-          registerCapability: callback => attachInvocationProof({
-            operation: mockData.operations.update,
-            capability: mockData.didDocuments.beta,
-            capabilityAction: capabilityActions.update,
-            creator: mockData.didDocuments.beta
-              .capabilityInvocation[0].publicKey[0].id,
-            privateKeyBase58: mockData.privateDidDocuments.beta
-              .capabilityInvocation[0].publicKey[0].privateKey.privateKeyBase58
-          }, callback),
-          authorizeCapability: ['registerCapability', (results, callback) =>
-            attachInvocationProof({
-              operation: results.registerCapability,
-              capability: mockData.capabilities.authorizeRequest,
-              capabilityAction: capabilityActions.authorize,
-              creator: mockData.didDocuments.beta
-                .capabilityInvocation[0].publicKey[0].id,
-              privateKeyBase58: mockData.privateDidDocuments.beta
-                .capabilityInvocation[0].publicKey[0]
-                .privateKey.privateKeyBase58
-            }, callback)],
-          check: ['authorizeCapability', (results, callback) =>
-            voValidate({
-              ledgerNode: mockData.ledgerNode,
-              validatorInput: results.authorizeCapability,
-              validatorConfig: mockData.ledgerConfigurations.alpha
-                .operationValidator[0],
-            }, err => {
-              assertNoError(err);
-              callback();
-            })]
         }, done);
       });
       it('should fail to validate an operation with an invalid patch', done => {
@@ -600,21 +455,15 @@ describe('validate API', () => {
             privateKeyBase58: mockData.privateDidDocuments.beta
               .capabilityInvocation[0].publicKey[0].privateKey.privateKeyBase58
           }, callback),
-          pow: ['capability', (results, callback) => attachEquihashProof({
-            operation: results.capability,
-            parameters: {
-              n: cfg.equihash.equihashParameterN,
-              k: cfg.equihash.equihashParameterK
-            }
-          }, callback)],
-          check: ['pow', (results, callback) => voValidate({
+          check: ['capability', (results, callback) => voValidate({
             ledgerNode: mockData.ledgerNode,
-            validatorInput: results.pow,
+            validatorInput: results.capability,
             validatorConfig: mockData.ledgerConfigurations.alpha
               .operationValidator[0],
-          }, err => {
-            should.exist(err);
-            err.name.should.equal('ValidationError');
+          }, (err, result) => {
+            should.not.exist(err);
+            result.valid.should.be.false;
+            result.error.name.should.equal('ValidationError');
             callback();
           })]
         }, done);
@@ -630,21 +479,15 @@ describe('validate API', () => {
             privateKeyBase58: mockData.privateDidDocuments.beta
               .capabilityInvocation[0].publicKey[0].privateKey.privateKeyBase58
           }, callback),
-          pow: ['capability', (results, callback) => attachEquihashProof({
-            operation: results.capability,
-            parameters: {
-              n: cfg.equihash.equihashParameterN,
-              k: cfg.equihash.equihashParameterK
-            }
-          }, callback)],
-          check: ['pow', (results, callback) => voValidate({
+          check: ['capability', (results, callback) => voValidate({
             ledgerNode: mockData.ledgerNode,
-            validatorInput: results.pow,
+            validatorInput: results.capability,
             validatorConfig: mockData.ledgerConfigurations.alpha
               .operationValidator[0],
-          }, err => {
-            should.exist(err);
-            err.name.should.equal('ValidationError');
+          }, (err, result) => {
+            should.not.exist(err);
+            result.valid.should.be.false;
+            result.error.name.should.equal('ValidationError');
             callback();
           })]
         }, done);

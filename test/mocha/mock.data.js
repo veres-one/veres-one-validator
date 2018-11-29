@@ -19,13 +19,15 @@ const ledgerConfigurations = mock.ledgerConfigurations = {};
 const operations = mock.operations = {};
 const privateDidDocuments = mock.privateDidDocuments = {};
 
+// need to return document for beta but *not* for alpha
 mock.ledgerNode = {
   records: {
     async get({maxBlockHeight, recordId}) {
-      if(recordId === didDocuments.beta.id) {
+      const record = mock.existingDids[recordId];
+      if(record) {
         return {
-          record: ldDocuments[didDocuments.beta.id],
-          meta: {sequence: 0}
+          meta: {sequence: 0},
+          record,
         };
       }
       throw new BedrockError(
@@ -66,7 +68,8 @@ electorPoolDocument.alpha = {
 };
 
 privateDidDocuments.alpha = {
-  "@context": constants.VERES_ONE_CONTEXT_URL,
+  // FIXME: use constant and cached version when available
+  "@context": ['https://w3id.org/did/v0.11', constants.VERES_ONE_CONTEXT_URL],
   "id": "did:v1:test:nym:z279tjfMvfjqHvkuqXbFFTB5hqWpWNLfAptnQvUFiRFebJgL",
   "authentication": [
     {
@@ -119,7 +122,8 @@ privateDidDocuments.alpha = {
 };
 
 privateDidDocuments.beta = {
-  "@context": constants.VERES_ONE_CONTEXT_URL,
+  // FIXME: use constant and cached version when available
+  "@context": ['https://w3id.org/did/v0.11', constants.VERES_ONE_CONTEXT_URL],
   "id": "did:v1:test:nym:z279nCCZVzxreYfLw3EtFLtBMSVVY2pA6uxKengriMCdG3DF",
   "authentication": [
     {
@@ -233,7 +237,8 @@ operations.update = {
   '@context': constants.WEB_LEDGER_CONTEXT_V1_URL,
   type: 'UpdateWebLedgerRecord',
   recordPatch: {
-    '@context': constants.VERES_ONE_CONTEXT_URL,
+    // FIXME: use constant and cached version when available
+    "@context": ['https://w3id.org/did/v0.11', constants.VERES_ONE_CONTEXT_URL],
     target: didDocuments.beta.id,
     sequence: 0,
     patch: [{
@@ -256,7 +261,8 @@ operations.updateInvalidPatch = {
   '@context': constants.WEB_LEDGER_CONTEXT_V1_URL,
   type: 'UpdateWebLedgerRecord',
   recordPatch: {
-    '@context': constants.VERES_ONE_CONTEXT_URL,
+    // FIXME: use constant and cached version when available
+    "@context": ['https://w3id.org/did/v0.11', constants.VERES_ONE_CONTEXT_URL],
     target: didDocuments.beta.id,
     sequence: 0,
     patch: [{
@@ -269,7 +275,8 @@ operations.updateInvalidChange = {
   '@context': constants.WEB_LEDGER_CONTEXT_V1_URL,
   type: 'UpdateWebLedgerRecord',
   recordPatch: {
-    '@context': constants.VERES_ONE_CONTEXT_URL,
+    // FIXME: use constant and cached version when available
+    "@context": ['https://w3id.org/did/v0.11', constants.VERES_ONE_CONTEXT_URL],
     target: didDocuments.beta.id,
     sequence: 0,
     patch: [{
@@ -285,25 +292,34 @@ capabilities.authorizeRequest =
 
 // alpha
 ldDocuments[didDocuments.alpha.id] = didDocuments.alpha;
-ldDocuments[didDocuments.alpha.capabilityDelegation[0].publicKey.id] =
+ldDocuments[didDocuments.alpha.authentication[0].publicKey[0].id] =
+  Object.assign({
+    "@context": constants.SECURITY_CONTEXT_V2_URL
+  }, didDocuments.alpha.authentication[0].publicKey[0]);
+ldDocuments[didDocuments.beta.capabilityDelegation[0].publicKey[0].id] =
+ldDocuments[didDocuments.alpha.capabilityDelegation[0].publicKey[0].id] =
   Object.assign({
     "@context": constants.SECURITY_CONTEXT_V2_URL
   }, didDocuments.alpha.capabilityDelegation[0].publicKey);
-ldDocuments[didDocuments.alpha.capabilityInvocation[0].publicKey.id] =
+ldDocuments[didDocuments.alpha.capabilityInvocation[0].publicKey[0].id] =
   Object.assign({
     "@context": constants.SECURITY_CONTEXT_V2_URL
-  }, didDocuments.alpha.capabilityInvocation[0].publicKey);
+  }, didDocuments.alpha.capabilityInvocation[0].publicKey[0]);
 
 // beta
 ldDocuments[didDocuments.beta.id] = didDocuments.beta;
-ldDocuments[didDocuments.beta.capabilityDelegation[0].publicKey.id] =
+ldDocuments[didDocuments.beta.authentication[0].publicKey[0].id] =
   Object.assign({
     "@context": constants.SECURITY_CONTEXT_V2_URL
-  }, didDocuments.beta.capabilityDelegation[0].publicKey);
-ldDocuments[didDocuments.beta.capabilityInvocation[0].publicKey.id] =
+  }, didDocuments.beta.authentication[0].publicKey[0]);
+ldDocuments[didDocuments.beta.capabilityDelegation[0].publicKey[0].id] =
   Object.assign({
     "@context": constants.SECURITY_CONTEXT_V2_URL
-  }, didDocuments.beta.capabilityInvocation[0].publicKey);
+  }, didDocuments.beta.capabilityDelegation[0].publicKey[0]);
+ldDocuments[didDocuments.beta.capabilityInvocation[0].publicKey[0].id] =
+  Object.assign({
+    "@context": constants.SECURITY_CONTEXT_V2_URL
+  }, didDocuments.beta.capabilityInvocation[0].publicKey[0]);
 
 ldDocuments[capabilities.authorizeRequest] = {
   "@context": constants.SECURITY_CONTEXT_V2_URL,
@@ -311,15 +327,22 @@ ldDocuments[capabilities.authorizeRequest] = {
   // TODO: add capability properties and improve verification testing
 };
 
-const jsonld = bedrock.jsonld;
-const oldLoader = jsonld.documentLoader;
-jsonld.documentLoader = function(url, callback) {
-  if(url in mock.ldDocuments) {
-    return callback(null, {
-      contextUrl: null,
-      document: mock.ldDocuments[url],
-      documentUrl: url
-    });
-  }
-  oldLoader(url, callback);
-};
+// used in conjuction with the mock record.get API. By default, beta will be
+// an existing DID and alpha will not exist. Tests can make various DIDs exist
+// or not exist based on their needs. The default configuration should be
+// stored and restored in before/after functions.
+mock.existingDids = {};
+mock.existingDids[didDocuments.beta.id] = ldDocuments[didDocuments.beta.id];
+
+// const jsonld = bedrock.jsonld;
+// const oldLoader = jsonld.documentLoader;
+// jsonld.documentLoader = function(url, callback) {
+//   if(url in mock.ldDocuments) {
+//     return callback(null, {
+//       contextUrl: null,
+//       document: mock.ldDocuments[url],
+//       documentUrl: url
+//     });
+//   }
+//   oldLoader(url, callback);
+// };
