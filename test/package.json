@@ -12,7 +12,7 @@
     "bedrock-injector": "^1.0.0",
     "bedrock-jobs": "^2.0.3",
     "bedrock-ledger-context": "^5.0.0",
-    "bedrock-ledger-node": "digitalbazaar/bedrock-ledger-node#master",
+    "bedrock-ledger-node": "^4.0.0",
     "bedrock-ledger-storage-mongodb": "^1.0.0",
     "bedrock-ledger-utils": "github:digitalbazaar/bedrock-ledger-utils#implementation",
     "bedrock-mongodb": "^5.0.0",
