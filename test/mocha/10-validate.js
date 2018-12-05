@@ -10,10 +10,7 @@ const config = bedrock.config;
 const cfg = config['veres-one-validator'];
 const didv1 = new (require('did-veres-one')).VeresOne();
 const voValidator = require('veres-one-validator');
-const equihashSigs = require('equihash-signature');
 const jsigs = require('jsonld-signatures');
-
-equihashSigs.install(jsigs);
 
 jsigs.use('jsonld', bedrock.jsonld);
 didv1.injector.use('jsonld-signatures', jsigs);
