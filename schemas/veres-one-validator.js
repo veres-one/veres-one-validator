@@ -93,23 +93,23 @@ const config = {
 };
 
 const publicKey = {
-  title: 'Public Key',
+  title: 'Veres One DID Public Key',
+  additionalProperties: false,
   required: [
+    'controller',
     'id',
-    'owner',
-    'type'
+    'type',
   ],
   type: 'object',
   properties: {
     id: {
       type: 'string',
     },
-    // FIXME: allow other types of keys
     type: {
       type: 'string',
       enum: ['RsaVerificationKey2018', 'Ed25519VerificationKey2018'],
     },
-    owner: did(),
+    controller: did(),
     // FIXME: make schema require this for RsaVerificationKey2018
     publicKeyPem: schemas.publicKeyPem(),
     // FIXME: make schema require this for Ed25519VerificationKey2018
@@ -117,20 +117,30 @@ const publicKey = {
       type: 'string',
     }
   },
-  additionalProperties: false
 };
 
-const didDocumentContext = schemas.jsonldContext([
-  // FIXME: use constant when available
-  'https://w3id.org/did/v0.11',
-  constants.VERES_ONE_CONTEXT_URL,
-]);
+const didDocumentContext = {
+  type: 'array',
+  items: [{
+    type: 'string',
+    enum: [constants.DID_CONTEXT_URL]
+  }, {
+    type: 'string',
+    enum: [constants.VERES_ONE_CONTEXT_URL]
+  }],
+  maxItems: 2,
+  minItems: 2,
+};
 
 const didDocument = {
-  title: 'DID Document',
+  title: 'Veres One DID Document',
+  additionalProperties: false,
   // FIXME: what *are* required properties?
   required: [
     'id',
+    'authentication',
+    'capabilityDelegation',
+    'capabilityInvocation',
   ],
   type: 'object',
   properties: {
@@ -146,56 +156,17 @@ const didDocument = {
     authentication: {
       type: 'array',
       minItems: 1,
-      items: {
-        required: ['type'],
-        type: 'object',
-        properties: {
-          type: {
-            type: 'string',
-          },
-          publicKey: {
-            type: 'array',
-            minItems: 1,
-            items: publicKey
-          }
-        }
-      },
+      items: publicKey,
     },
     capabilityDelegation: {
       type: 'array',
       minItems: 1,
-      items: {
-        required: ['type'],
-        type: 'object',
-        properties: {
-          type: {
-            type: 'string',
-          },
-          publicKey: {
-            type: 'array',
-            minItems: 1,
-            items: publicKey
-          }
-        }
-      },
+      items: publicKey,
     },
     capabilityInvocation: {
       type: 'array',
       minItems: 1,
-      items: {
-        required: ['type'],
-        type: 'object',
-        properties: {
-          type: {
-            type: 'string',
-          },
-          publicKey: {
-            type: 'array',
-            minItems: 1,
-            items: publicKey
-          }
-        }
-      },
+      items: publicKey,
     },
     service: {
       type: 'array',
@@ -203,7 +174,6 @@ const didDocument = {
       items: serviceDescriptor(),
     },
   },
-  additionalProperties: false
 };
 
 const didDocumentPatch = {
@@ -351,6 +321,7 @@ const createDid = {
   title: 'Create DID',
   required: [
     '@context',
+    'creator',
     'proof',
     'record',
     'type',
@@ -359,6 +330,9 @@ const createDid = {
   properties: {
     // TODO: require did context
     '@context': schemas.jsonldContext(constants.WEB_LEDGER_CONTEXT_V1_URL),
+    creator: {
+      type: 'string'
+    },
     type: {
       type: 'string',
       enum: ['CreateWebLedgerRecord'],
@@ -553,6 +527,6 @@ module.exports.didDocumentPatch = () => didDocumentPatch;
 module.exports.electorPoolDocument = () => electorPoolDocument;
 module.exports.ledgerConfiguration = () => ledgerConfiguration;
 module.exports.operation = () => ({
-  title: 'WebLedgerOperation',
+  title: 'Veres One WebLedgerOperation',
   anyOf: [createDid, updateDid, createElectorPool]
 });
