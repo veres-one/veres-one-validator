@@ -311,10 +311,59 @@ const proof = {
   properties: {
     type: {
       type: 'string',
-      enum: [
-        'RsaSignature2018', 'Ed25519Signature2018'],
+      enum: ['RsaSignature2018', 'Ed25519Signature2018'],
     }
   }
+};
+
+const baseCapability = {
+  type: 'object',
+  additionalProperties: false,
+  required: [
+    'capability', 'capabilityAction', 'created', 'creator', 'jws',
+    'proofPurpose', 'type'
+  ],
+  properties: {
+    capability: {type: 'string'},
+    capabilityAction: {
+      type: 'string',
+      enum: ['AuthorizeRequest', 'RegisterDid'],
+    },
+    created: schemas.w3cDateTime(),
+    creator: {type: 'string'},
+    jws: {type: 'string'},
+    proofPurpose: {
+      type: 'string',
+      enum: ['capabilityInvocation'],
+    },
+    type: {
+      type: 'string',
+      enum: ['RsaSignature2018', 'Ed25519Signature2018']
+    },
+  }
+};
+
+const authorizedRequestCapability = {
+  allOf: [baseCapability, {
+    properties: {
+      capabilityAction: {
+        enum: ['AuthorizeRequest'],
+      },
+      jws: {
+        enum: ['MOCKPROOF'],
+      },
+    }
+  }]
+};
+
+const registerDidCapability = {
+  allOf: [baseCapability, {
+    properties: {
+      capabilityAction: {
+        enum: ['RegisterDid'],
+      },
+    }
+  }]
 };
 
 const createDid = {
@@ -338,13 +387,13 @@ const createDid = {
       enum: ['CreateWebLedgerRecord'],
     },
     record: didDocument,
-    // FIXME: make sure this is correct
+    // FIXME: this requires proofs be in a specific order, it's much easier
+    // to ensure that we're getting exactly what is required this way
     proof: {
-      anyOf: [proof, {
-        type: 'array',
-        minItems: 1,
-        items: proof,
-      }]
+      type: 'array',
+      items: [authorizedRequestCapability, registerDidCapability],
+      minItems: 2,
+      maxItems: 2,
     }
   },
   additionalProperties: false
