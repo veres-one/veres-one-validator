@@ -186,7 +186,10 @@ const didDocumentPatch = {
   ],
   type: 'object',
   properties: {
-    '@context': didDocumentContext,
+    '@context': {
+      // TODO: be more explicit here
+      type: 'array'
+    },
     target: {
       anyOf: [did(), urnUuid()],
     },
@@ -430,6 +433,7 @@ const updateDid = {
   title: 'Update DID',
   required: [
     '@context',
+    'creator',
     'proof',
     'recordPatch',
     'type'
@@ -437,6 +441,7 @@ const updateDid = {
   type: 'object',
   properties: {
     '@context': schemas.jsonldContext(constants.WEB_LEDGER_CONTEXT_V1_URL),
+    creator: {type: 'string'},
     type: {
       type: 'string',
       enum: ['UpdateWebLedgerRecord'],

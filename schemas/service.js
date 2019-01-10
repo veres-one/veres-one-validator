@@ -19,7 +19,8 @@ const serviceId = {
   title: 'Service Identifier',
   description: 'A service identifier.',
   type: 'string',
-  pattern,
+  // FIXME: a service ID can be any type of URL, not just did: ??
+  // pattern,
 };
 
 const serviceDescriptor = {
