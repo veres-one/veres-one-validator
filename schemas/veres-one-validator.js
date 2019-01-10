@@ -352,6 +352,7 @@ const authorizedRequestCapability = {
       capabilityAction: {
         enum: ['AuthorizeRequest'],
       },
+      // FIXME: this is for testnet v2 only
       jws: {
         enum: ['MOCKPROOF'],
       },
