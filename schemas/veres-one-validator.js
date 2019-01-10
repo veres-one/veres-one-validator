@@ -330,7 +330,7 @@ const baseCapability = {
     capability: {type: 'string'},
     capabilityAction: {
       type: 'string',
-      enum: ['AuthorizeRequest', 'RegisterDid'],
+      enum: ['AuthorizeRequest', 'RegisterDid', 'UpdateDidDocument'],
     },
     created: schemas.w3cDateTime(),
     creator: {type: 'string'},
@@ -369,8 +369,18 @@ const registerDidCapability = {
   }]
 };
 
+const updateDidCapability = {
+  allOf: [baseCapability, {
+    properties: {
+      capabilityAction: {
+        enum: ['UpdateDidDocument'],
+      },
+    }
+  }]
+};
+
 const createDid = {
-  title: 'Create DID',
+  title: 'Veres One Create DID',
   required: [
     '@context',
     'creator',
@@ -447,12 +457,13 @@ const updateDid = {
       enum: ['UpdateWebLedgerRecord'],
     },
     recordPatch: didDocumentPatch,
+    // FIXME: this requires proofs be in a specific order, it's much easier
+    // to ensure that we're getting exactly what is required this way
     proof: {
-      anyOf: [proof, {
-        type: 'array',
-        minItems: 1,
-        items: proof,
-      }]
+      type: 'array',
+      items: [authorizedRequestCapability, updateDidCapability],
+      minItems: 2,
+      maxItems: 2,
     }
   },
   additionalProperties: false
