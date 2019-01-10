@@ -7,14 +7,10 @@ const bedrock = require('bedrock');
 const {constants} = bedrock.config;
 const didv1 = new (require('did-veres-one')).VeresOne();
 const voValidator = require('veres-one-validator');
-const equihashSigs = require('equihash-signature');
 const jsigs = require('jsonld-signatures');
 const jsonpatch = require('fast-json-patch');
 const uuid = require('uuid/v4');
 const {BedrockError} = bedrock.util;
-
-jsigs.use('jsonld', bedrock.jsonld);
-equihashSigs.install(jsigs);
 
 didv1.injector.use('jsonld-signatures', jsigs);
 
