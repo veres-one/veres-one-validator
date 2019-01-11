@@ -14,7 +14,7 @@
   "dependencies": {
     "did-veres-one": "veres-one/did-veres-one#targetNodePlus",
     "fast-json-patch": "^2.0.6",
-    "jsonld-signatures": "^3.0.0",
+    "jsonld-signatures": "digitalbazaar/jsonld-signatures#use-crypto-ld",
     "lodash": "^4.17.11",
     "ocapld": "^1.0.2"
   },
