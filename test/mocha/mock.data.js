@@ -11,6 +11,7 @@ const {BedrockError} = bedrock.util;
 const mock = {};
 module.exports = mock;
 
+mock.existingDids = {};
 const capabilities = mock.capabilities = {};
 const didDocuments = mock.didDocuments = {};
 const electorPoolDocument = mock.electorPoolDocument = {};
@@ -18,6 +19,16 @@ const ldDocuments = mock.ldDocuments = {};
 const ledgerConfigurations = mock.ledgerConfigurations = {};
 const operations = mock.operations = {};
 const privateDidDocuments = mock.privateDidDocuments = {};
+// TODO: for testnet v2, this proof is only validated using json-schema
+mock.proof = {
+  type: "Ed25519Signature2018",
+  created: "2019-01-10T23:10:25Z",
+  capability: 'did:v1:uuid:c37e914a-1e2a-4d59-9668-ee93458fd19a',
+  capabilityAction: "AuthorizeRequest",
+  jws: "MOCKPROOF",
+  proofPurpose: "capabilityInvocation",
+  verificationMethod: "did:v1:test:nym:z279yHL6HsxRzCPU78DAWgZVieb8xPK1mJKJBbP8T2CezuFY#z279tKmToKKMjQ8tsCgTbBBthw5xEzHWL6GCqZyQnzZr7wUo"
+}
 
 // need to return document for beta but *not* for alpha
 mock.ledgerNode = {
@@ -68,55 +79,33 @@ electorPoolDocument.alpha = {
 };
 
 privateDidDocuments.alpha = {
-  // FIXME: use constant and cached version when available
-  "@context": ['https://w3id.org/did/v0.11', constants.VERES_ONE_CONTEXT_URL],
-  "id": "did:v1:test:nym:z279tjfMvfjqHvkuqXbFFTB5hqWpWNLfAptnQvUFiRFebJgL",
+  "@context": [
+    constants.DID_CONTEXT_URL,
+    constants.VERES_ONE_CONTEXT_URL
+  ],
+  "id": "did:v1:test:nym:z279yHL6HsxRzCPU78DAWgZVieb8xPK1mJKJBbP8T2CezuFY",
   "authentication": [
     {
-      "type": "Ed25519SignatureAuthentication2018",
-      "publicKey": [
-        {
-          "id": "did:v1:test:nym:z279tjfMvfjqHvkuqXbFFTB5hqWpWNLfAptnQvUFiRFebJgL#authn-key-1",
-          "type": "Ed25519VerificationKey2018",
-          "owner": "did:v1:test:nym:z279tjfMvfjqHvkuqXbFFTB5hqWpWNLfAptnQvUFiRFebJgL",
-          "publicKeyBase58": "GhRN3AWmarx4MYUnoLqnZjscyDyzsHxXKuZNmXf9AQ1s",
-          "privateKey": {
-            "privateKeyBase58": "4r4t7zzyVNiSSuHNj5V8rjJDGYiLZ7N8b5achD9zUbdQ1nrrQ283Ctgq234BWmDGdsJbSVks3J1uotMLPdi34kFf"
-          }
-        }
-      ]
+      "id": "did:v1:test:nym:z279yHL6HsxRzCPU78DAWgZVieb8xPK1mJKJBbP8T2CezuFY#z279jeddPcVScp2qcA476nxuQnZGnmBHcXSKWgNusrT1u1V1",
+      "type": "Ed25519VerificationKey2018",
+      "controller": "did:v1:test:nym:z279yHL6HsxRzCPU78DAWgZVieb8xPK1mJKJBbP8T2CezuFY",
+      "publicKeyBase58": "2vXXVcAkogFwWGBHsyU1KCJrsFJLtuE8xnzyVNwmhhdq"
     }
   ],
   "capabilityDelegation": [
     {
-      "type": "Ed25519SignatureCapabilityAuthorization2018",
-      "publicKey": [
-        {
-          "id": "did:v1:test:nym:z279tjfMvfjqHvkuqXbFFTB5hqWpWNLfAptnQvUFiRFebJgL#ocap-delegate-key-1",
-          "type": "Ed25519VerificationKey2018",
-          "owner": "did:v1:test:nym:z279tjfMvfjqHvkuqXbFFTB5hqWpWNLfAptnQvUFiRFebJgL",
-          "publicKeyBase58": "3LRDabY5N4TU5MasAbcXVbXmEAD2QAg1oUiyWnA3Ngnr",
-          "privateKey": {
-            "privateKeyBase58": "AfoqQ46sTgDCXSs3BLgecRMW2KMMHzJSmc1KxbZSxSpufYX4vmdpAXQSmetmspW5yGKZj4Brhut7fbzxG7RVztv"
-          }
-        }
-      ]
+      "id": "did:v1:test:nym:z279yHL6HsxRzCPU78DAWgZVieb8xPK1mJKJBbP8T2CezuFY#z279odRyQVywHaU723iXRVncxmd4ELNzCL5gGfcQgDVg6mhV",
+      "type": "Ed25519VerificationKey2018",
+      "controller": "did:v1:test:nym:z279yHL6HsxRzCPU78DAWgZVieb8xPK1mJKJBbP8T2CezuFY",
+      "publicKeyBase58": "6uKsWVfFUShCv9qiCgHisBNeJpW3UhsVinEUHjzRuTrK"
     }
   ],
   "capabilityInvocation": [
     {
-      "type": "Ed25519SignatureCapabilityAuthorization2018",
-      "publicKey": [
-        {
-          "id": "did:v1:test:nym:z279tjfMvfjqHvkuqXbFFTB5hqWpWNLfAptnQvUFiRFebJgL#ocap-invoke-key-1",
-          "type": "Ed25519VerificationKey2018",
-          "owner": "did:v1:test:nym:z279tjfMvfjqHvkuqXbFFTB5hqWpWNLfAptnQvUFiRFebJgL",
-          "publicKeyBase58": "C1ZG2fR9Unz1jdiS2dgBcFGQarTiTCgbs36KKwkQPzqA",
-          "privateKey": {
-            "privateKeyBase58": "5yiybQnFhQNE7YoAn3EaSL3s6w8KzDQ4SGJapgkVh1tT3PcuGSKWLR1t5ZW1foeVQsRyUY6MoTUv4Kq8Uaph38w6"
-          }
-        }
-      ]
+      "id": "did:v1:test:nym:z279yHL6HsxRzCPU78DAWgZVieb8xPK1mJKJBbP8T2CezuFY#z279yHL6HsxRzCPU78DAWgZVieb8xPK1mJKJBbP8T2CezuFY",
+      "type": "Ed25519VerificationKey2018",
+      "controller": "did:v1:test:nym:z279yHL6HsxRzCPU78DAWgZVieb8xPK1mJKJBbP8T2CezuFY",
+      "publicKeyBase58": "GZDzPsdkB4ca1ELMHs4bd4Lj2sS53g77di1C4YhQobQN"
     }
   ]
 };
@@ -175,8 +164,9 @@ privateDidDocuments.beta = {
   ]
 };
 
-didDocuments.alpha = _stripPrivateKeys(privateDidDocuments.alpha);
-didDocuments.beta = _stripPrivateKeys(privateDidDocuments.beta);
+didDocuments.alpha = privateDidDocuments.alpha;
+// didDocuments.alpha = _stripPrivateKeys(privateDidDocuments.alpha);
+// didDocuments.beta = _stripPrivateKeys(privateDidDocuments.beta);
 
 function _stripPrivateKeys(privateDidDocument) {
   const didDocument = bedrock.util.clone(privateDidDocument);
@@ -188,8 +178,8 @@ function _stripPrivateKeys(privateDidDocument) {
 
 mock.authorizedSigners = {
   // fully valid signer
-  alpha: didDocuments.alpha.authentication[0].publicKey[0].id,
-  beta: didDocuments.beta.authentication[0].publicKey[0].id
+  alpha: didDocuments.alpha.authentication[0].id,
+  // beta: didDocuments.beta.authentication[0].id
 };
 
 ledgerConfigurations.alpha = {
@@ -224,7 +214,10 @@ ledgerConfigurations.alpha = {
 operations.create = {
   '@context': constants.WEB_LEDGER_CONTEXT_V1_URL,
   type: 'CreateWebLedgerRecord',
-  record: didDocuments.alpha
+  record: didDocuments.alpha,
+  // this is the `targetNode` of the ledgerAgent
+  creator: 'https://genesis.veres.one.localhost:23443/consensus/' +
+    'continuity2017/voters/z6MkhoJ1djxR53kw5fQqRTZ34cGwAdSPvksZR2Xm7u1Y4TfE'
 };
 
 operations.createElectorPool = {
@@ -239,7 +232,7 @@ operations.update = {
   recordPatch: {
     // FIXME: use constant and cached version when available
     "@context": ['https://w3id.org/did/v0.11', constants.VERES_ONE_CONTEXT_URL],
-    target: didDocuments.beta.id,
+    // target: didDocuments.beta.id,
     sequence: 0,
     patch: [{
       "op": "add",
@@ -247,14 +240,17 @@ operations.update = {
       "value": {
         "type": "Ed25519SignatureAuthentication2018",
         "publicKey": [{
-          "id": didDocuments.beta.id + "#authn-key-1",
+          // "id": didDocuments.beta.id + "#authn-key-1",
           "type": "Ed25519VerificationKey2018",
           "owner": "did:v1:test:nym:z279wWXz4nugfh2XATAnFQkqaoSg97AWyNbsvdpr8hujamKJ",
           "publicKeyBase58": "EnRtAnazrZFd4ZHy2bFwVDCGDbHaFkPhNkSukEQVPTU8"
         }]
       }
     }]
-  }
+  },
+  // this is the `targetNode` of the ledgerAgent
+  creator: 'https://genesis.veres.one.localhost:23443/consensus/' +
+    'continuity2017/voters/z6MkhoJ1djxR53kw5fQqRTZ34cGwAdSPvksZR2Xm7u1Y4TfE'
 };
 
 operations.updateInvalidPatch = {
@@ -263,7 +259,7 @@ operations.updateInvalidPatch = {
   recordPatch: {
     // FIXME: use constant and cached version when available
     "@context": ['https://w3id.org/did/v0.11', constants.VERES_ONE_CONTEXT_URL],
-    target: didDocuments.beta.id,
+    // target: didDocuments.beta.id,
     sequence: 0,
     patch: [{
       op: "invalid"
@@ -277,7 +273,7 @@ operations.updateInvalidChange = {
   recordPatch: {
     // FIXME: use constant and cached version when available
     "@context": ['https://w3id.org/did/v0.11', constants.VERES_ONE_CONTEXT_URL],
-    target: didDocuments.beta.id,
+    // target: didDocuments.beta.id,
     sequence: 0,
     patch: [{
       op: "add",
@@ -289,6 +285,8 @@ operations.updateInvalidChange = {
 
 capabilities.authorizeRequest =
   'did:v1:test:uuid:652de430-1d6f-11e8-878c-2bfa41196bf6';
+
+/*
 
 // alpha
 ldDocuments[didDocuments.alpha.id] = didDocuments.alpha;
@@ -346,3 +344,5 @@ mock.existingDids[didDocuments.beta.id] = ldDocuments[didDocuments.beta.id];
 //   }
 //   oldLoader(url, callback);
 // };
+
+*/

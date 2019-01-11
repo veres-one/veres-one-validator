@@ -12,8 +12,6 @@ const didv1 = new (require('did-veres-one')).VeresOne();
 const voValidator = require('veres-one-validator');
 const jsigs = require('jsonld-signatures');
 
-didv1.injector.use('jsonld-signatures', jsigs);
-
 // FIXME: update these test to async/await
 const attachInvocationProof = callbackify(didv1.attachInvocationProof)
   .bind(didv1);

@@ -20,9 +20,10 @@
     "bedrock-test": "^2.0.0",
     "bedrock-validation": "^4.0.0",
     "bedrock-veres-one-context": "^6.0.0",
+    "crypto-ld": "github:digitalbazaar/crypto-ld#signer",
     "did-veres-one": "veres-one/did-veres-one#targetNodePlus",
     "grunt": "^1.0.1",
-    "jsonld-signatures": "^2.1.4",
+    "jsonld-signatures": "^3.0.0",
     "uuid": "^3.3.2",
     "veres-one-validator": "file:.."
   }

@@ -323,8 +323,7 @@ const baseCapability = {
   type: 'object',
   additionalProperties: false,
   required: [
-    'capability', 'capabilityAction', 'created', 'creator', 'jws',
-    'proofPurpose', 'type'
+    'capability', 'capabilityAction', 'created', 'jws', 'proofPurpose', 'type'
   ],
   properties: {
     capability: {type: 'string'},
@@ -343,41 +342,62 @@ const baseCapability = {
       type: 'string',
       enum: ['RsaSignature2018', 'Ed25519Signature2018']
     },
+    verificationMethod: {type: 'string'},
   }
 };
 
-const authorizedRequestCapability = {
-  allOf: [baseCapability, {
+const creatorOrVerificationMethod = {
+  oneOf: [{
+    required: ['creator'],
     properties: {
-      capabilityAction: {
-        enum: ['AuthorizeRequest'],
-      },
-      // FIXME: this is for testnet v2 only
-      jws: {
-        enum: ['MOCKPROOF'],
-      },
+      verificationMethod: {not: {}}
+    }
+  }, {
+    required: ['verificationMethod'],
+    properties: {
+      creator: {not: {}}
     }
   }]
+};
+
+const authorizedRequestCapability = {
+  allOf: [
+    baseCapability,
+    creatorOrVerificationMethod, {
+      properties: {
+        capabilityAction: {
+          enum: ['AuthorizeRequest'],
+        },
+        // FIXME: this is for testnet v2 only
+        jws: {
+          enum: ['MOCKPROOF'],
+        },
+      }
+    }]
 };
 
 const registerDidCapability = {
-  allOf: [baseCapability, {
-    properties: {
-      capabilityAction: {
-        enum: ['RegisterDid'],
-      },
-    }
-  }]
+  allOf: [
+    baseCapability,
+    creatorOrVerificationMethod, {
+      properties: {
+        capabilityAction: {
+          enum: ['RegisterDid'],
+        },
+      }
+    }]
 };
 
 const updateDidCapability = {
-  allOf: [baseCapability, {
-    properties: {
-      capabilityAction: {
-        enum: ['UpdateDidDocument'],
-      },
-    }
-  }]
+  allOf: [
+    baseCapability,
+    creatorOrVerificationMethod, {
+      properties: {
+        capabilityAction: {
+          enum: ['UpdateDidDocument'],
+        },
+      }
+    }]
 };
 
 const createDid = {
