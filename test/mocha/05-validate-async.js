@@ -56,7 +56,7 @@ describe.only('validate API', () => {
     result.valid.should.be.a('boolean');
     result.valid.should.be.true;
   });
-  it('validates a proper UpdateWebLedgerRecord operation', async () => {
+  it('rejects a duplicate create operation', async () => {
     const mockOperation = bedrock.util.clone(mockData.operations.create);
     const mockDoc = bedrock.util.clone(mockData.privateDidDocuments.alpha);
     const key = await Ed25519KeyPair.generate();
@@ -100,6 +100,8 @@ describe.only('validate API', () => {
     should.exist(result);
     result.valid.should.be.a('boolean');
     result.valid.should.be.false;
+    should.exist(result.error);
+    result.error.name.should.equal('DuplicateError');
   });
 });
 
