@@ -12,8 +12,6 @@ const jsonpatch = require('fast-json-patch');
 const uuid = require('uuid/v4');
 const {BedrockError} = bedrock.util;
 
-didv1.injector.use('jsonld-signatures', jsigs);
-
 const continuityServiceType = 'Continuity2017Peer';
 const ldDocuments = new Map();
 
