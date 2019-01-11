@@ -11,6 +11,11 @@ const {BedrockError} = bedrock.util;
 const mock = {};
 module.exports = mock;
 
+const didContexts = [
+  constants.DID_CONTEXT_URL,
+  constants.VERES_ONE_CONTEXT_URL
+];
+
 mock.existingDids = {};
 const capabilities = mock.capabilities = {};
 const didDocuments = mock.didDocuments = {};
@@ -34,7 +39,9 @@ mock.proof = {
 mock.ledgerNode = {
   records: {
     async get({maxBlockHeight, recordId}) {
-      const record = mock.existingDids[recordId];
+      // must clone this going into the document loader, otherwise it will be
+      // mutated
+      const record = bedrock.util.clone(mock.existingDids[recordId]);
       if(record) {
         return {
           meta: {sequence: 0},
@@ -79,10 +86,7 @@ electorPoolDocument.alpha = {
 };
 
 privateDidDocuments.alpha = {
-  "@context": [
-    constants.DID_CONTEXT_URL,
-    constants.VERES_ONE_CONTEXT_URL
-  ],
+  "@context": didContexts,
   "id": "did:v1:test:nym:z279yHL6HsxRzCPU78DAWgZVieb8xPK1mJKJBbP8T2CezuFY",
   "authentication": [
     {
@@ -230,23 +234,17 @@ operations.update = {
   '@context': constants.WEB_LEDGER_CONTEXT_V1_URL,
   type: 'UpdateWebLedgerRecord',
   recordPatch: {
-    // FIXME: use constant and cached version when available
-    "@context": ['https://w3id.org/did/v0.11', constants.VERES_ONE_CONTEXT_URL],
+    '@context': [
+      constants.JSON_LD_PATCH_CONTEXT_V1_URL, {
+        value: {
+          '@id': 'jldp:value',
+          '@context': didContexts
+        }
+      }
+    ],
     // target: didDocuments.beta.id,
     sequence: 0,
-    patch: [{
-      "op": "add",
-      "path": "/authentication/1",
-      "value": {
-        "type": "Ed25519SignatureAuthentication2018",
-        "publicKey": [{
-          // "id": didDocuments.beta.id + "#authn-key-1",
-          "type": "Ed25519VerificationKey2018",
-          "owner": "did:v1:test:nym:z279wWXz4nugfh2XATAnFQkqaoSg97AWyNbsvdpr8hujamKJ",
-          "publicKeyBase58": "EnRtAnazrZFd4ZHy2bFwVDCGDbHaFkPhNkSukEQVPTU8"
-        }]
-      }
-    }]
+    patch: null,
   },
   // this is the `targetNode` of the ledgerAgent
   creator: 'https://genesis.veres.one.localhost:23443/consensus/' +
