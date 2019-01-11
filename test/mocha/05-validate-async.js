@@ -218,6 +218,60 @@ describe.only('validate API', () => {
       'The authorized invoker does not match the verification method or ' +
       'its controller.');
   });
+  it('rejects update operation signed with incorrect target', async () => {
+    // create an alternate DID that will sign the operation
+    const {did: did1, mockDoc: mockDoc1} = await _generateDid();
+    mockData.existingDids[did1] = bedrock.util.clone(mockDoc1);
+
+    const {did, mockDoc, capabilityInvocationKey} = await _generateDid();
+    const mockOperation = bedrock.util.clone(mockData.operations.update);
+    let capabilityAction = 'RegisterDid';
+    // add the new document to the mock document loader as if it were on ledger
+    // clone here so we can proceed with making changes to mockDoc
+    mockData.existingDids[did] = bedrock.util.clone(mockDoc);
+
+    // `did` generates a patch against `did1`
+    const observer = jsonpatch.observe(mockDoc1);
+    const newKey = await Ed25519KeyPair.generate({controller: did});
+    newKey.id = _generateKeyId({did, key: newKey});
+    mockDoc1.authentication.push({
+      id: newKey.id,
+      type: newKey.type,
+      controller: newKey.controller,
+      publicKeyBase58: newKey.publicKeyBase58
+    });
+    mockOperation.recordPatch.patch = jsonpatch.generate(observer);
+
+    // the operation is being submitted by `did` against `did1`
+    mockOperation.recordPatch.target = did1;
+
+    // add an AuthorizeRequest proof that will pass json-schema validation for
+    // testnet v2 *not* a valid signature
+    mockOperation.proof = bedrock.util.clone(mockData.proof);
+    capabilityAction = 'UpdateDidDocument';
+
+    // signing with a key from another valid DID
+    const s = await jsigs.sign(mockOperation, {
+      documentLoader,
+      suite: new Ed25519Signature2018(
+        {compactProof: false, key: capabilityInvocationKey}),
+      purpose: new CapabilityInvocation({capability: did, capabilityAction})
+    });
+    const result = await voValidator.validate({
+      basisBlockHeight: 10,
+      ledgerNode: mockData.ledgerNode,
+      validatorInput: s,
+      validatorConfig: mockData.ledgerConfigurations.alpha
+        .operationValidator[0],
+    });
+    result.valid.should.be.false;
+    should.exist(result.error);
+    should.exist(result.error.details.proofVerifyResult);
+    const {proofVerifyResult} = result.error.details;
+    proofVerifyResult.verified.should.be.false;
+    proofVerifyResult.error[0].message.should.contain(
+      'does not match root capability target');
+  });
   // proof has `capabilityAction` === `RegisterDid`
   it('rejects update operation without proper capabilityAction', async () => {
     const {did, mockDoc, capabilityInvocationKey} = await _generateDid();
