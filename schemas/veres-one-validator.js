@@ -421,13 +421,16 @@ const createDid = {
       enum: ['CreateWebLedgerRecord'],
     },
     record: didDocument,
-    // FIXME: this requires proofs be in a specific order, it's much easier
-    // to ensure that we're getting exactly what is required this way
     proof: {
-      type: 'array',
-      items: [authorizedRequestCapability, registerDidCapability],
-      minItems: 2,
-      maxItems: 2,
+      anyOf: [{
+        type: 'array',
+        items: [authorizedRequestCapability, registerDidCapability],
+        additionalItems: false,
+      }, {
+        type: 'array',
+        items: [registerDidCapability, authorizedRequestCapability],
+        additionalItems: false,
+      }],
     }
   },
   additionalProperties: false
@@ -478,13 +481,16 @@ const updateDid = {
       enum: ['UpdateWebLedgerRecord'],
     },
     recordPatch: didDocumentPatch,
-    // FIXME: this requires proofs be in a specific order, it's much easier
-    // to ensure that we're getting exactly what is required this way
     proof: {
-      type: 'array',
-      items: [authorizedRequestCapability, updateDidCapability],
-      minItems: 2,
-      maxItems: 2,
+      anyOf: [{
+        type: 'array',
+        items: [authorizedRequestCapability, updateDidCapability],
+        additionalItems: false,
+      }, {
+        type: 'array',
+        items: [updateDidCapability, authorizedRequestCapability],
+        additionalItems: false,
+      }],
     }
   },
   additionalProperties: false
