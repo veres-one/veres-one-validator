@@ -24,9 +24,9 @@ describe.only('validate API', () => {
     // testnet v2 *not* a valid signature
     mockOperation.proof = bedrock.util.clone(mockData.proof);
     const s = await jsigs.sign(mockOperation, {
+      compactProof: false,
       documentLoader,
-      suite: new Ed25519Signature2018(
-        {compactProof: false, key: capabilityInvocationKey}),
+      suite: new Ed25519Signature2018({key: capabilityInvocationKey}),
       purpose: new CapabilityInvocation({capability: did, capabilityAction})
     });
     const result = await voValidator.validate({
@@ -53,9 +53,9 @@ describe.only('validate API', () => {
     // testnet v2 *not* a valid signature
     mockOperation.proof = bedrock.util.clone(mockData.proof);
     const s = await jsigs.sign(mockOperation, {
+      compactProof: false,
       documentLoader,
-      suite: new Ed25519Signature2018(
-        {compactProof: false, key: capabilityInvocationKey}),
+      suite: new Ed25519Signature2018({key: capabilityInvocationKey}),
       purpose: new CapabilityInvocation({capability: did, capabilityAction})
     });
     const result = await voValidator.validate({
@@ -95,9 +95,9 @@ describe.only('validate API', () => {
     mockOperation.proof = bedrock.util.clone(mockData.proof);
     capabilityAction = 'UpdateDidDocument';
     const s = await jsigs.sign(mockOperation, {
+      compactProof: false,
       documentLoader,
-      suite: new Ed25519Signature2018(
-        {compactProof: false, key: capabilityInvocationKey}),
+      suite: new Ed25519Signature2018({key: capabilityInvocationKey}),
       purpose: new CapabilityInvocation({capability: did, capabilityAction})
     });
     const result = await voValidator.validate({
@@ -137,9 +137,9 @@ describe.only('validate API', () => {
     mockOperation.proof = bedrock.util.clone(mockData.proof);
     capabilityAction = 'UpdateDidDocument';
     const s = await jsigs.sign(mockOperation, {
+      compactProof: false,
       documentLoader,
-      suite: new Ed25519Signature2018(
-        {compactProof: false, key: capabilityInvocationKey}),
+      suite: new Ed25519Signature2018({key: capabilityInvocationKey}),
       purpose: new CapabilityInvocation({capability: did, capabilityAction})
     });
 
@@ -197,9 +197,9 @@ describe.only('validate API', () => {
 
     // signing with a key from another valid DID
     const s = await jsigs.sign(mockOperation, {
+      compactProof: false,
       documentLoader,
-      suite: new Ed25519Signature2018(
-        {compactProof: false, key: capabilityInvocationKey1}),
+      suite: new Ed25519Signature2018({key: capabilityInvocationKey1}),
       purpose: new CapabilityInvocation({capability: did, capabilityAction})
     });
     const result = await voValidator.validate({
@@ -252,9 +252,9 @@ describe.only('validate API', () => {
 
     // signing with a key from another valid DID
     const s = await jsigs.sign(mockOperation, {
+      compactProof: false,
       documentLoader,
-      suite: new Ed25519Signature2018(
-        {compactProof: false, key: capabilityInvocationKey}),
+      suite: new Ed25519Signature2018({key: capabilityInvocationKey}),
       purpose: new CapabilityInvocation({capability: did, capabilityAction})
     });
     const result = await voValidator.validate({
@@ -299,9 +299,9 @@ describe.only('validate API', () => {
     capabilityAction = 'RegisterDid';
 
     const s = await jsigs.sign(mockOperation, {
+      compactProof: false,
       documentLoader,
-      suite: new Ed25519Signature2018(
-        {compactProof: false, key: capabilityInvocationKey}),
+      suite: new Ed25519Signature2018({key: capabilityInvocationKey}),
       purpose: new CapabilityInvocation({capability: did, capabilityAction})
     });
     const result = await voValidator.validate({
@@ -343,9 +343,9 @@ describe.only('validate API', () => {
 
     // *must* use `capabilityInvocationKey`
     const s = await jsigs.sign(mockOperation, {
+      compactProof: false,
       documentLoader,
-      suite: new Ed25519Signature2018(
-        {compactProof: false, key: newKey}),
+      suite: new Ed25519Signature2018({key: newKey}),
       purpose: new CapabilityInvocation({capability: did, capabilityAction})
     });
     const result = await voValidator.validate({
@@ -393,9 +393,9 @@ describe.only('validate API', () => {
 
     // *must* use `capabilityInvocationKey`
     const s = await jsigs.sign(mockOperation, {
+      compactProof: false,
       documentLoader,
-      suite: new Ed25519Signature2018(
-        {compactProof: false, key: newKey}),
+      suite: new Ed25519Signature2018({key: newKey}),
       purpose: new CapabilityInvocation({capability: did, capabilityAction})
     });
     const result = await voValidator.validate({
