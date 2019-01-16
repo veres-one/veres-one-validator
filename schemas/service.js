@@ -10,10 +10,10 @@ require('../lib/config');
 const cfg = config['veres-one-validator'];
 
 // TODO: improve regex for service IDs
-const pattern = cfg.environment === 'live' ?
-  '^(did\:v1\:nym\:|did\:v1\:uuid\:)([-_A-Za-z0-9.]+);service=(.*)$' :
-  '^(did\:v1\:test\:nym\:|did\:v1\:test\:uuid\:)' +
-  '([-_A-Za-z0-9.]+);service=(.*)$';
+const pattern = cfg.environment === 'test' ?
+  '^(did\:v1\:test\:nym\:|did\:v1\:test\:uuid\:)([-_A-Za-z0-9.]+)' +
+    ';service=(.*)$' :
+  '^(did\:v1\:nym\:|did\:v1\:uuid\:)([-_A-Za-z0-9.]+);service=(.*)$';
 
 const serviceId = {
   title: 'Service Identifier',
