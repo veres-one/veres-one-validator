@@ -426,7 +426,7 @@ async function _generateDid() {
   const capabilityInvocationKey = await Ed25519KeyPair.generate();
   const keyFingerprint = `z${capabilityInvocationKey.fingerprint()}`;
 
-  const did = `did:v1:test:nym:${keyFingerprint}`;
+  const did = `did:v1:nym:${keyFingerprint}`;
   // cryptonym dids are based on fingerprint of capabilityInvokation key
   mockDoc.id = did;
   capabilityInvocationKey.id = _generateKeyId(
