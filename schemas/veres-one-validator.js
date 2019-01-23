@@ -506,7 +506,9 @@ const ledgerConfiguration = {
     'ledger',
     'ledgerConfigurationValidator',
     'operationValidator',
-    'proof',
+    // FIXME: making `proof` optional for now
+    // 'proof',
+    'sequence',
     'type',
   ],
   type: 'object',
@@ -520,7 +522,8 @@ const ledgerConfiguration = {
       additionalProperties: false,
       required: [
         // maximumElectorCount is *not* required in the configuration
-        'electorPool',
+        // FIXME: electorPool not required for testnet_v2
+        // 'electorPool',
         'type',
       ],
       type: 'object',
@@ -532,7 +535,9 @@ const ledgerConfiguration = {
         electorPool: urnUuid(),
         type: {
           type: 'string',
-          enum: ['VeresOne']
+
+          // FIXME: using MostRecentParticipants for now
+          enum: ['MostRecentParticipants']
         }
       }
     },
@@ -605,6 +610,10 @@ const ledgerConfiguration = {
       // FIXME: needs confirmation still TBD
       // the proofs are validated by bedrock-ledger-validator-signature
       type: 'array',
+    },
+    sequence: {
+      type: 'integer',
+      minimum: 0,
     },
     type: {
       type: 'string',
