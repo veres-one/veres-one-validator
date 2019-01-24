@@ -506,8 +506,7 @@ const ledgerConfiguration = {
     'ledger',
     'ledgerConfigurationValidator',
     'operationValidator',
-    // FIXME: making `proof` optional for now
-    // 'proof',
+    'proof',
     'sequence',
     'type',
   ],
