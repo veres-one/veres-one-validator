@@ -607,13 +607,25 @@ const ledgerConfiguration = {
       }
     },
     proof: {
-      // FIXME: needs confirmation still TBD
-      // the proofs are validated by bedrock-ledger-validator-signature
-      type: 'array',
+      allOf: [
+        schemas.linkedDataSignature2018(), {
+          // FIXME: this is only for testnet_v2
+          type: 'object',
+          required: ['proofPurpose'],
+          properties: {
+            proofPurpose: {
+              type: 'string',
+              enum: ['assertionMethod']
+            }
+          }
+        }
+      ]
     },
     sequence: {
       type: 'integer',
-      minimum: 0,
+      // FIXME: this is only for testnet_v2
+      enum: [0],
+      // minimum: 0,
     },
     type: {
       type: 'string',
