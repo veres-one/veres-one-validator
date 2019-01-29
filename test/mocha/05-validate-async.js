@@ -15,7 +15,7 @@ const {CapabilityInvocation} = require('ocapld');
 const {Ed25519Signature2018} = jsigs.suites;
 
 describe.only('validate API', () => {
-  it('validates a proper CreateWebLedgerRecord operation', async () => {
+  it.only('validates a proper CreateWebLedgerRecord operation', async () => {
     const {did, mockDoc, capabilityInvocationKey} = await _generateDid();
     const mockOperation = bedrock.util.clone(mockData.operations.create);
     const capabilityAction = 'RegisterDid';
@@ -37,6 +37,7 @@ describe.only('validate API', () => {
         .operationValidator[0],
     });
     should.exist(result);
+    console.log('RRRRRRRRRR', result);
     result.valid.should.be.a('boolean');
     result.valid.should.be.true;
   });
@@ -424,7 +425,7 @@ function _generateKeyId({did, key}) {
 async function _generateDid() {
   const mockDoc = bedrock.util.clone(mockData.privateDidDocuments.alpha);
   const capabilityInvocationKey = await Ed25519KeyPair.generate();
-  const keyFingerprint = `z${capabilityInvocationKey.fingerprint()}`;
+  const keyFingerprint = capabilityInvocationKey.fingerprint();
 
   const did = `did:v1:nym:${keyFingerprint}`;
   // cryptonym dids are based on fingerprint of capabilityInvokation key
@@ -439,5 +440,6 @@ async function _generateDid() {
     controller: capabilityInvocationKey.controller,
     publicKeyBase58: capabilityInvocationKey.publicKeyBase58
   };
+  console.log('MMMMMMM', mockDoc);
   return {did, mockDoc, capabilityInvocationKey};
 }

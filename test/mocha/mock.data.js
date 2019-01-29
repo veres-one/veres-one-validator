@@ -87,31 +87,25 @@ electorPoolDocument.alpha = {
 
 privateDidDocuments.alpha = {
   "@context": didContexts,
-  "id": "did:v1:nym:z279yHL6HsxRzCPU78DAWgZVieb8xPK1mJKJBbP8T2CezuFY",
-  "authentication": [
-    {
-      "id": "did:v1:nym:z279yHL6HsxRzCPU78DAWgZVieb8xPK1mJKJBbP8T2CezuFY#z279jeddPcVScp2qcA476nxuQnZGnmBHcXSKWgNusrT1u1V1",
-      "type": "Ed25519VerificationKey2018",
-      "controller": "did:v1:nym:z279yHL6HsxRzCPU78DAWgZVieb8xPK1mJKJBbP8T2CezuFY",
-      "publicKeyBase58": "2vXXVcAkogFwWGBHsyU1KCJrsFJLtuE8xnzyVNwmhhdq"
-    }
-  ],
-  "capabilityDelegation": [
-    {
-      "id": "did:v1:nym:z279yHL6HsxRzCPU78DAWgZVieb8xPK1mJKJBbP8T2CezuFY#z279odRyQVywHaU723iXRVncxmd4ELNzCL5gGfcQgDVg6mhV",
-      "type": "Ed25519VerificationKey2018",
-      "controller": "did:v1:nym:z279yHL6HsxRzCPU78DAWgZVieb8xPK1mJKJBbP8T2CezuFY",
-      "publicKeyBase58": "6uKsWVfFUShCv9qiCgHisBNeJpW3UhsVinEUHjzRuTrK"
-    }
-  ],
-  "capabilityInvocation": [
-    {
-      "id": "did:v1:nym:z279yHL6HsxRzCPU78DAWgZVieb8xPK1mJKJBbP8T2CezuFY#z279yHL6HsxRzCPU78DAWgZVieb8xPK1mJKJBbP8T2CezuFY",
-      "type": "Ed25519VerificationKey2018",
-      "controller": "did:v1:nym:z279yHL6HsxRzCPU78DAWgZVieb8xPK1mJKJBbP8T2CezuFY",
-      "publicKeyBase58": "GZDzPsdkB4ca1ELMHs4bd4Lj2sS53g77di1C4YhQobQN"
-    }
-  ]
+  "id": "did:v1:nym:z6MkiT7oVcbHWx5gwazyYk28nZMwKsSe6yc1JA9tFKgUr1tT",
+  "authentication": [{
+    "id": "did:v1:nym:z6MkiT7oVcbHWx5gwazyYk28nZMwKsSe6yc1JA9tFKgUr1tT#z6MkmmG7QFgfHPfsg9i4hxKQKstCtodmyfrhvaqdWSdT7Vnw",
+    "type": "Ed25519VerificationKey2018",
+    "controller": "did:v1:nym:z6MkiT7oVcbHWx5gwazyYk28nZMwKsSe6yc1JA9tFKgUr1tT",
+    "publicKeyBase58": "8K14p1SDwrBQZesN2PMZUnLD5EMvZncMEZvhgAfSCH1Z"
+  }],
+  "capabilityDelegation": [{
+    "id": "did:v1:nym:z6MkiT7oVcbHWx5gwazyYk28nZMwKsSe6yc1JA9tFKgUr1tT#z6MkgmbiEyzSwaTNNi47uXAbfsFTYmuMx1c3cTLwP8EuBimh",
+    "type": "Ed25519VerificationKey2018",
+    "controller": "did:v1:nym:z6MkiT7oVcbHWx5gwazyYk28nZMwKsSe6yc1JA9tFKgUr1tT",
+    "publicKeyBase58": "3KLfejk1c2xuGDDRDxCkpmhTjCdWY8MgvSS1YrGtGVzK"
+  }],
+  "capabilityInvocation": [{
+    "id": "did:v1:nym:z6MkiT7oVcbHWx5gwazyYk28nZMwKsSe6yc1JA9tFKgUr1tT#z6MkiT7oVcbHWx5gwazyYk28nZMwKsSe6yc1JA9tFKgUr1tT",
+    "type": "Ed25519VerificationKey2018",
+    "controller": "did:v1:nym:z6MkiT7oVcbHWx5gwazyYk28nZMwKsSe6yc1JA9tFKgUr1tT",
+    "publicKeyBase58": "4zrkuNLrBQbDq6AGsB4HwTowWJAnh6Mec9ExR3iTvo75"
+  }]
 };
 
 privateDidDocuments.beta = {
