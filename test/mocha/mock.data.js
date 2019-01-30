@@ -33,7 +33,7 @@ mock.proof = {
   jws: "MOCKPROOF",
   proofPurpose: "capabilityInvocation",
   verificationMethod: "did:v1:nym:z279yHL6HsxRzCPU78DAWgZVieb8xPK1mJKJBbP8T2CezuFY#z279tKmToKKMjQ8tsCgTbBBthw5xEzHWL6GCqZyQnzZr7wUo"
-}
+};
 
 // need to return document for beta but *not* for alpha
 mock.ledgerNode = {
