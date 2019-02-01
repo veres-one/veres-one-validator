@@ -517,6 +517,7 @@ const ledgerConfiguration = {
       type: 'string',
       enum: ['Continuity2017'],
     },
+    creator: {type: 'string'},
     electorSelectionMethod: {
       additionalProperties: false,
       required: [
