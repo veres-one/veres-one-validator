@@ -29,5 +29,9 @@
     "bedrock-ledger-utils": "^1.0.0",
     "bedrock-validation": "^4.0.0",
     "bedrock-veres-one-context": "^6.0.0"
+  },
+  "devDependencies": {
+    "eslint": "^5.13.0",
+    "eslint-config-digitalbazaar": "^1.5.0"
   }
 }
