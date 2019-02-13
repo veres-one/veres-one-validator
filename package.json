@@ -3,6 +3,9 @@
   "version": "5.0.1-0",
   "description": "veres-one-validator",
   "main": "lib",
+  "scripts": {
+    "lint": "eslint lib"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/digitalbazaar/veres-one-validator.git"
