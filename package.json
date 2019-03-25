@@ -28,7 +28,7 @@
   "peerDependencies": {
     "bedrock": "^1.12.0",
     "bedrock-ledger-context": "^11.0.0",
-    "bedrock-ledger-node": "^7.0.0",
+    "bedrock-ledger-node": "^8.0.0",
     "bedrock-ledger-utils": "^1.0.0",
     "bedrock-validation": "^4.0.0",
     "bedrock-veres-one-context": "^6.0.0"
