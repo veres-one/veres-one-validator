@@ -428,7 +428,7 @@ describe('validate API ElectorPool', () => {
             // FIXME: use constant and cached version when available
             "@context": [
               'https://w3id.org/did/v0.11',
-              constants.VERES_ONE_CONTEXT_URL
+              constants.VERES_ONE_CONTEXT_V1_URL
             ],
             patch,
             sequence: 0,

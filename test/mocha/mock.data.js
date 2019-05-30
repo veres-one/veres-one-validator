@@ -13,7 +13,7 @@ module.exports = mock;
 
 const didContexts = [
   constants.DID_CONTEXT_URL,
-  constants.VERES_ONE_CONTEXT_URL
+  constants.VERES_ONE_CONTEXT_V1_URL
 ];
 
 mock.existingDids = {};
@@ -63,7 +63,7 @@ for(let i = 0; i < 10; ++i) {
 }
 
 electorPoolDocument.alpha = {
-  '@context': constants.VERES_ONE_CONTEXT_URL,
+  '@context': constants.VERES_ONE_CONTEXT_V1_URL,
   id: 'urn:uuid:b3275fed-daf4-4c07-b63a-747fa8857609',
   // FIXME: this has to be in the v1 context before we can sign documents
   // veresOneTicketRate: 10, /* TBD */
@@ -110,7 +110,7 @@ privateDidDocuments.alpha = {
 
 privateDidDocuments.beta = {
   // FIXME: use constant and cached version when available
-  "@context": ['https://w3id.org/did/v0.11', constants.VERES_ONE_CONTEXT_URL],
+  "@context": ['https://w3id.org/did/v0.11', constants.VERES_ONE_CONTEXT_V1_URL],
   "id": "did:v1:nym:z279nCCZVzxreYfLw3EtFLtBMSVVY2pA6uxKengriMCdG3DF",
   "authentication": [
     {
@@ -250,7 +250,8 @@ operations.updateInvalidPatch = {
   type: 'UpdateWebLedgerRecord',
   recordPatch: {
     // FIXME: use constant and cached version when available
-    "@context": ['https://w3id.org/did/v0.11', constants.VERES_ONE_CONTEXT_URL],
+    "@context": [
+      'https://w3id.org/did/v0.11', constants.VERES_ONE_CONTEXT_V1_URL],
     // target: didDocuments.beta.id,
     sequence: 0,
     patch: [{
@@ -264,7 +265,8 @@ operations.updateInvalidChange = {
   type: 'UpdateWebLedgerRecord',
   recordPatch: {
     // FIXME: use constant and cached version when available
-    "@context": ['https://w3id.org/did/v0.11', constants.VERES_ONE_CONTEXT_URL],
+    "@context": [
+      'https://w3id.org/did/v0.11', constants.VERES_ONE_CONTEXT_V1_URL],
     // target: didDocuments.beta.id,
     sequence: 0,
     patch: [{

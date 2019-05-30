@@ -126,7 +126,7 @@ const didDocumentContext = {
     enum: [constants.DID_CONTEXT_URL]
   }, {
     type: 'string',
-    enum: [constants.VERES_ONE_CONTEXT_URL]
+    enum: [constants.VERES_ONE_CONTEXT_V1_URL]
   }],
   maxItems: 2,
   minItems: 2,
@@ -255,7 +255,7 @@ const electorPoolDocument = {
   ],
   type: 'object',
   properties: {
-    '@context': schemas.jsonldContext(constants.VERES_ONE_CONTEXT_URL),
+    '@context': schemas.jsonldContext(constants.VERES_ONE_CONTEXT_V1_URL),
     id: urnUuid(),
     invoker: did(),
     electorPool: {
