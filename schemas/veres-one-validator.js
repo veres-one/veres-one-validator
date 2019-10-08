@@ -255,7 +255,7 @@ const electorPoolDocument = {
   ],
   type: 'object',
   properties: {
-    '@context': schemas.jsonldContext(constants.VERES_ONE_CONTEXT_V1_URL),
+    '@context': didDocumentContext,
     id: urnUuid(),
     invoker: did(),
     electorPool: {
@@ -440,6 +440,7 @@ const createElectorPool = {
   title: 'Create ElectorPool',
   required: [
     '@context',
+    'creator',
     'proof',
     'record',
     'type',
@@ -447,6 +448,7 @@ const createElectorPool = {
   type: 'object',
   properties: {
     '@context': schemas.jsonldContext(constants.WEB_LEDGER_CONTEXT_V1_URL),
+    creator: {type: 'string'},
     type: {
       type: 'string',
       enum: ['CreateWebLedgerRecord'],
