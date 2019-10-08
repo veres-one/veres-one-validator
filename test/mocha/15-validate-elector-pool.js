@@ -5,7 +5,9 @@
 
 const bedrock = require('bedrock');
 const {constants} = bedrock.config;
-const didv1 = new (require('did-veres-one')).VeresOne();
+const didv1 = new (require('did-veres-one')).VeresOne({
+  httpsAgent: new require('https').Agent({rejectUnauthorized: false})
+});
 const voValidator = require('veres-one-validator');
 const jsigs = require('jsonld-signatures');
 const jsonpatch = require('fast-json-patch');
@@ -41,7 +43,7 @@ const capabilityActions = {
 let maintainerDidDocumentFull;
 let electorDidDocumentFull;
 let electorServiceId;
-describe('validate API ElectorPool', () => {
+describe.only('validate API ElectorPool', () => {
   describe('operationValidator', () => {
     beforeEach(async () => {
       maintainerDidDocumentFull = await didv1.generate();
@@ -58,28 +60,31 @@ describe('validate API ElectorPool', () => {
       ldDocuments.set(electorDidDocument.id, electorDidDocument);
     });
     describe('create electorPool operation', () => {
-      it('validates op with proper proof', async () => {
+      it.only('validates op with proper proof', async () => {
         const {id: maintainerDid} = maintainerDidDocumentFull.doc;
         const electorPoolDoc = _generateElectorPoolDoc();
-        let operation = didv1.client.wrap({didDocument: electorPoolDoc});
-        const {creator, privateKeyBase58} = _getMaintainerKeys();
-
+        // TODO: this wrap API requires contact with a veres one ledger node
+        // in order to include the `creator` on the operation which corresponds
+        // to the targetNode value from the ledgerAgentStatusService endpoint
+        // on the node. The default hostname for the ledger node is
+        // https://genesis.veres.one.localhost:42443
+        // therefore, one must be running a local veres one node in dev mode
+        // in order to run this test suite
+        let operation = await didv1.client.wrap(
+          {didDocument: electorPoolDoc, operationType: 'create'});
+        const key = _getMaintainerKeys();
         operation = await didv1.attachInvocationProof({
-          algorithm: 'Ed25519Signature2018',
           operation,
           capability: maintainerDid,
           // FIXME: seems weird to use `RegisterDid` on the elector pool doc
           capabilityAction: 'RegisterDid',
-          creator,
-          privateKeyBase58
+          key,
         });
         operation = await didv1.attachInvocationProof({
-          algorithm: 'Ed25519Signature2018',
           operation,
           capability: maintainerDid,
           capabilityAction: 'AuthorizeRequest',
-          creator,
-          privateKeyBase58
+          key,
         });
         const ledgerConfig = bedrock.util.clone(
           mockData.ledgerConfigurations.alpha);
@@ -89,8 +94,9 @@ describe('validate API ElectorPool', () => {
           electorPool: electorPoolDoc.id,
         };
         let err;
+        let result;
         try {
-          await voValidator.validate({
+          result = await voValidator.validate({
             ledgerConfig,
             ledgerNode,
             validatorInput: operation,
@@ -101,6 +107,11 @@ describe('validate API ElectorPool', () => {
           err = e;
         }
         assertNoError(err);
+        should.exist(result);
+        console.log('RRRRRRRRRR', result);
+        result.should.be.an('object');
+        should.exist(result.valid);
+        result.valid.should.be.true;
       });
       it('fails on op with serviceId mismatch', async () => {
         const {id: maintainerDid} = maintainerDidDocumentFull.doc;
@@ -503,6 +514,13 @@ function _generateElectorPoolDoc() {
   electorPoolDoc.electorPool[0].capability[0].invocationTarget =
     'urn:uuid:e9e63a07-15b1-4e8f-b725-a71a362cfd99';
   electorPoolDoc.invoker = maintainerDid;
+  // TODO: adding toJSON method for parity with VeresOneDidDoc class in
+  // did-veres-one
+  electorPoolDoc.toJSON = () => {
+    const epd = bedrock.util.clone(electorPoolDoc);
+    delete epd.toJSON;
+    return epd;
+  };
   return electorPoolDoc;
 }
 
@@ -512,9 +530,6 @@ function _generateUrnUuid() {
 
 function _getMaintainerKeys() {
   const invokePublicKey = maintainerDidDocumentFull.doc
-    .capabilityInvocation[0].publicKey[0];
-  const creator = invokePublicKey.id;
-  const {privateKey: privateKeyBase58} =
-    maintainerDidDocumentFull.keys[invokePublicKey.id];
-  return {creator, privateKeyBase58};
+    .capabilityInvocation[0];
+  return maintainerDidDocumentFull.keys[invokePublicKey.id];
 }

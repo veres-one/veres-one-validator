@@ -63,7 +63,7 @@ for(let i = 0; i < 10; ++i) {
 }
 
 electorPoolDocument.alpha = {
-  '@context': constants.VERES_ONE_CONTEXT_V1_URL,
+  '@context': didContexts,
   id: 'urn:uuid:b3275fed-daf4-4c07-b63a-747fa8857609',
   // FIXME: this has to be in the v1 context before we can sign documents
   // veresOneTicketRate: 10, /* TBD */

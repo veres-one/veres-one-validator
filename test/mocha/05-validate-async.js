@@ -15,7 +15,7 @@ const {CapabilityInvocation} = require('ocapld');
 const {Ed25519Signature2018} = jsigs.suites;
 const v1 = new didVeresOne.VeresOne();
 
-describe.only('validate API', () => {
+describe('validate API', () => {
   it('validates a proper CreateWebLedgerRecord operation', async () => {
     const {did, mockDoc, capabilityInvocationKey} = await _generateDid();
     const mockOperation = bedrock.util.clone(mockData.operations.create);
