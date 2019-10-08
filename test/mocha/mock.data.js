@@ -67,7 +67,7 @@ electorPoolDocument.alpha = {
   id: 'urn:uuid:b3275fed-daf4-4c07-b63a-747fa8857609',
   // FIXME: this has to be in the v1 context before we can sign documents
   // veresOneTicketRate: 10, /* TBD */
-  invoker: '', // replaced with DID in test
+  // invoker: '', // replaced with DID in test
   electorPool: [{
     id: 'urn:uuid:89a62413-0ada-461b-b672-1b28afefaca8',
     elector: 'did:v1:nym:50f28192-8f52-4bf2-a9b1-d203f6611456',

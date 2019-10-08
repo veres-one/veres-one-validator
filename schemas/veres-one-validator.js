@@ -250,14 +250,14 @@ const electorPoolDocument = {
     '@context',
     'id',
     'electorPool',
-    'invoker',
+    'controller',
     'maximumElectorCount'
   ],
   type: 'object',
   properties: {
     '@context': didDocumentContext,
     id: urnUuid(),
-    invoker: did(),
+    controller: did(),
     electorPool: {
       type: 'array',
       items: {

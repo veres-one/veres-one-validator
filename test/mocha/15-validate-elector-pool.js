@@ -75,7 +75,8 @@ describe.only('validate API ElectorPool', () => {
         const key = _getMaintainerKeys();
         operation = await didv1.attachInvocationProof({
           operation,
-          capability: maintainerDid,
+          // capability: maintainerDid,
+          capability: electorPoolDoc.id,
           // FIXME: seems weird to use `RegisterDid` on the elector pool doc
           capabilityAction: 'RegisterDid',
           key,
@@ -513,7 +514,7 @@ function _generateElectorPoolDoc() {
   // the invocationTarget is the ledger ID
   electorPoolDoc.electorPool[0].capability[0].invocationTarget =
     'urn:uuid:e9e63a07-15b1-4e8f-b725-a71a362cfd99';
-  electorPoolDoc.invoker = maintainerDid;
+  electorPoolDoc.controller = maintainerDid;
   // TODO: adding toJSON method for parity with VeresOneDidDoc class in
   // did-veres-one
   electorPoolDoc.toJSON = () => {
