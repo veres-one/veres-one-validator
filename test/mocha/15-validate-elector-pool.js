@@ -58,14 +58,7 @@ describe('validate API ElectorPool', () => {
       it('validates op with proper proof', async () => {
         const {id: maintainerDid} = maintainerDidDocumentFull.doc;
         const electorPoolDoc = _generateElectorPoolDoc();
-        // TODO: this wrap API requires contact with a veres one ledger node
-        // in order to include the `creator` on the operation which corresponds
-        // to the targetNode value from the ledgerAgentStatusService endpoint
-        // on the node. The default hostname for the ledger node is
-        // https://genesis.veres.one.localhost:42443
-        // therefore, one must be running a local veres one node in dev mode
-        // in order to run this test suite
-        let operation = await didv1.client.wrap(
+        let operation = await _wrap(
           {didDocument: electorPoolDoc, operationType: 'create'});
         const key = _getMaintainerKeys();
 
@@ -122,7 +115,7 @@ describe('validate API ElectorPool', () => {
         const incorrectServiceId = `${maintainerDid};service=Unknown`;
         electorPoolDoc.electorPool[0].service = incorrectServiceId;
 
-        let operation = await didv1.client.wrap(
+        let operation = await _wrap(
           {didDocument: electorPoolDoc, operationType: 'create'});
         const key = _getMaintainerKeys();
 
@@ -172,7 +165,7 @@ describe('validate API ElectorPool', () => {
       it('fails on op w/missing RegisterDid capability', async () => {
         const {id: maintainerDid} = maintainerDidDocumentFull.doc;
         const electorPoolDoc = _generateElectorPoolDoc();
-        let operation = await didv1.client.wrap(
+        let operation = await _wrap(
           {didDocument: electorPoolDoc, operationType: 'create'});
         const key = _getMaintainerKeys();
 
@@ -213,7 +206,7 @@ describe('validate API ElectorPool', () => {
       it('fails on op w/missing AuthorizeRequest capability', async () => {
         const {id: maintainerDid} = maintainerDidDocumentFull.doc;
         const electorPoolDoc = _generateElectorPoolDoc();
-        let operation = await didv1.client.wrap(
+        let operation = await _wrap(
           {didDocument: electorPoolDoc, operationType: 'create'});
         const key = _getMaintainerKeys();
 
@@ -251,7 +244,7 @@ describe('validate API ElectorPool', () => {
       });
       it('fails on op w/two RegisterDid capability proofs', async () => {
         const electorPoolDoc = _generateElectorPoolDoc();
-        let operation = await didv1.client.wrap(
+        let operation = await _wrap(
           {didDocument: electorPoolDoc, operationType: 'create'});
         const key = _getMaintainerKeys();
 
@@ -296,7 +289,7 @@ describe('validate API ElectorPool', () => {
       it('fails on op w/two AuthorizeRequest capability proofs', async () => {
         const {id: maintainerDid} = maintainerDidDocumentFull.doc;
         const electorPoolDoc = _generateElectorPoolDoc();
-        let operation = await didv1.client.wrap(
+        let operation = await _wrap(
           {didDocument: electorPoolDoc, operationType: 'create'});
         const key = _getMaintainerKeys();
 
@@ -343,7 +336,7 @@ describe('validate API ElectorPool', () => {
       it('fails on op w/incorrect capability DID', async () => {
         const {id: maintainerDid} = maintainerDidDocumentFull.doc;
         const electorPoolDoc = _generateElectorPoolDoc();
-        let operation = await didv1.client.wrap(
+        let operation = await _wrap(
           {didDocument: electorPoolDoc, operationType: 'create'});
         const key = _getMaintainerKeys();
 
@@ -515,13 +508,6 @@ function _generateElectorPoolDoc() {
   electorPoolDoc.electorPool[0].capability[0].invocationTarget =
     'urn:uuid:e9e63a07-15b1-4e8f-b725-a71a362cfd99';
   electorPoolDoc.controller = maintainerDid;
-  // TODO: adding toJSON method for parity with VeresOneDidDoc class in
-  // did-veres-one
-  electorPoolDoc.toJSON = () => {
-    const epd = bedrock.util.clone(electorPoolDoc);
-    delete epd.toJSON;
-    return epd;
-  };
   return electorPoolDoc;
 }
 
@@ -533,4 +519,30 @@ function _getMaintainerKeys() {
   const invokePublicKey = maintainerDidDocumentFull.doc
     .capabilityInvocation[0];
   return maintainerDidDocumentFull.keys[invokePublicKey.id];
+}
+
+// this is a modified version of the wrap API found in did-veres-one and
+// web-ledger-client
+async function _wrap({didDocument, operationType = 'create'}) {
+  const operation = {'@context': constants.WEB_LEDGER_CONTEXT_V1_URL};
+
+  // normally this is set basted on the targetNode value provided by the
+  // ledger-agent HTTP API
+  operation.creator = 'https://example.com/some/ledger/node';
+
+  switch(operationType) {
+    case 'create':
+      operation.type = 'CreateWebLedgerRecord';
+      operation.record = didDocument;
+      break;
+    case 'update':
+      operation.type = 'UpdateWebLedgerRecord';
+      operation.recordPatch = didDocument;
+      break;
+    default:
+      throw new Error(
+        'Unknown operation type.', 'SyntaxError', {operationType});
+  }
+
+  return operation;
 }
