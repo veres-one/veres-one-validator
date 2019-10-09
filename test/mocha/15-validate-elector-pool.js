@@ -109,7 +109,6 @@ describe.only('validate API ElectorPool', () => {
         }
         assertNoError(err);
         should.exist(result);
-        console.log('RRRRRRRRRR', JSON.stringify(result, null, 2));
         result.should.be.an('object');
         should.exist(result.valid);
         result.valid.should.be.true;

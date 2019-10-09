@@ -5,10 +5,10 @@
 
 const bedrock = require('bedrock');
 
-const pattern = '^urn:uuid:([-_A-Za-z0-9.]+)$';
+const pattern = '^did:v1:uuid:([-_A-Za-z0-9.]+)$';
 
 const schema = {
-  title: 'URN UUID',
+  title: 'DID UUID',
   type: 'string',
   pattern,
 };

@@ -6,8 +6,9 @@
 const {constants} = require('bedrock').config;
 const {schemas} = require('bedrock-validation');
 const did = require('./did');
-const urnUuid = require('./urn-uuid');
+const didUuid = require('./did-uuid');
 const {serviceDescriptor, serviceId} = require('./service');
+const urnUuid = require('./urn-uuid');
 
 const caveat = {
   additionalProperties: false,
@@ -191,7 +192,7 @@ const didDocumentPatch = {
       type: 'array'
     },
     target: {
-      anyOf: [did(), urnUuid()],
+      anyOf: [did(), didUuid()],
     },
     // FIXME: also support `frame` property later
     patch: {
@@ -256,7 +257,7 @@ const electorPoolDocument = {
   type: 'object',
   properties: {
     '@context': didDocumentContext,
-    id: urnUuid(),
+    id: didUuid(),
     controller: did(),
     electorPool: {
       type: 'array',
@@ -534,7 +535,7 @@ const ledgerConfiguration = {
           type: 'integer',
           minimum: 1,
         },
-        electorPool: urnUuid(),
+        electorPool: didUuid(),
         type: {
           type: 'string',
 
