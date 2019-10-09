@@ -456,11 +456,15 @@ const createElectorPool = {
     },
     record: electorPoolDocument,
     proof: {
-      anyOf: [proof, {
+      anyOf: [{
         type: 'array',
-        minItems: 1,
-        items: proof,
-      }]
+        items: [authorizedRequestCapability, registerDidCapability],
+        additionalItems: false,
+      }, {
+        type: 'array',
+        items: [registerDidCapability, authorizedRequestCapability],
+        additionalItems: false,
+      }],
     }
   },
   additionalProperties: false

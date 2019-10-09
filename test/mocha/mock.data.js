@@ -4,9 +4,7 @@
 'use strict';
 
 const bedrock = require('bedrock');
-const {constants} = bedrock.config;
-const uuid = require('uuid/v4');
-const {BedrockError} = bedrock.util;
+const {config: {constants}, util: {uuid, BedrockError}} = bedrock;
 
 const mock = {};
 module.exports = mock;

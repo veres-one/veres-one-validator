@@ -29,7 +29,9 @@ const voValidate = callbackify(voValidator.validate);
 // TODO: add an extra identity that is an accelerator (separate from alpha
 // and beta)
 
-describe('validate API', () => {
+// FIXME: this set of tests has been superceeded by 05-validate-async.js
+// this file should be removed
+describe.skip('validate API - OBSOLETE', () => {
   describe('operationValidator', () => {
     describe('create operation', () => {
       it('validates an operation with proper capability', done => {

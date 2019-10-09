@@ -9,7 +9,6 @@ const didv1 = new (require('did-veres-one')).VeresOne({
   httpsAgent: new require('https').Agent({rejectUnauthorized: false})
 });
 const voValidator = require('veres-one-validator');
-const jsigs = require('jsonld-signatures');
 const jsonpatch = require('fast-json-patch');
 const uuid = require('uuid/v4');
 const {BedrockError} = bedrock.util;
@@ -19,10 +18,12 @@ const ldDocuments = new Map();
 
 const ledgerNode = {
   records: {
-    async get({maxBlockHeight, recordId}) {
+    async get({/*maxBlockHeight, */recordId}) {
       if(ldDocuments.has(recordId)) {
         return {
-          record: ldDocuments.get(recordId),
+          // clone the result to prevent JSONLD from mutating the contexts
+          // as with a document loader
+          record: bedrock.util.clone(ldDocuments.get(recordId)),
           meta: {sequence: 0}
         };
       }
@@ -34,16 +35,10 @@ const ledgerNode = {
 
 const mockData = require('./mock.data');
 
-const capabilityActions = {
-  authorize: 'AuthorizeRequest',
-  register: 'RegisterDid',
-  update: 'UpdateDidDocument'
-};
-
 let maintainerDidDocumentFull;
 let electorDidDocumentFull;
 let electorServiceId;
-describe.only('validate API ElectorPool', () => {
+describe('validate API ElectorPool', () => {
   describe('operationValidator', () => {
     beforeEach(async () => {
       maintainerDidDocumentFull = await didv1.generate();
@@ -60,7 +55,7 @@ describe.only('validate API ElectorPool', () => {
       ldDocuments.set(electorDidDocument.id, electorDidDocument);
     });
     describe('create electorPool operation', () => {
-      it.only('validates op with proper proof', async () => {
+      it('validates op with proper proof', async () => {
         const {id: maintainerDid} = maintainerDidDocumentFull.doc;
         const electorPoolDoc = _generateElectorPoolDoc();
         // TODO: this wrap API requires contact with a veres one ledger node
@@ -73,6 +68,11 @@ describe.only('validate API ElectorPool', () => {
         let operation = await didv1.client.wrap(
           {didDocument: electorPoolDoc, operationType: 'create'});
         const key = _getMaintainerKeys();
+
+        // FIXME: add an AuthorizeRequest proof that will pass json-schema
+        // validation for testnet v2 *not* a valid signature
+        operation.proof = bedrock.util.clone(mockData.proof);
+
         operation = await didv1.attachInvocationProof({
           operation,
           // capability: maintainerDid,
@@ -81,12 +81,14 @@ describe.only('validate API ElectorPool', () => {
           capabilityAction: 'RegisterDid',
           key,
         });
-        operation = await didv1.attachInvocationProof({
-          operation,
-          capability: maintainerDid,
-          capabilityAction: 'AuthorizeRequest',
-          key,
-        });
+
+        // FIXME: attach proof instead of mock proof above
+        // operation = await didv1.attachInvocationProof({
+        //   operation,
+        //   capability: maintainerDid,
+        //   capabilityAction: 'AuthorizeRequest',
+        //   key,
+        // });
         const ledgerConfig = bedrock.util.clone(
           mockData.ledgerConfigurations.alpha);
         ledgerConfig.electorSelectionMethod = {
@@ -120,26 +122,29 @@ describe.only('validate API ElectorPool', () => {
         const incorrectServiceId = `${maintainerDid};service=Unknown`;
         electorPoolDoc.electorPool[0].service = incorrectServiceId;
 
-        let operation = didv1.client.wrap({didDocument: electorPoolDoc});
-        const {creator, privateKeyBase58} = _getMaintainerKeys();
+        let operation = await didv1.client.wrap(
+          {didDocument: electorPoolDoc, operationType: 'create'});
+        const key = _getMaintainerKeys();
+
+        // FIXME: add an AuthorizeRequest proof that will pass json-schema
+        // validation for testnet v2 *not* a valid signature
+        operation.proof = bedrock.util.clone(mockData.proof);
 
         operation = await didv1.attachInvocationProof({
-          algorithm: 'Ed25519Signature2018',
           operation,
-          capability: maintainerDid,
+          capability: electorPoolDoc.id,
           // FIXME: seems weird to use `RegisterDid` on the elector pool doc
           capabilityAction: 'RegisterDid',
-          creator,
-          privateKeyBase58
+          key,
         });
-        operation = await didv1.attachInvocationProof({
-          algorithm: 'Ed25519Signature2018',
-          operation,
-          capability: maintainerDid,
-          capabilityAction: 'AuthorizeRequest',
-          creator,
-          privateKeyBase58
-        });
+
+        // FIXME: attach proof instead of mock proof above
+        // operation = await didv1.attachInvocationProof({
+        //   operation,
+        //   capability: maintainerDid,
+        //   capabilityAction: 'AuthorizeRequest',
+        //   key,
+        // });
         const ledgerConfig = bedrock.util.clone(
           mockData.ledgerConfigurations.alpha);
         ledgerConfig.electorSelectionMethod = {
@@ -167,18 +172,17 @@ describe.only('validate API ElectorPool', () => {
       it('fails on op w/missing RegisterDid capability', async () => {
         const {id: maintainerDid} = maintainerDidDocumentFull.doc;
         const electorPoolDoc = _generateElectorPoolDoc();
-        let operation = didv1.client.wrap({didDocument: electorPoolDoc});
-        const {creator, privateKeyBase58} = _getMaintainerKeys();
+        let operation = await didv1.client.wrap(
+          {didDocument: electorPoolDoc, operationType: 'create'});
+        const key = _getMaintainerKeys();
 
         // no RegisterDid proof added
 
         operation = await didv1.attachInvocationProof({
-          algorithm: 'Ed25519Signature2018',
           operation,
           capability: maintainerDid,
           capabilityAction: 'AuthorizeRequest',
-          creator,
-          privateKeyBase58
+          key,
         });
         const ledgerConfig = bedrock.util.clone(
           mockData.ledgerConfigurations.alpha);
@@ -202,26 +206,24 @@ describe.only('validate API ElectorPool', () => {
         }
         assertNoError(err);
         result.valid.should.be.false;
-        result.error.name.should.equal('NotAllowedError');
+        // schema validation detects the missing proof
+        result.error.name.should.equal('ValidationError');
       });
 
-      // FIXME: this test is known to be failing due to issues related to
-      // _checkProofCombination in index.js. See FIXME there.
       it('fails on op w/missing AuthorizeRequest capability', async () => {
         const {id: maintainerDid} = maintainerDidDocumentFull.doc;
         const electorPoolDoc = _generateElectorPoolDoc();
-        let operation = didv1.client.wrap({didDocument: electorPoolDoc});
-        const {creator, privateKeyBase58} = _getMaintainerKeys();
+        let operation = await didv1.client.wrap(
+          {didDocument: electorPoolDoc, operationType: 'create'});
+        const key = _getMaintainerKeys();
 
         // no AuthorizeRequest proof added
 
         operation = await didv1.attachInvocationProof({
-          algorithm: 'Ed25519Signature2018',
           operation,
           capability: maintainerDid,
           capabilityAction: 'RegisterDid',
-          creator,
-          privateKeyBase58
+          key,
         });
         const ledgerConfig = bedrock.util.clone(
           mockData.ledgerConfigurations.alpha);
@@ -247,31 +249,25 @@ describe.only('validate API ElectorPool', () => {
         result.valid.should.be.false;
         result.error.name.should.equal('ValidationError');
       });
-      // FIXME: this test is known to be failing due to issues related to
-      // _checkProofCombination in index.js. See FIXME there.
       it('fails on op w/two RegisterDid capability proofs', async () => {
-        const {id: maintainerDid} = maintainerDidDocumentFull.doc;
         const electorPoolDoc = _generateElectorPoolDoc();
-        let operation = didv1.client.wrap({didDocument: electorPoolDoc});
-        const {creator, privateKeyBase58} = _getMaintainerKeys();
+        let operation = await didv1.client.wrap(
+          {didDocument: electorPoolDoc, operationType: 'create'});
+        const key = _getMaintainerKeys();
 
         // no AuthorizeRequest proof added
 
         operation = await didv1.attachInvocationProof({
-          algorithm: 'Ed25519Signature2018',
           operation,
-          capability: maintainerDid,
+          capability: electorPoolDoc.id,
           capabilityAction: 'RegisterDid',
-          creator,
-          privateKeyBase58
+          key,
         });
         operation = await didv1.attachInvocationProof({
-          algorithm: 'Ed25519Signature2018',
           operation,
-          capability: maintainerDid,
+          capability: electorPoolDoc.id,
           capabilityAction: 'RegisterDid',
-          creator,
-          privateKeyBase58
+          key,
         });
         const ledgerConfig = bedrock.util.clone(
           mockData.ledgerConfigurations.alpha);
@@ -295,13 +291,14 @@ describe.only('validate API ElectorPool', () => {
         }
         assertNoError(err);
         result.valid.should.be.false;
-        result.error.name.should.equal('NotAllowedError');
+        result.error.name.should.equal('ValidationError');
       });
       it('fails on op w/two AuthorizeRequest capability proofs', async () => {
         const {id: maintainerDid} = maintainerDidDocumentFull.doc;
         const electorPoolDoc = _generateElectorPoolDoc();
-        let operation = didv1.client.wrap({didDocument: electorPoolDoc});
-        const {creator, privateKeyBase58} = _getMaintainerKeys();
+        let operation = await didv1.client.wrap(
+          {didDocument: electorPoolDoc, operationType: 'create'});
+        const key = _getMaintainerKeys();
 
         // no RegisterDid proof added
 
@@ -310,16 +307,14 @@ describe.only('validate API ElectorPool', () => {
           operation,
           capability: maintainerDid,
           capabilityAction: 'AuthorizeRequest',
-          creator,
-          privateKeyBase58
+          key,
         });
         operation = await didv1.attachInvocationProof({
           algorithm: 'Ed25519Signature2018',
           operation,
           capability: maintainerDid,
           capabilityAction: 'AuthorizeRequest',
-          creator,
-          privateKeyBase58
+          key,
         });
         const ledgerConfig = bedrock.util.clone(
           mockData.ledgerConfigurations.alpha);
@@ -343,34 +338,35 @@ describe.only('validate API ElectorPool', () => {
         }
         assertNoError(err);
         result.valid.should.be.false;
-        result.error.name.should.equal('NotAllowedError');
+        result.error.name.should.equal('ValidationError');
       });
-      // FIXME: enable when ocapld integration is complete
-      // test should be failing, but currently passes
-      it.skip('fails on op w/incorrect capability DID', async () => {
+      it('fails on op w/incorrect capability DID', async () => {
         const {id: maintainerDid} = maintainerDidDocumentFull.doc;
-        const {id: electorDid} = electorDidDocumentFull.doc;
         const electorPoolDoc = _generateElectorPoolDoc();
-        let operation = didv1.client.wrap({didDocument: electorPoolDoc});
-        const {creator, privateKeyBase58} = _getMaintainerKeys();
+        let operation = await didv1.client.wrap(
+          {didDocument: electorPoolDoc, operationType: 'create'});
+        const key = _getMaintainerKeys();
+
+        // FIXME: add an AuthorizeRequest proof that will pass json-schema
+        // validation for testnet v2 *not* a valid signature
+        operation.proof = bedrock.util.clone(mockData.proof);
 
         // replacing electorDid with maintainerDid
         operation = await didv1.attachInvocationProof({
-          algorithm: 'Ed25519Signature2018',
           operation,
-          capability: electorDid,
+          // this DID document does not exist
+          capability: 'did:v1:uuid:e798d4cf-f4f5-40cb-9f06-7fa56cf55d95',
           capabilityAction: 'RegisterDid',
-          creator,
-          privateKeyBase58
+          key,
         });
-        operation = await didv1.attachInvocationProof({
-          algorithm: 'Ed25519Signature2018',
-          operation,
-          capability: maintainerDid,
-          capabilityAction: 'AuthorizeRequest',
-          creator,
-          privateKeyBase58
-        });
+
+        // FIXME: attach proof instead of mock proof above
+        // operation = await didv1.attachInvocationProof({
+        //   operation,
+        //   capability: maintainerDid,
+        //   capabilityAction: 'AuthorizeRequest',
+        //   key,
+        // });
         const ledgerConfig = bedrock.util.clone(
           mockData.ledgerConfigurations.alpha);
         ledgerConfig.electorSelectionMethod = {
@@ -379,8 +375,9 @@ describe.only('validate API ElectorPool', () => {
           electorPool: electorPoolDoc.id,
         };
         let err;
+        let result;
         try {
-          await voValidator.validate({
+          result = await voValidator.validate({
             ledgerConfig,
             ledgerNode,
             validatorInput: operation,
@@ -390,8 +387,15 @@ describe.only('validate API ElectorPool', () => {
         } catch(e) {
           err = e;
         }
-        should.exist(err);
-        err.name.should.equal('NotAllowedError');
+        assertNoError(err);
+        result.valid.should.be.false;
+        result.error.details.proofVerifyResult.verified.should.be.false;
+        // the fictitious DID specified in the capability does not match the
+        // this new document and is also not found on the ledger resulting in
+        // a NotFoundError from the document loader.
+        result.error.details.proofVerifyResult.results[0].error.name
+          .should.equal('NotFoundError');
+        result.error.name.should.equal('ValidationError');
       });
     }); // end create electorPool operation
 
@@ -407,11 +411,11 @@ describe.only('validate API ElectorPool', () => {
         // the invocationTarget is the ledger ID
         electorPoolDoc.electorPool[0].capability[0].invocationTarget =
           'urn:uuid:e9e63a07-15b1-4e8f-b725-a71a362cfd99';
-        electorPoolDoc.invoker = maintainerDid;
+        electorPoolDoc.controller = maintainerDid;
         ldDocuments.set(electorPoolDoc.id, bedrock.util.clone(electorPoolDoc));
         const observer = jsonpatch.observe(electorPoolDoc);
         const elector =
-          'did:v1:test:nym:z279squ73dJ3q21jAEk3FRrr37UdX5xo8FXWA74anmPnvzfx';
+          'did:v1:nym:z279squ73dJ3q21jAEk3FRrr37UdX5xo8FXWA74anmPnvzfx';
 
         // FIXME: should inline serviceIds be did: URI's?
         const newServiceId = `${elector};service=TheServiceId`;
@@ -435,10 +439,10 @@ describe.only('validate API ElectorPool', () => {
 
         let operation = {
           '@context': constants.WEB_LEDGER_CONTEXT_V1_URL,
+          creator: 'https://example.com/some/ledger/node',
           recordPatch: {
-            // FIXME: use constant and cached version when available
-            "@context": [
-              'https://w3id.org/did/v0.11',
+            '@context': [
+              constants.DID_CONTEXT_URL,
               constants.VERES_ONE_CONTEXT_V1_URL
             ],
             patch,
@@ -448,32 +452,29 @@ describe.only('validate API ElectorPool', () => {
           type: 'UpdateWebLedgerRecord',
         };
 
-        const invokePublicKey = maintainerDidDocumentFull.doc
-          .capabilityInvocation[0].publicKey[0];
-        const creator = invokePublicKey.id;
-        const {privateKey: privateKeyBase58} =
-          maintainerDidDocumentFull.keys[invokePublicKey.id];
+        const key = _getMaintainerKeys();
 
         // FIXME: what are proper proofs for an update operation?
 
+        // FIXME: add an AuthorizeRequest proof that will pass json-schema
+        // validation for testnet v2 *not* a valid signature
+        operation.proof = bedrock.util.clone(mockData.proof);
+
         operation = await didv1.attachInvocationProof({
-          algorithm: 'Ed25519Signature2018',
           operation,
-          capability: maintainerDid,
+          capability: electorPoolDoc.id,
           // capabilityAction: operation.type,
           capabilityAction: 'UpdateDidDocument',
-          creator,
-          privateKeyBase58
+          key,
         });
-        operation = await didv1.attachInvocationProof({
-          algorithm: 'Ed25519Signature2018',
-          operation,
-          capability: maintainerDid,
-          // capabilityAction: operation.type,
-          capabilityAction: 'AuthorizeRequest',
-          creator,
-          privateKeyBase58
-        });
+        // FIXME: replace mock proof above with legitimate proof
+        // operation = await didv1.attachInvocationProof({
+        //   operation,
+        //   capability: maintainerDid,
+        //   // capabilityAction: operation.type,
+        //   capabilityAction: 'AuthorizeRequest',
+        //   key,
+        // });
         const ledgerConfig = bedrock.util.clone(
           mockData.ledgerConfigurations.alpha);
         ledgerConfig.electorSelectionMethod = {
