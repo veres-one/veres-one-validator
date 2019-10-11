@@ -5,7 +5,8 @@
 
 const bedrock = require('bedrock');
 
-const pattern = '^did:v1:uuid:([-_A-Za-z0-9.]+)$';
+/* eslint-disable-next-line max-len */
+const pattern = '^did:v1:uuid:([a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[89abAB][a-fA-F0-9]{3}-[a-fA-F0-9]{12})$';
 
 const schema = {
   title: 'DID UUID',
