@@ -70,7 +70,6 @@ describe('validate API ElectorPool', () => {
           operation,
           // capability: maintainerDid,
           capability: electorPoolDoc.id,
-          // FIXME: seems weird to use `create` on the elector pool doc
           capabilityAction: 'create',
           key,
         });
@@ -126,7 +125,6 @@ describe('validate API ElectorPool', () => {
         operation = await didv1.attachInvocationProof({
           operation,
           capability: electorPoolDoc.id,
-          // FIXME: seems weird to use `create` on the elector pool doc
           capabilityAction: 'create',
           key,
         });
