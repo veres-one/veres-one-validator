@@ -19,10 +19,10 @@ describe('validate API', () => {
   it('validates a proper CreateWebLedgerRecord operation', async () => {
     const {did, mockDoc, capabilityInvocationKey} = await _generateDid();
     const mockOperation = bedrock.util.clone(mockData.operations.create);
-    const capabilityAction = 'RegisterDid';
+    const capabilityAction = 'create';
     mockOperation.record = mockDoc;
-    // add an AuthorizeRequest proof that will pass json-schema validation for
-    // testnet v2 *not* a valid signature
+    // FIXME: add an AuthorizeRequest proof that will pass json-schema
+    // validation for testnet v2 *not* a valid signature
     mockOperation.proof = bedrock.util.clone(mockData.proof);
     const s = await jsigs.sign(mockOperation, {
       compactProof: false,
@@ -48,7 +48,7 @@ describe('validate API', () => {
       {proofPurpose: 'capabilityInvocation'}).id;
     const capabilityInvocationKey = mockDoc.keys[keyId];
     const mockOperation = bedrock.util.clone(mockData.operations.create);
-    const capabilityAction = 'RegisterDid';
+    const capabilityAction = 'create';
     mockOperation.record = mockDoc.doc;
     // add an AuthorizeRequest proof that will pass json-schema validation for
     // testnet v2 *not* a valid signature
@@ -73,7 +73,7 @@ describe('validate API', () => {
   it('rejects an improper CreateWebLedgerRecord operation', async () => {
     const {did, mockDoc, capabilityInvocationKey} = await _generateBadDid();
     const mockOperation = bedrock.util.clone(mockData.operations.create);
-    const capabilityAction = 'RegisterDid';
+    const capabilityAction = 'create';
     mockOperation.record = mockDoc;
     // add an AuthorizeRequest proof that will pass json-schema validation for
     // testnet v2 *not* a valid signature
@@ -103,7 +103,7 @@ describe('validate API', () => {
   it('rejects a duplicate create operation', async () => {
     const {did, mockDoc, capabilityInvocationKey} = await _generateDid();
     const mockOperation = bedrock.util.clone(mockData.operations.create);
-    const capabilityAction = 'RegisterDid';
+    const capabilityAction = 'create';
     // add the new document to the mock document loader as if it were on ledger
     // must clone this going into the document loader, otherwise it will be
     // mutated
@@ -134,7 +134,7 @@ describe('validate API', () => {
   it('validates an update operation', async () => {
     const {did, mockDoc, capabilityInvocationKey} = await _generateDid();
     const mockOperation = bedrock.util.clone(mockData.operations.update);
-    let capabilityAction = 'RegisterDid';
+    let capabilityAction = 'create';
     // add the new document to the mock document loader as if it were on ledger
     // clone here so we can proceed with making changes to mockDoc
     mockData.existingDids[did] = bedrock.util.clone(mockDoc);
@@ -153,7 +153,7 @@ describe('validate API', () => {
     // add an AuthorizeRequest proof that will pass json-schema validation for
     // testnet v2 *not* a valid signature
     mockOperation.proof = bedrock.util.clone(mockData.proof);
-    capabilityAction = 'UpdateDidDocument';
+    capabilityAction = 'update';
     const s = await jsigs.sign(mockOperation, {
       compactProof: false,
       documentLoader,
@@ -176,7 +176,7 @@ describe('validate API', () => {
   it('rejects an altered operation', async () => {
     const {did, mockDoc, capabilityInvocationKey} = await _generateDid();
     const mockOperation = bedrock.util.clone(mockData.operations.update);
-    let capabilityAction = 'RegisterDid';
+    let capabilityAction = 'create';
     // add the new document to the mock document loader as if it were on ledger
     // clone here so we can proceed with making changes to mockDoc
     mockData.existingDids[did] = bedrock.util.clone(mockDoc);
@@ -195,7 +195,7 @@ describe('validate API', () => {
     // add an AuthorizeRequest proof that will pass json-schema validation for
     // testnet v2 *not* a valid signature
     mockOperation.proof = bedrock.util.clone(mockData.proof);
-    capabilityAction = 'UpdateDidDocument';
+    capabilityAction = 'update';
     const s = await jsigs.sign(mockOperation, {
       compactProof: false,
       documentLoader,
@@ -232,7 +232,7 @@ describe('validate API', () => {
 
     const {did, mockDoc} = await _generateDid();
     const mockOperation = bedrock.util.clone(mockData.operations.update);
-    let capabilityAction = 'RegisterDid';
+    let capabilityAction = 'create';
     // add the new document to the mock document loader as if it were on ledger
     // clone here so we can proceed with making changes to mockDoc
     mockData.existingDids[did] = bedrock.util.clone(mockDoc);
@@ -253,7 +253,7 @@ describe('validate API', () => {
     // add an AuthorizeRequest proof that will pass json-schema validation for
     // testnet v2 *not* a valid signature
     mockOperation.proof = bedrock.util.clone(mockData.proof);
-    capabilityAction = 'UpdateDidDocument';
+    capabilityAction = 'update';
 
     // signing with a key from another valid DID
     const s = await jsigs.sign(mockOperation, {
@@ -285,7 +285,7 @@ describe('validate API', () => {
 
     const {did, mockDoc, capabilityInvocationKey} = await _generateDid();
     const mockOperation = bedrock.util.clone(mockData.operations.update);
-    let capabilityAction = 'RegisterDid';
+    let capabilityAction = 'create';
     // add the new document to the mock document loader as if it were on ledger
     // clone here so we can proceed with making changes to mockDoc
     mockData.existingDids[did] = bedrock.util.clone(mockDoc);
@@ -308,7 +308,7 @@ describe('validate API', () => {
     // add an AuthorizeRequest proof that will pass json-schema validation for
     // testnet v2 *not* a valid signature
     mockOperation.proof = bedrock.util.clone(mockData.proof);
-    capabilityAction = 'UpdateDidDocument';
+    capabilityAction = 'update';
 
     // signing with a key from another valid DID
     const s = await jsigs.sign(mockOperation, {
@@ -332,11 +332,11 @@ describe('validate API', () => {
     proofVerifyResult.error[0].message.should.contain(
       'does not match root capability target');
   });
-  // proof has `capabilityAction` === `RegisterDid`
+  // proof has `capabilityAction` === `create`
   it('rejects update operation without proper capabilityAction', async () => {
     const {did, mockDoc, capabilityInvocationKey} = await _generateDid();
     const mockOperation = bedrock.util.clone(mockData.operations.update);
-    let capabilityAction = 'RegisterDid';
+    let capabilityAction = 'create';
     // add the new document to the mock document loader as if it were on ledger
     // clone here so we can proceed with making changes to mockDoc
     mockData.existingDids[did] = bedrock.util.clone(mockDoc);
@@ -355,8 +355,8 @@ describe('validate API', () => {
     // testnet v2 *not* a valid signature
     mockOperation.proof = bedrock.util.clone(mockData.proof);
 
-    // capability action must be `UpdateDidDocument`
-    capabilityAction = 'RegisterDid';
+    // capability action must be `update`
+    capabilityAction = 'create';
 
     const s = await jsigs.sign(mockOperation, {
       compactProof: false,
@@ -381,7 +381,7 @@ describe('validate API', () => {
   it('rejects update operation when improper key used in proof 1', async () => {
     const {did, mockDoc} = await _generateDid();
     const mockOperation = bedrock.util.clone(mockData.operations.update);
-    let capabilityAction = 'RegisterDid';
+    let capabilityAction = 'create';
     // add the new document to the mock document loader as if it were on ledger
     // clone here so we can proceed with making changes to mockDoc
     mockData.existingDids[did] = bedrock.util.clone(mockDoc);
@@ -399,7 +399,7 @@ describe('validate API', () => {
     // add an AuthorizeRequest proof that will pass json-schema validation for
     // testnet v2 *not* a valid signature
     mockOperation.proof = bedrock.util.clone(mockData.proof);
-    capabilityAction = 'UpdateDidDocument';
+    capabilityAction = 'update';
 
     // *must* use `capabilityInvocationKey`
     const s = await jsigs.sign(mockOperation, {
@@ -428,7 +428,7 @@ describe('validate API', () => {
   it('rejects update operation when improper key used in proof 2', async () => {
     const {did, mockDoc, capabilityInvocationKey} = await _generateDid();
     const mockOperation = bedrock.util.clone(mockData.operations.update);
-    let capabilityAction = 'RegisterDid';
+    let capabilityAction = 'create';
     // add the new document to the mock document loader as if it were on ledger
     // clone here so we can proceed with making changes to mockDoc
     mockData.existingDids[did] = bedrock.util.clone(mockDoc);
@@ -449,7 +449,7 @@ describe('validate API', () => {
     // add an AuthorizeRequest proof that will pass json-schema validation for
     // testnet v2 *not* a valid signature
     mockOperation.proof = bedrock.util.clone(mockData.proof);
-    capabilityAction = 'UpdateDidDocument';
+    capabilityAction = 'update';
 
     // *must* use `capabilityInvocationKey`
     const s = await jsigs.sign(mockOperation, {

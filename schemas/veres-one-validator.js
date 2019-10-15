@@ -307,19 +307,6 @@ const electorPoolDocument = {
   additionalProperties: false,
 };
 
-const proof = {
-  required: [
-    'type'
-  ],
-  type: 'object',
-  properties: {
-    type: {
-      type: 'string',
-      enum: ['RsaSignature2018', 'Ed25519Signature2018'],
-    }
-  }
-};
-
 const baseCapability = {
   type: 'object',
   additionalProperties: false,
@@ -330,7 +317,7 @@ const baseCapability = {
     capability: {type: 'string'},
     capabilityAction: {
       type: 'string',
-      enum: ['AuthorizeRequest', 'RegisterDid', 'UpdateDidDocument'],
+      enum: ['write', 'create', 'update'],
     },
     created: schemas.w3cDateTime(),
     creator: {type: 'string'},
@@ -361,13 +348,13 @@ const creatorOrVerificationMethod = {
   }]
 };
 
-const authorizedRequestCapability = {
+const writeCapability = {
   allOf: [
     baseCapability,
     creatorOrVerificationMethod, {
       properties: {
         capabilityAction: {
-          enum: ['AuthorizeRequest'],
+          enum: ['write'],
         },
         // FIXME: this is for testnet v2 only
         jws: {
@@ -377,13 +364,13 @@ const authorizedRequestCapability = {
     }]
 };
 
-const registerDidCapability = {
+const createCapability = {
   allOf: [
     baseCapability,
     creatorOrVerificationMethod, {
       properties: {
         capabilityAction: {
-          enum: ['RegisterDid'],
+          enum: ['create'],
         },
       }
     }]
@@ -395,7 +382,7 @@ const updateDidCapability = {
     creatorOrVerificationMethod, {
       properties: {
         capabilityAction: {
-          enum: ['UpdateDidDocument'],
+          enum: ['update'],
         },
       }
     }]
@@ -425,11 +412,11 @@ const createDid = {
     proof: {
       anyOf: [{
         type: 'array',
-        items: [authorizedRequestCapability, registerDidCapability],
+        items: [writeCapability, createCapability],
         additionalItems: false,
       }, {
         type: 'array',
-        items: [registerDidCapability, authorizedRequestCapability],
+        items: [createCapability, writeCapability],
         additionalItems: false,
       }],
     }
@@ -458,11 +445,11 @@ const createElectorPool = {
     proof: {
       anyOf: [{
         type: 'array',
-        items: [authorizedRequestCapability, registerDidCapability],
+        items: [writeCapability, createCapability],
         additionalItems: false,
       }, {
         type: 'array',
-        items: [registerDidCapability, authorizedRequestCapability],
+        items: [createCapability, writeCapability],
         additionalItems: false,
       }],
     }
@@ -491,11 +478,11 @@ const updateDid = {
     proof: {
       anyOf: [{
         type: 'array',
-        items: [authorizedRequestCapability, updateDidCapability],
+        items: [writeCapability, updateDidCapability],
         additionalItems: false,
       }, {
         type: 'array',
-        items: [updateDidCapability, authorizedRequestCapability],
+        items: [updateDidCapability, writeCapability],
         additionalItems: false,
       }],
     }

@@ -70,8 +70,8 @@ describe('validate API ElectorPool', () => {
           operation,
           // capability: maintainerDid,
           capability: electorPoolDoc.id,
-          // FIXME: seems weird to use `RegisterDid` on the elector pool doc
-          capabilityAction: 'RegisterDid',
+          // FIXME: seems weird to use `create` on the elector pool doc
+          capabilityAction: 'create',
           key,
         });
 
@@ -126,8 +126,8 @@ describe('validate API ElectorPool', () => {
         operation = await didv1.attachInvocationProof({
           operation,
           capability: electorPoolDoc.id,
-          // FIXME: seems weird to use `RegisterDid` on the elector pool doc
-          capabilityAction: 'RegisterDid',
+          // FIXME: seems weird to use `create` on the elector pool doc
+          capabilityAction: 'create',
           key,
         });
 
@@ -162,14 +162,14 @@ describe('validate API ElectorPool', () => {
         result.valid.should.be.false;
         result.error.name.should.equal('NotFoundError');
       });
-      it('fails on op w/missing RegisterDid capability', async () => {
+      it('fails on op w/missing create capability', async () => {
         const {id: maintainerDid} = maintainerDidDocumentFull.doc;
         const electorPoolDoc = _generateElectorPoolDoc();
         let operation = await _wrap(
           {didDocument: electorPoolDoc, operationType: 'create'});
         const key = _getMaintainerKeys();
 
-        // no RegisterDid proof added
+        // no create proof added
 
         operation = await didv1.attachInvocationProof({
           operation,
@@ -215,7 +215,7 @@ describe('validate API ElectorPool', () => {
         operation = await didv1.attachInvocationProof({
           operation,
           capability: maintainerDid,
-          capabilityAction: 'RegisterDid',
+          capabilityAction: 'create',
           key,
         });
         const ledgerConfig = bedrock.util.clone(
@@ -242,7 +242,7 @@ describe('validate API ElectorPool', () => {
         result.valid.should.be.false;
         result.error.name.should.equal('ValidationError');
       });
-      it('fails on op w/two RegisterDid capability proofs', async () => {
+      it('fails on op w/two create capability proofs', async () => {
         const electorPoolDoc = _generateElectorPoolDoc();
         let operation = await _wrap(
           {didDocument: electorPoolDoc, operationType: 'create'});
@@ -253,13 +253,13 @@ describe('validate API ElectorPool', () => {
         operation = await didv1.attachInvocationProof({
           operation,
           capability: electorPoolDoc.id,
-          capabilityAction: 'RegisterDid',
+          capabilityAction: 'create',
           key,
         });
         operation = await didv1.attachInvocationProof({
           operation,
           capability: electorPoolDoc.id,
-          capabilityAction: 'RegisterDid',
+          capabilityAction: 'create',
           key,
         });
         const ledgerConfig = bedrock.util.clone(
@@ -293,7 +293,7 @@ describe('validate API ElectorPool', () => {
           {didDocument: electorPoolDoc, operationType: 'create'});
         const key = _getMaintainerKeys();
 
-        // no RegisterDid proof added
+        // no create proof added
 
         operation = await didv1.attachInvocationProof({
           algorithm: 'Ed25519Signature2018',
@@ -349,7 +349,7 @@ describe('validate API ElectorPool', () => {
           operation,
           // this DID document does not exist
           capability: 'did:v1:uuid:e798d4cf-f4f5-40cb-9f06-7fa56cf55d95',
-          capabilityAction: 'RegisterDid',
+          capabilityAction: 'create',
           key,
         });
 
@@ -457,7 +457,7 @@ describe('validate API ElectorPool', () => {
           operation,
           capability: electorPoolDoc.id,
           // capabilityAction: operation.type,
-          capabilityAction: 'UpdateDidDocument',
+          capabilityAction: 'update',
           key,
         });
         // FIXME: replace mock proof above with legitimate proof

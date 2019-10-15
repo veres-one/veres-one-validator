@@ -24,13 +24,14 @@ const operations = mock.operations = {};
 const privateDidDocuments = mock.privateDidDocuments = {};
 // TODO: for testnet v2, this proof is only validated using json-schema
 mock.proof = {
-  type: "Ed25519Signature2018",
-  created: "2019-01-10T23:10:25Z",
+  type: 'Ed25519Signature2018',
+  created: '2019-01-10T23:10:25Z',
   capability: 'did:v1:uuid:c37e914a-1e2a-4d59-9668-ee93458fd19a',
-  capabilityAction: "AuthorizeRequest",
-  jws: "MOCKPROOF",
-  proofPurpose: "capabilityInvocation",
-  verificationMethod: "did:v1:nym:z279yHL6HsxRzCPU78DAWgZVieb8xPK1mJKJBbP8T2CezuFY#z279tKmToKKMjQ8tsCgTbBBthw5xEzHWL6GCqZyQnzZr7wUo"
+  capabilityAction: 'write',
+  jws: 'MOCKPROOF',
+  proofPurpose: 'capabilityInvocation',
+  verificationMethod: 'did:v1:nym:z279yHL6HsxRzCPU78DAWgZVieb8xPK1mJKJBb' +
+    'P8T2CezuFY#z279tKmToKKMjQ8tsCgTbBBthw5xEzHWL6GCqZyQnzZr7wUo'
 };
 
 // need to return document for beta but *not* for alpha
