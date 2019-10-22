@@ -5,13 +5,11 @@
 
 const bedrock = require('bedrock');
 const {constants} = bedrock.config;
-const didv1 = new (require('did-veres-one')).VeresOne({
-  httpsAgent: new require('https').Agent({rejectUnauthorized: false})
-});
+const {httpsAgent} = require('bedrock-https-agent');
+const didv1 = new (require('did-veres-one')).VeresOne({httpsAgent});
 const voValidator = require('veres-one-validator');
 const jsonpatch = require('fast-json-patch');
-const uuid = require('uuid/v4');
-const {BedrockError} = bedrock.util;
+const {util: {uuid, BedrockError}} = bedrock;
 
 const continuityServiceType = 'Continuity2017Peer';
 const ldDocuments = new Map();

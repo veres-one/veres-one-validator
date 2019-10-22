@@ -1,11 +1,14 @@
 /*
  * Copyright (c) 2017 Digital Bazaar, Inc. All rights reserved.
  */
+'use strict';
 
 const config = require('bedrock').config;
 const path = require('path');
 
 config.mocha.tests.push(path.join(__dirname, 'mocha'));
+
+config['https-agent'].rejectUnauthorized = false;
 
 const cfg = config['veres-one-validator'];
 

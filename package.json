@@ -19,6 +19,7 @@
     "crypto-ld": "^3.4.1",
     "did-veres-one": "^8.0.0",
     "fast-json-patch": "^2.0.6",
+    "jsonld": "^1.8.0",
     "jsonld-signatures": "^4.0.0",
     "lodash": "^4.17.11",
     "multibase": "^0.6.0",
@@ -26,15 +27,15 @@
     "ocapld": "^1.1.0"
   },
   "peerDependencies": {
-    "bedrock": "^1.12.0",
-    "bedrock-ledger-context": "^12.0.0",
-    "bedrock-ledger-node": "^8.0.0",
+    "bedrock": "^2.0.0",
+    "bedrock-ledger-context": "^13.0.0",
+    "bedrock-ledger-node": "^9.0.0",
     "bedrock-ledger-utils": "^1.0.0",
     "bedrock-validation": "^4.0.0",
-    "bedrock-veres-one-context": "^7.0.0"
+    "bedrock-veres-one-context": "^8.0.0"
   },
   "devDependencies": {
-    "eslint": "^5.13.0",
+    "eslint": "^6.0.0",
     "eslint-config-digitalbazaar": "^2.0.0"
   }
 }

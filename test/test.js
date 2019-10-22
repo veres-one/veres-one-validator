@@ -3,6 +3,7 @@
  */
 const bedrock = require('bedrock');
 require('veres-one-validator');
+require('bedrock-https-agent');
 
 require('bedrock-test');
 bedrock.start();

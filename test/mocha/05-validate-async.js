@@ -4,8 +4,7 @@
 'use strict';
 
 const bedrock = require('bedrock');
-const didVeresOne = require('did-veres-one');
-const {documentLoader} = didVeresOne;
+const {documentLoader} = require('bedrock-jsonld-document-loader');
 const {Ed25519KeyPair} = require('crypto-ld');
 const jsigs = require('jsonld-signatures');
 const jsonpatch = require('fast-json-patch');
@@ -13,7 +12,7 @@ const mockData = require('./mock.data');
 const voValidator = require('veres-one-validator');
 const {CapabilityInvocation} = require('ocapld');
 const {Ed25519Signature2018} = jsigs.suites;
-const v1 = new didVeresOne.VeresOne();
+const v1 = new (require('did-veres-one')).VeresOne();
 
 describe('validate API', () => {
   it('validates a proper CreateWebLedgerRecord operation', async () => {
