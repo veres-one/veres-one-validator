@@ -22,7 +22,7 @@
     "bedrock-security-context": "^2.0.0",
     "bedrock-test": "^4.0.0",
     "bedrock-validation": "^4.0.0",
-    "bedrock-veres-one-context": "^8.0.0",
+    "bedrock-veres-one-context": "digitalbazaar/bedrock-veres-one-context#9.x",
     "crypto-ld": "^3.0.0",
     "did-veres-one": "^8.0.0",
     "fast-json-patch": "^2.0.7",
