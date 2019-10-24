@@ -9,10 +9,9 @@ require('../lib/config');
 
 const cfg = config['veres-one-validator'];
 
-// NOTE: any changes made here should also be made to the did-service schema
 const pattern = cfg.environment === 'test' ?
-  '^(did\:v1\:test\:nym\:|did\:v1\:test\:uuid\:)([-_A-Za-z0-9.]+)$' :
-  '^(did\:v1\:nym\:|did\:v1\:uuid\:)([-_A-Za-z0-9.]+)$';
+  '^(did\:v1\:test\:nym\:)([-_A-Za-z0-9.]+)$' :
+  '^(did\:v1\:nym\:)([-_A-Za-z0-9.]+)$';
 
 const schema = {
   title: 'Decentralized Identifier',

@@ -1,5 +1,5 @@
 /*!
- * Copyright (c) 2017-2018 Digital Bazaar, Inc. All rights reserved.
+ * Copyright (c) 2017-2019 Digital Bazaar, Inc. All rights reserved.
  */
 'use strict';
 
@@ -179,13 +179,14 @@ const didDocument = {
 
 const didDocumentPatch = {
   title: 'DID Document Patch',
+  type: 'object',
   required: [
     '@context',
     'patch',
     'sequence',
     'target'
   ],
-  type: 'object',
+  additionalProperties: false,
   properties: {
     '@context': {
       // TODO: be more explicit here
@@ -229,7 +230,6 @@ const didDocumentPatch = {
       maximum: Number.MAX_SAFE_INTEGER
     }
   },
-  additionalProperties: false
 };
 
 const ContinuityElectorTypes = {
@@ -252,13 +252,15 @@ const electorPoolDocument = {
     'id',
     'electorPool',
     'controller',
-    'maximumElectorCount'
+    'maximumElectorCount',
+    'type'
   ],
   type: 'object',
   properties: {
     '@context': didDocumentContext,
     id: didUuid(),
     controller: did(),
+    type: {const: 'ElectorPool'},
     electorPool: {
       type: 'array',
       items: {
@@ -388,77 +390,9 @@ const updateDidCapability = {
     }]
 };
 
-const createDid = {
-  title: 'Veres One Create DID',
-  required: [
-    '@context',
-    'creator',
-    'proof',
-    'record',
-    'type',
-  ],
-  type: 'object',
-  properties: {
-    // TODO: require did context
-    '@context': schemas.jsonldContext(constants.WEB_LEDGER_CONTEXT_V1_URL),
-    creator: {
-      type: 'string'
-    },
-    type: {
-      type: 'string',
-      enum: ['CreateWebLedgerRecord'],
-    },
-    record: didDocument,
-    proof: {
-      anyOf: [{
-        type: 'array',
-        items: [writeCapability, createCapability],
-        additionalItems: false,
-      }, {
-        type: 'array',
-        items: [createCapability, writeCapability],
-        additionalItems: false,
-      }],
-    }
-  },
-  additionalProperties: false
-};
-
-const createElectorPool = {
-  title: 'Create ElectorPool',
-  required: [
-    '@context',
-    'creator',
-    'proof',
-    'record',
-    'type',
-  ],
-  type: 'object',
-  properties: {
-    '@context': schemas.jsonldContext(constants.WEB_LEDGER_CONTEXT_V1_URL),
-    creator: {type: 'string'},
-    type: {
-      type: 'string',
-      enum: ['CreateWebLedgerRecord'],
-    },
-    record: electorPoolDocument,
-    proof: {
-      anyOf: [{
-        type: 'array',
-        items: [writeCapability, createCapability],
-        additionalItems: false,
-      }, {
-        type: 'array',
-        items: [createCapability, writeCapability],
-        additionalItems: false,
-      }],
-    }
-  },
-  additionalProperties: false
-};
-
-const updateDid = {
+const updateWebLedgerRecord = {
   title: 'Update DID',
+  type: 'object',
   required: [
     '@context',
     'creator',
@@ -466,13 +400,11 @@ const updateDid = {
     'recordPatch',
     'type'
   ],
-  type: 'object',
+  additionalProperties: false,
   properties: {
     '@context': schemas.jsonldContext(constants.WEB_LEDGER_CONTEXT_V1_URL),
     creator: {type: 'string'},
-    type: {
-      type: 'string',
-      enum: ['UpdateWebLedgerRecord'],
+    type: {const: 'UpdateWebLedgerRecord',
     },
     recordPatch: didDocumentPatch,
     proof: {
@@ -487,7 +419,6 @@ const updateDid = {
       }],
     }
   },
-  additionalProperties: false
 };
 
 const ledgerConfiguration = {
@@ -628,6 +559,76 @@ const ledgerConfiguration = {
   },
 };
 
+const uuidDidRecord = {
+  title: 'UUID DID',
+  type: 'object',
+  required: [
+    'type',
+  ],
+  properties: {
+    type: {
+      enum: [
+        'ElectorPool'
+      ]
+    }
+  },
+  allOf: [{
+    if: {properties: {type: {const: 'ElectorPool'}}},
+    then: electorPoolDocument
+  }]
+};
+
+const createWebLedgerRecord = {
+  title: 'CreateWebLedgerRecord',
+  type: 'object',
+  required: [
+    '@context',
+    'creator',
+    'proof',
+    'record',
+    'type',
+  ],
+  additionalProperties: false,
+  properties: {
+    '@context': schemas.jsonldContext(constants.WEB_LEDGER_CONTEXT_V1_URL),
+    creator: {type: 'string'},
+    type: {const: 'CreateWebLedgerRecord'},
+    proof: {
+      anyOf: [{
+        type: 'array',
+        items: [writeCapability, createCapability],
+        additionalItems: false,
+      }, {
+        type: 'array',
+        items: [createCapability, writeCapability],
+        additionalItems: false,
+      }],
+    },
+    record: {
+      type: 'object',
+      required: [
+        'id'
+      ],
+      properties: {
+        id: {
+          anyOf: [did(), didUuid()]
+        }
+      },
+      allOf: [{
+        if: {
+          properties: {id: did()}
+        },
+        then: didDocument
+      }, {
+        if: {
+          properties: {id: didUuid()}
+        },
+        then: uuidDidRecord
+      }],
+    }
+  }
+};
+
 module.exports.config = () => config;
 module.exports.didDocument = () => didDocument;
 module.exports.didDocumentPatch = () => didDocumentPatch;
@@ -635,5 +636,28 @@ module.exports.electorPoolDocument = () => electorPoolDocument;
 module.exports.ledgerConfiguration = () => ledgerConfiguration;
 module.exports.operation = () => ({
   title: 'Veres One WebLedgerOperation',
-  anyOf: [createDid, updateDid, createElectorPool]
+  type: 'object',
+  properties: {
+    type: {
+      enum: [
+        'CreateWebLedgerRecord',
+        'UpdateWebLedgerRecord'
+      ]
+    }
+  },
+  allOf: [{
+    if: {
+      properties: {
+        type: {const: 'CreateWebLedgerRecord'}
+      }
+    },
+    then: createWebLedgerRecord
+  }, {
+    if: {
+      properties: {
+        type: {const: 'UpdateWebLedgerRecord'}
+      }
+    },
+    then: updateWebLedgerRecord
+  }]
 });
