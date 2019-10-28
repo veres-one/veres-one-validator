@@ -21,7 +21,22 @@ const electorPoolDocument = mock.electorPoolDocument = {};
 const ldDocuments = mock.ldDocuments = {};
 const ledgerConfigurations = mock.ledgerConfigurations = {};
 const operations = mock.operations = {};
+
+mock.patchContext = [
+  'https://w3id.org/json-ld-patch/v1',
+  {
+    value: {
+      '@id': 'jldp:value',
+      '@context': [
+        'https://w3id.org/did/v0.11',
+        'https://w3id.org/veres-one/v1'
+      ]
+    }
+  }
+];
+
 const privateDidDocuments = mock.privateDidDocuments = {};
+const validationRuleDocument = mock.validationRuleDocument = {};
 // TODO: for testnet v2, this proof is only validated using json-schema
 mock.proof = {
   type: 'Ed25519Signature2018',
@@ -166,13 +181,15 @@ didDocuments.alpha = privateDidDocuments.alpha;
 // didDocuments.alpha = _stripPrivateKeys(privateDidDocuments.alpha);
 // didDocuments.beta = _stripPrivateKeys(privateDidDocuments.beta);
 
-function _stripPrivateKeys(privateDidDocument) {
-  const didDocument = bedrock.util.clone(privateDidDocument);
-  delete didDocument.authentication[0].publicKey[0].privateKey;
-  delete didDocument.capabilityDelegation[0].publicKey[0].privateKey;
-  delete didDocument.capabilityInvocation[0].publicKey[0].privateKey;
-  return didDocument;
-}
+validationRuleDocument.alpha = {
+  '@context': didContexts,
+  id: 'did:v1:uuid:fac7325b-92e2-43e7-9f7c-abecb6e3041e',
+  type: 'ValidationRule',
+  controller: '', // replaced with maintainer's DID in test
+  allowedServiceBaseUrl: [
+    'https://example.com/api'
+  ],
+};
 
 mock.authorizedSigners = {
   // fully valid signer

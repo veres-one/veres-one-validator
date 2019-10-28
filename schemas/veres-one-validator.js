@@ -123,11 +123,9 @@ const publicKey = {
 const didDocumentContext = {
   type: 'array',
   items: [{
-    type: 'string',
-    enum: [constants.DID_CONTEXT_URL]
+    const: constants.DID_CONTEXT_URL
   }, {
-    type: 'string',
-    enum: [constants.VERES_ONE_CONTEXT_V1_URL]
+    const: constants.VERES_ONE_CONTEXT_V1_URL
   }],
   maxItems: 2,
   minItems: 2,
@@ -177,21 +175,43 @@ const didDocument = {
   },
 };
 
+const patchContext = {
+  type: 'array',
+  maxItems: 2,
+  minItems: 2,
+  items: [
+    {const: constants.JSON_LD_PATCH_CONTEXT_V1_URL},
+    {
+      type: 'object',
+      required: ['value'],
+      additionalProperties: false,
+      properties: {
+        value: {
+          type: 'object',
+          required: ['@id', '@context'],
+          additionalProperties: false,
+          properties: {
+            '@id': {const: 'jldp:value'},
+            '@context': didDocumentContext
+          }
+        }
+      }
+    }
+  ]
+};
+
 const didDocumentPatch = {
   title: 'DID Document Patch',
   type: 'object',
+  additionalProperties: false,
   required: [
     '@context',
     'patch',
     'sequence',
     'target'
   ],
-  additionalProperties: false,
   properties: {
-    '@context': {
-      // TODO: be more explicit here
-      type: 'array'
-    },
+    '@context': patchContext,
     target: {
       anyOf: [did(), didUuid()],
     },
@@ -200,11 +220,12 @@ const didDocumentPatch = {
       type: 'array',
       minItems: 1,
       items: {
+        type: 'object',
+        additionalProperties: false,
         required: [
           'op',
           'path'
         ],
-        type: 'object',
         // FIXME: more strictly validate properties based on value of `op`
         properties: {
           op: {
@@ -221,7 +242,6 @@ const didDocumentPatch = {
             //type: ['number', 'string', 'boolean', 'object', 'array'],
           }
         },
-        additionalProperties: false
       }
     },
     sequence: {
@@ -247,6 +267,8 @@ const Continuity2017Elector = {
 
 const electorPoolDocument = {
   title: 'ElectorPool Document',
+  type: 'object',
+  additionalProperties: false,
   required: [
     '@context',
     'id',
@@ -255,7 +277,6 @@ const electorPoolDocument = {
     'maximumElectorCount',
     'type'
   ],
-  type: 'object',
   properties: {
     '@context': didDocumentContext,
     id: didUuid(),
@@ -306,7 +327,34 @@ const electorPoolDocument = {
       minimum: 1,
     }
   },
+};
+
+const validationRuleDocument = {
+  title: 'ValidationRule Document',
+  type: 'object',
   additionalProperties: false,
+  required: [
+    '@context',
+    'id',
+    'allowedServiceBaseUrl',
+    'controller',
+    'type'
+  ],
+  properties: {
+    '@context': didDocumentContext,
+    id: didUuid(),
+    controller: did(),
+    type: {const: 'ValidationRule'},
+    allowedServiceBaseUrl: {
+      type: 'array',
+      minItems: 1,
+      items: {
+        // FIXME: how should these be validated beyond string?
+        // pattern startswith https:// ?
+        type: 'string',
+      }
+    }
+  },
 };
 
 const baseCapability = {
@@ -568,13 +616,17 @@ const uuidDidRecord = {
   properties: {
     type: {
       enum: [
-        'ElectorPool'
+        'ElectorPool',
+        'ValidationRule',
       ]
     }
   },
   allOf: [{
     if: {properties: {type: {const: 'ElectorPool'}}},
     then: electorPoolDocument
+  }, {
+    if: {properties: {type: {const: 'ValidationRule'}}},
+    then: validationRuleDocument
   }]
 };
 
@@ -661,3 +713,4 @@ module.exports.operation = () => ({
     then: updateWebLedgerRecord
   }]
 });
+module.exports.validationRuleDocument = () => validationRuleDocument;

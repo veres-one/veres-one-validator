@@ -4,12 +4,11 @@
 'use strict';
 
 const bedrock = require('bedrock');
-const {constants} = bedrock.config;
+const {config: {constants}, util: {uuid, BedrockError}} = bedrock;
 const {httpsAgent} = require('bedrock-https-agent');
 const didv1 = new (require('did-veres-one')).VeresOne({httpsAgent});
 const voValidator = require('veres-one-validator');
 const jsonpatch = require('fast-json-patch');
-const {util: {uuid, BedrockError}} = bedrock;
 
 const continuityServiceType = 'Continuity2017Peer';
 const ldDocuments = new Map();
@@ -430,10 +429,7 @@ describe('validate API ElectorPool', () => {
           '@context': constants.WEB_LEDGER_CONTEXT_V1_URL,
           creator: 'https://example.com/some/ledger/node',
           recordPatch: {
-            '@context': [
-              constants.DID_CONTEXT_URL,
-              constants.VERES_ONE_CONTEXT_V1_URL
-            ],
+            '@context': mockData.patchContext,
             patch,
             sequence: 0,
             target: electorPoolDoc.id,

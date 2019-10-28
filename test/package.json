@@ -24,7 +24,7 @@
     "bedrock-validation": "^4.0.0",
     "bedrock-veres-one-context": "digitalbazaar/bedrock-veres-one-context#9.x",
     "crypto-ld": "^3.0.0",
-    "did-veres-one": "^8.0.0",
+    "did-veres-one": "veres-one/did-veres-one#update-context",
     "fast-json-patch": "^2.0.7",
     "grunt": "^1.0.1",
     "jsonld-signatures": "^4.0.0",
