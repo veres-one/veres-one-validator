@@ -49,16 +49,14 @@ const capability = {
 
 const config = {
   title: 'Veres One Validator Config',
+  type: 'object',
+  additionalProperties: false,
   required: [
     'type',
     // 'validatorFilter',
   ],
-  type: 'object',
   properties: {
-    type: {
-      type: 'string',
-      enum: ['VeresOneValidator2017'],
-    },
+    type: {const: 'VeresOneValidator2017'},
     validatorFilter: {
       title: 'Validator Type Filter',
       type: 'array',
@@ -88,9 +86,9 @@ const config = {
         },
         additionalProperties: false
       },
-    }
+    },
+    validationParameterSet: didUuid(),
   },
-  additionalProperties: false
 };
 
 const publicKey = {
