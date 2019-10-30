@@ -87,7 +87,7 @@ const config = {
         additionalProperties: false
       },
     },
-    validationParameterSet: didUuid(),
+    validatorParameterSet: didUuid(),
   },
 };
 
@@ -327,8 +327,8 @@ const electorPoolDocument = {
   },
 };
 
-const validationParameterSet = {
-  title: 'ValidationParameterSet Document',
+const validatorParameterSet = {
+  title: 'ValidatorParameterSet Document',
   type: 'object',
   additionalProperties: false,
   required: [
@@ -342,7 +342,7 @@ const validationParameterSet = {
     '@context': didDocumentContext,
     id: didUuid(),
     controller: did(),
-    type: {const: 'ValidationParameterSet'},
+    type: {const: 'ValidatorParameterSet'},
     allowedServiceBaseUrl: {
       type: 'array',
       minItems: 1,
@@ -615,7 +615,7 @@ const uuidDidRecord = {
     type: {
       enum: [
         'ElectorPool',
-        'ValidationParameterSet',
+        'ValidatorParameterSet',
       ]
     }
   },
@@ -623,8 +623,8 @@ const uuidDidRecord = {
     if: {properties: {type: {const: 'ElectorPool'}}},
     then: electorPoolDocument
   }, {
-    if: {properties: {type: {const: 'ValidationParameterSet'}}},
-    then: validationParameterSet
+    if: {properties: {type: {const: 'ValidatorParameterSet'}}},
+    then: validatorParameterSet
   }]
 };
 
@@ -711,4 +711,4 @@ module.exports.operation = () => ({
     then: updateWebLedgerRecord
   }]
 });
-module.exports.validationParameterSet = () => validationParameterSet;
+module.exports.validatorParameterSet = () => validatorParameterSet;

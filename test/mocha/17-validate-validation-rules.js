@@ -35,7 +35,7 @@ const mockData = require('./mock.data');
 let maintainerDidDocumentFull;
 let electorDidDocumentFull;
 let electorServiceId;
-describe('validate API ValidationParameterSet', () => {
+describe('validate API ValidatorParameterSet', () => {
   describe('operationValidator', () => {
     beforeEach(async () => {
       maintainerDidDocumentFull = await didv1.generate();
@@ -51,11 +51,11 @@ describe('validate API ValidationParameterSet', () => {
       }];
       ldDocuments.set(electorDidDocument.id, electorDidDocument);
     });
-    describe('create ValidationParameterSet operation', () => {
+    describe('create ValidatorParameterSet operation', () => {
       it('validates op with proper proof', async () => {
-        const validationParameterDoc = _generateValidationParameterSetDoc();
+        const validatorParameterSetDoc = _generateValidatorParameterSetDoc();
         let operation = await _wrap(
-          {didDocument: validationParameterDoc, operationType: 'create'});
+          {didDocument: validatorParameterSetDoc, operationType: 'create'});
         const key = _getMaintainerKeys();
 
         // FIXME: add an AuthorizeRequest proof that will pass json-schema
@@ -65,7 +65,7 @@ describe('validate API ValidationParameterSet', () => {
         operation = await didv1.attachInvocationProof({
           operation,
           // capability: maintainerDid,
-          capability: validationParameterDoc.id,
+          capability: validatorParameterSetDoc.id,
           capabilityAction: 'create',
           key,
         });
@@ -101,16 +101,16 @@ describe('validate API ValidationParameterSet', () => {
       });
     }); // end create electorPool operation
 
-    describe('update ValidationParameterSet operation', () => {
+    describe('update ValidatorParameterSet operation', () => {
       it('validates an operation with proper proof', async () => {
-        const validationParameterDoc = _generateValidationParameterSetDoc();
+        const validatorParameterSetDoc = _generateValidatorParameterSetDoc();
         // the invocationTarget is the ledger ID
         // electorPoolDoc.electorPool[0].capability[0].invocationTarget =
         //   'urn:uuid:e9e63a07-15b1-4e8f-b725-a71a362cfd99';
         ldDocuments.set(
-          validationParameterDoc.id, bedrock.util.clone(validationParameterDoc));
-        const observer = jsonpatch.observe(validationParameterDoc);
-        validationParameterDoc.allowedServiceBaseUrl.push(
+          validatorParameterSetDoc.id, bedrock.util.clone(validatorParameterSetDoc));
+        const observer = jsonpatch.observe(validatorParameterSetDoc);
+        validatorParameterSetDoc.allowedServiceBaseUrl.push(
           'https://example.com/api2');
         const patch = jsonpatch.generate(observer);
 
@@ -121,7 +121,7 @@ describe('validate API ValidationParameterSet', () => {
             '@context': mockData.patchContext,
             patch,
             sequence: 0,
-            target: validationParameterDoc.id,
+            target: validatorParameterSetDoc.id,
           },
           type: 'UpdateWebLedgerRecord',
         };
@@ -135,7 +135,7 @@ describe('validate API ValidationParameterSet', () => {
 
         operation = await didv1.attachInvocationProof({
           operation,
-          capability: validationParameterDoc.id,
+          capability: validatorParameterSetDoc.id,
           // capabilityAction: operation.type,
           capabilityAction: 'update',
           key,
@@ -174,12 +174,12 @@ describe('validate API ValidationParameterSet', () => {
   });
 });
 
-function _generateValidationParameterSetDoc() {
+function _generateValidatorParameterSetDoc() {
   const {id: maintainerDid} = maintainerDidDocumentFull.doc;
-  const validationParameterDoc = bedrock.util.clone(
-    mockData.validationParameterSet.alpha);
-  validationParameterDoc.controller = maintainerDid;
-  return validationParameterDoc;
+  const validatorParameterSetDoc = bedrock.util.clone(
+    mockData.validatorParameterSet.alpha);
+  validatorParameterSetDoc.controller = maintainerDid;
+  return validatorParameterSetDoc;
 }
 
 function _getMaintainerKeys() {

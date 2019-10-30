@@ -133,17 +133,17 @@ describe('validate regular DIDs', () => {
     });
 
     describe('Create DID with a service', () => {
-      const validationParameterSet =
+      const validatorParameterSet =
         'did:v1:uuid:b49fc147-5966-4407-a428-b597a77461ba';
       const validatorConfig = mockData.ledgerConfigurations.alpha
         .operationValidator[0];
-      validatorConfig.validationParameterSet = validationParameterSet;
+      validatorConfig.validatorParameterSet = validatorParameterSet;
 
       before(() => {
-        const validationParameterDoc = bedrock.util.clone(
-          mockData.validationParameterSet.alpha);
-        validationParameterDoc.id = validationParameterSet;
-        mockData.existingDids[validationParameterSet] = validationParameterDoc;
+        const validatorParameterSetDoc = bedrock.util.clone(
+          mockData.validatorParameterSet.alpha);
+        validatorParameterSetDoc.id = validatorParameterSet;
+        mockData.existingDids[validatorParameterSet] = validatorParameterSetDoc;
       });
       it('validates a DID with one proper service descriptor', async () => {
         const mockDoc = await v1.generate();
@@ -343,7 +343,7 @@ describe('validate regular DIDs', () => {
 
         // this document does not exist on the ledger
         const badValidatorConfig = bedrock.util.clone(validatorConfig);
-        badValidatorConfig.validationParameterSet =
+        badValidatorConfig.validatorParameterSet =
           'did:v1:urn:347e7d85-5a36-44e4-9c7b-56a48809ae37';
 
         const result = await voValidator.validate({
