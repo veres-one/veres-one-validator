@@ -328,7 +328,7 @@ const electorPoolDocument = {
 };
 
 const validationParameterSet = {
-  title: 'ValidationRule Document',
+  title: 'ValidationParameterSet Document',
   type: 'object',
   additionalProperties: false,
   required: [
@@ -342,7 +342,7 @@ const validationParameterSet = {
     '@context': didDocumentContext,
     id: didUuid(),
     controller: did(),
-    type: {const: 'ValidationRule'},
+    type: {const: 'ValidationParameterSet'},
     allowedServiceBaseUrl: {
       type: 'array',
       minItems: 1,
@@ -615,7 +615,7 @@ const uuidDidRecord = {
     type: {
       enum: [
         'ElectorPool',
-        'ValidationRule',
+        'ValidationParameterSet',
       ]
     }
   },
@@ -623,7 +623,7 @@ const uuidDidRecord = {
     if: {properties: {type: {const: 'ElectorPool'}}},
     then: electorPoolDocument
   }, {
-    if: {properties: {type: {const: 'ValidationRule'}}},
+    if: {properties: {type: {const: 'ValidationParameterSet'}}},
     then: validationParameterSet
   }]
 };

@@ -35,7 +35,7 @@ const mockData = require('./mock.data');
 let maintainerDidDocumentFull;
 let electorDidDocumentFull;
 let electorServiceId;
-describe('validate API ValidationRule', () => {
+describe('validate API ValidationParameterSet', () => {
   describe('operationValidator', () => {
     beforeEach(async () => {
       maintainerDidDocumentFull = await didv1.generate();
@@ -51,11 +51,11 @@ describe('validate API ValidationRule', () => {
       }];
       ldDocuments.set(electorDidDocument.id, electorDidDocument);
     });
-    describe('create ValidationRule operation', () => {
+    describe('create ValidationParameterSet operation', () => {
       it('validates op with proper proof', async () => {
-        const validationRuleDoc = _generateValidationRuleDoc();
+        const validationParameterDoc = _generateValidationParameterSetDoc();
         let operation = await _wrap(
-          {didDocument: validationRuleDoc, operationType: 'create'});
+          {didDocument: validationParameterDoc, operationType: 'create'});
         const key = _getMaintainerKeys();
 
         // FIXME: add an AuthorizeRequest proof that will pass json-schema
@@ -65,7 +65,7 @@ describe('validate API ValidationRule', () => {
         operation = await didv1.attachInvocationProof({
           operation,
           // capability: maintainerDid,
-          capability: validationRuleDoc.id,
+          capability: validationParameterDoc.id,
           capabilityAction: 'create',
           key,
         });
@@ -101,16 +101,16 @@ describe('validate API ValidationRule', () => {
       });
     }); // end create electorPool operation
 
-    describe('update ValidationRule operation', () => {
+    describe('update ValidationParameterSet operation', () => {
       it('validates an operation with proper proof', async () => {
-        const validationRuleDoc = _generateValidationRuleDoc();
+        const validationParameterDoc = _generateValidationParameterSetDoc();
         // the invocationTarget is the ledger ID
         // electorPoolDoc.electorPool[0].capability[0].invocationTarget =
         //   'urn:uuid:e9e63a07-15b1-4e8f-b725-a71a362cfd99';
         ldDocuments.set(
-          validationRuleDoc.id, bedrock.util.clone(validationRuleDoc));
-        const observer = jsonpatch.observe(validationRuleDoc);
-        validationRuleDoc.allowedServiceBaseUrl.push(
+          validationParameterDoc.id, bedrock.util.clone(validationParameterDoc));
+        const observer = jsonpatch.observe(validationParameterDoc);
+        validationParameterDoc.allowedServiceBaseUrl.push(
           'https://example.com/api2');
         const patch = jsonpatch.generate(observer);
 
@@ -121,7 +121,7 @@ describe('validate API ValidationRule', () => {
             '@context': mockData.patchContext,
             patch,
             sequence: 0,
-            target: validationRuleDoc.id,
+            target: validationParameterDoc.id,
           },
           type: 'UpdateWebLedgerRecord',
         };
@@ -135,7 +135,7 @@ describe('validate API ValidationRule', () => {
 
         operation = await didv1.attachInvocationProof({
           operation,
-          capability: validationRuleDoc.id,
+          capability: validationParameterDoc.id,
           // capabilityAction: operation.type,
           capabilityAction: 'update',
           key,
@@ -174,12 +174,12 @@ describe('validate API ValidationRule', () => {
   });
 });
 
-function _generateValidationRuleDoc() {
+function _generateValidationParameterSetDoc() {
   const {id: maintainerDid} = maintainerDidDocumentFull.doc;
-  const validationRuleDoc = bedrock.util.clone(
+  const validationParameterDoc = bedrock.util.clone(
     mockData.validationParameterSet.alpha);
-  validationRuleDoc.controller = maintainerDid;
-  return validationRuleDoc;
+  validationParameterDoc.controller = maintainerDid;
+  return validationParameterDoc;
 }
 
 function _getMaintainerKeys() {
