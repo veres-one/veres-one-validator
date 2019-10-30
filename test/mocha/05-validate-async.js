@@ -138,7 +138,7 @@ describe('validate regular DIDs', () => {
 
       before(() => {
         const validationRuleDoc = bedrock.util.clone(
-          mockData.validationRuleDocument.alpha);
+          mockData.validationParameterSet.alpha);
         validationRuleDoc.id = validationParameterSet;
         mockData.existingDids[validationParameterSet] = validationRuleDoc;
       });

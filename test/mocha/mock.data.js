@@ -36,7 +36,7 @@ mock.patchContext = [
 ];
 
 const privateDidDocuments = mock.privateDidDocuments = {};
-const validationRuleDocument = mock.validationRuleDocument = {};
+const validationParameterSet = mock.validationParameterSet = {};
 // TODO: for testnet v2, this proof is only validated using json-schema
 mock.proof = {
   type: 'Ed25519Signature2018',
@@ -181,7 +181,7 @@ didDocuments.alpha = privateDidDocuments.alpha;
 // didDocuments.alpha = _stripPrivateKeys(privateDidDocuments.alpha);
 // didDocuments.beta = _stripPrivateKeys(privateDidDocuments.beta);
 
-validationRuleDocument.alpha = {
+validationParameterSet.alpha = {
   '@context': didContexts,
   id: 'did:v1:uuid:fac7325b-92e2-43e7-9f7c-abecb6e3041e',
   type: 'ValidationParameterSet',

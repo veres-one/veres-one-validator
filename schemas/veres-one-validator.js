@@ -329,7 +329,7 @@ const electorPoolDocument = {
   },
 };
 
-const validationRuleDocument = {
+const validationParameterSet = {
   title: 'ValidationRule Document',
   type: 'object',
   additionalProperties: false,
@@ -626,7 +626,7 @@ const uuidDidRecord = {
     then: electorPoolDocument
   }, {
     if: {properties: {type: {const: 'ValidationRule'}}},
-    then: validationRuleDocument
+    then: validationParameterSet
   }]
 };
 
@@ -713,4 +713,4 @@ module.exports.operation = () => ({
     then: updateWebLedgerRecord
   }]
 });
-module.exports.validationRuleDocument = () => validationRuleDocument;
+module.exports.validationParameterSet = () => validationParameterSet;

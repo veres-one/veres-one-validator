@@ -177,7 +177,7 @@ describe('validate API ValidationRule', () => {
 function _generateValidationRuleDoc() {
   const {id: maintainerDid} = maintainerDidDocumentFull.doc;
   const validationRuleDoc = bedrock.util.clone(
-    mockData.validationRuleDocument.alpha);
+    mockData.validationParameterSet.alpha);
   validationRuleDoc.controller = maintainerDid;
   return validationRuleDoc;
 }
