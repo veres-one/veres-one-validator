@@ -184,7 +184,7 @@ didDocuments.alpha = privateDidDocuments.alpha;
 validationRuleDocument.alpha = {
   '@context': didContexts,
   id: 'did:v1:uuid:fac7325b-92e2-43e7-9f7c-abecb6e3041e',
-  type: 'ValidationRule',
+  type: 'ValidationParameterSet',
   controller: '', // replaced with maintainer's DID in test
   allowedServiceBaseUrl: [
     'https://example.com/api'
