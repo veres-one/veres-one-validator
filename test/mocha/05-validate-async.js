@@ -132,7 +132,7 @@ describe('validate regular DIDs', () => {
       result.error.name.should.equal('DuplicateError');
     });
 
-    describe.only('Create DID with a service', () => {
+    describe('Create DID with a service', () => {
       const validationParameterSet =
         'did:v1:uuid:b49fc147-5966-4407-a428-b597a77461ba';
       const validatorConfig = mockData.ledgerConfigurations.alpha
@@ -312,6 +312,53 @@ describe('validate regular DIDs', () => {
         const {error} = result;
         error.name.should.equal('ValidationError');
         should.exist(error.details.allowedServiceBaseUrl);
+      });
+      it('rejects a DID if allowedServiceBaseUrl is not defined', async () => {
+        const mockDoc = await v1.generate();
+
+        mockDoc.addService({
+          fragment: 'foo',
+          type: 'urn:foo',
+          endpoint:
+            'https://example.com/api/e61388cf-2464-4739-b37b-81f178db010b',
+        });
+
+        const did = mockDoc.id;
+        const keyId = mockDoc.getVerificationMethod(
+          {proofPurpose: 'capabilityInvocation'}).id;
+        const capabilityInvocationKey = mockDoc.keys[keyId];
+        const mockOperation = bedrock.util.clone(mockData.operations.create);
+        const capabilityAction = 'create';
+        mockOperation.record = mockDoc.doc;
+        // add an AuthorizeRequest proof that will pass json-schema
+        // validation for
+        // testnet v2 *not* a valid signature
+        mockOperation.proof = bedrock.util.clone(mockData.proof);
+        const s = await jsigs.sign(mockOperation, {
+          compactProof: false,
+          documentLoader,
+          suite: new Ed25519Signature2018({key: capabilityInvocationKey}),
+          purpose: new CapabilityInvocation({capability: did, capabilityAction})
+        });
+
+        // this document does not exist on the ledger
+        const badValidatorConfig = bedrock.util.clone(validatorConfig);
+        badValidatorConfig.validationParameterSet =
+          'did:v1:urn:347e7d85-5a36-44e4-9c7b-56a48809ae37';
+
+        const result = await voValidator.validate({
+          basisBlockHeight: 0,
+          ledgerNode: mockData.ledgerNode,
+          validatorInput: s,
+          validatorConfig: badValidatorConfig,
+        });
+        should.exist(result);
+        result.valid.should.be.a('boolean');
+        result.valid.should.be.false;
+        should.exist(result.error);
+        const {error} = result;
+        error.name.should.equal('InvalidStateError');
+        // should.exist(error.details.allowedServiceBaseUrl);
       });
     });
   }); // end create operations

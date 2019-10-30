@@ -52,7 +52,7 @@ describe('validate API ElectorPool', () => {
       ldDocuments.set(electorDidDocument.id, electorDidDocument);
     });
     describe('create electorPool operation', () => {
-      it.only('validates op with proper proof', async () => {
+      it('validates op with proper proof', async () => {
         const {id: maintainerDid} = maintainerDidDocumentFull.doc;
         const electorPoolDoc = _generateElectorPoolDoc();
         let operation = await _wrap(
@@ -85,7 +85,6 @@ describe('validate API ElectorPool', () => {
           // corresponds to electorPoolDocument.alpha
           electorPool: electorPoolDoc.id,
         };
-        console.log('SSSSSSSSs', JSON.stringify(ledgerConfig, null, 2));
         let err;
         let result;
         try {
