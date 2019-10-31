@@ -407,6 +407,53 @@ describe('validate regular DIDs', () => {
       result.valid.should.be.true;
       should.not.exist(result.error);
     });
+    it('rejects an update that changes the document ID', async () => {
+      const {did, mockDoc, capabilityInvocationKey} = await _generateDid();
+      const mockOperation = clone(mockData.operations.update);
+      let capabilityAction = 'create';
+      // add the new document to the mock document loader as if it were on
+      // ledger
+      // clone here so we can proceed with making changes to mockDoc
+      mockData.existingDids[did] = clone(mockDoc);
+
+      const observer = jsonpatch.observe(mockDoc);
+
+      mockDoc.id =
+        'did:v1:nym:z6MknY7qbTmVNPUC2xRyfSzcf3LxQGBx4t8uBVhGkKq7XXXX';
+
+      const newKey = await Ed25519KeyPair.generate({controller: did});
+      newKey.id = _generateKeyId({did, key: newKey});
+      mockDoc.authentication.push({
+        id: newKey.id,
+        type: newKey.type,
+        controller: newKey.controller,
+        publicKeyBase58: newKey.publicKeyBase58
+      });
+      mockOperation.recordPatch.patch = jsonpatch.generate(observer);
+      mockOperation.recordPatch.target = did;
+      // add an AuthorizeRequest proof that will pass json-schema validation for
+      // testnet v2 *not* a valid signature
+      mockOperation.proof = clone(mockData.proof);
+      capabilityAction = 'update';
+      const s = await jsigs.sign(mockOperation, {
+        compactProof: false,
+        documentLoader,
+        suite: new Ed25519Signature2018({key: capabilityInvocationKey}),
+        purpose: new CapabilityInvocation({capability: did, capabilityAction})
+      });
+      const result = await voValidator.validate({
+        basisBlockHeight: 10,
+        ledgerNode: mockData.ledgerNode,
+        validatorInput: s,
+        validatorConfig: mockData.ledgerConfigurations.alpha
+          .operationValidator[0],
+      });
+      should.exist(result);
+      result.valid.should.be.a('boolean');
+      result.valid.should.be.false;
+      should.exist(result.error);
+      result.error.name.should.equal('ValidationError');
+    });
     // the operation is altered after the proof
     it('rejects an altered operation', async () => {
       const {did, mockDoc, capabilityInvocationKey} = await _generateDid();
