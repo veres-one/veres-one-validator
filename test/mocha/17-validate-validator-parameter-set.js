@@ -4,31 +4,17 @@
 'use strict';
 
 const bedrock = require('bedrock');
-const {config: {constants}, util: {clone, BedrockError}} = bedrock;
+const {config: {constants}, util: {clone}} = bedrock;
+const helpers = require('./helpers');
 const {httpsAgent} = require('bedrock-https-agent');
 const didv1 = new (require('did-veres-one')).VeresOne({httpsAgent});
 const voValidator = require('veres-one-validator');
 const jsonpatch = require('fast-json-patch');
 
 const continuityServiceType = 'Continuity2017Peer';
-const ldDocuments = new Map();
 
-const ledgerNode = {
-  records: {
-    async get({/*maxBlockHeight, */recordId}) {
-      if(ldDocuments.has(recordId)) {
-        return {
-          // clone the result to prevent JSONLD from mutating the contexts
-          // as with a document loader
-          record: clone(ldDocuments.get(recordId)),
-          meta: {sequence: 0}
-        };
-      }
-      throw new BedrockError(
-        'DID Document not found.', 'NotFoundError', {recordId});
-    }
-  }
-};
+const ldDocuments = new Map();
+const ledgerNode = helpers.createMockLedgerNode({ldDocuments});
 
 const mockData = require('./mock.data');
 
