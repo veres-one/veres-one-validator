@@ -4,7 +4,7 @@
 'use strict';
 
 const bedrock = require('bedrock');
-const {config: {constants}, util: {BedrockError}} = bedrock;
+const {config: {constants}, util: {clone, BedrockError}} = bedrock;
 const {httpsAgent} = require('bedrock-https-agent');
 const didv1 = new (require('did-veres-one')).VeresOne({httpsAgent});
 const voValidator = require('veres-one-validator');
@@ -20,7 +20,7 @@ const ledgerNode = {
         return {
           // clone the result to prevent JSONLD from mutating the contexts
           // as with a document loader
-          record: bedrock.util.clone(ldDocuments.get(recordId)),
+          record: clone(ldDocuments.get(recordId)),
           meta: {sequence: 0}
         };
       }
@@ -60,7 +60,7 @@ describe('validate API ValidatorParameterSet', () => {
 
         // FIXME: add an AuthorizeRequest proof that will pass json-schema
         // validation for testnet v2 *not* a valid signature
-        operation.proof = bedrock.util.clone(mockData.proof);
+        operation.proof = clone(mockData.proof);
 
         operation = await didv1.attachInvocationProof({
           operation,
@@ -77,8 +77,7 @@ describe('validate API ValidatorParameterSet', () => {
         //   capabilityAction: 'AuthorizeRequest',
         //   key,
         // });
-        const ledgerConfig = bedrock.util.clone(
-          mockData.ledgerConfigurations.alpha);
+        const ledgerConfig = clone(mockData.ledgerConfigurations.alpha);
 
         let err;
         let result;
@@ -108,7 +107,7 @@ describe('validate API ValidatorParameterSet', () => {
         // electorPoolDoc.electorPool[0].capability[0].invocationTarget =
         //   'urn:uuid:e9e63a07-15b1-4e8f-b725-a71a362cfd99';
         ldDocuments.set(
-          validatorParameterSetDoc.id, bedrock.util.clone(validatorParameterSetDoc));
+          validatorParameterSetDoc.id, clone(validatorParameterSetDoc));
         const observer = jsonpatch.observe(validatorParameterSetDoc);
         validatorParameterSetDoc.allowedServiceBaseUrl.push(
           'https://example.com/api2');
@@ -131,7 +130,7 @@ describe('validate API ValidatorParameterSet', () => {
 
         // FIXME: add an AuthorizeRequest proof that will pass json-schema
         // validation for testnet v2 *not* a valid signature
-        operation.proof = bedrock.util.clone(mockData.proof);
+        operation.proof = clone(mockData.proof);
 
         operation = await didv1.attachInvocationProof({
           operation,
@@ -148,8 +147,7 @@ describe('validate API ValidatorParameterSet', () => {
         //   capabilityAction: 'AuthorizeRequest',
         //   key,
         // });
-        const ledgerConfig = bedrock.util.clone(
-          mockData.ledgerConfigurations.alpha);
+        const ledgerConfig = clone(mockData.ledgerConfigurations.alpha);
         ledgerConfig.electorSelectionMethod = {
           type: 'VeresOne',
         };
@@ -176,7 +174,7 @@ describe('validate API ValidatorParameterSet', () => {
 
 function _generateValidatorParameterSetDoc() {
   const {id: maintainerDid} = maintainerDidDocumentFull.doc;
-  const validatorParameterSetDoc = bedrock.util.clone(
+  const validatorParameterSetDoc = clone(
     mockData.validatorParameterSet.alpha);
   validatorParameterSetDoc.controller = maintainerDid;
   return validatorParameterSetDoc;
