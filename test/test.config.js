@@ -3,7 +3,7 @@
  */
 'use strict';
 
-const config = require('bedrock').config;
+const {config} = require('bedrock');
 const path = require('path');
 
 config.mocha.tests.push(path.join(__dirname, 'mocha'));

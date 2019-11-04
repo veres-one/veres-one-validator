@@ -197,6 +197,8 @@ mock.authorizedSigners = {
   // beta: didDocuments.beta.authentication[0].id
 };
 
+mock.VALIDATOR_PARAMETER_SET =
+  'did:v1:uuid:b2f1d301-fddd-4743-b666-b7ec8f08c310';
 ledgerConfigurations.alpha = {
   '@context': constants.WEB_LEDGER_CONTEXT_V1_URL,
   type: 'WebLedgerConfiguration',
@@ -207,7 +209,8 @@ ledgerConfigurations.alpha = {
     validatorFilter: [{
       type: 'ValidatorFilterByType',
       validatorFilterByType: ['CreateWebLedgerRecord', 'UpdateWebLedgerRecord']
-    }]
+    }],
+    validatorParameterSet: mock.VALIDATOR_PARAMETER_SET,
   }],
   ledgerConfigurationValidator: [{
     type: 'VeresOneValidator2017',
