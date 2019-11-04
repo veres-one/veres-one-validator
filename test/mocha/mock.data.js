@@ -181,9 +181,11 @@ didDocuments.alpha = privateDidDocuments.alpha;
 // didDocuments.alpha = _stripPrivateKeys(privateDidDocuments.alpha);
 // didDocuments.beta = _stripPrivateKeys(privateDidDocuments.beta);
 
+mock.VALIDATOR_PARAMETER_SET =
+  'did:v1:uuid:b2f1d301-fddd-4743-b666-b7ec8f08c310';
 validatorParameterSet.alpha = {
   '@context': didContexts,
-  id: 'did:v1:uuid:fac7325b-92e2-43e7-9f7c-abecb6e3041e',
+  id: mock.VALIDATOR_PARAMETER_SET,
   type: 'ValidatorParameterSet',
   controller: '', // replaced with maintainer's DID in test
   allowedServiceBaseUrl: [
@@ -197,8 +199,6 @@ mock.authorizedSigners = {
   // beta: didDocuments.beta.authentication[0].id
 };
 
-mock.VALIDATOR_PARAMETER_SET =
-  'did:v1:uuid:b2f1d301-fddd-4743-b666-b7ec8f08c310';
 ledgerConfigurations.alpha = {
   '@context': constants.WEB_LEDGER_CONTEXT_V1_URL,
   type: 'WebLedgerConfiguration',
