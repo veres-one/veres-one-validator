@@ -762,6 +762,56 @@ describe('validate regular DIDs', () => {
       proofVerifyResult.verified.should.be.false;
       proofVerifyResult.error[0].message.should.equal('Invalid signature.');
     });
+    it('rejects a DID with an invalid property', async () => {
+      const mockDoc = await v1.generate();
+      const mockOperation = clone(mockData.operations.update);
+      let capabilityAction = 'create';
+      // add the new document to the mock document loader as if it were on
+      // ledger
+      // clone here so we can proceed with making changes to mockDoc
+      const did = mockDoc.id;
+      mockData.existingDids[did] = clone(mockDoc.toJSON());
+
+      mockDoc.observe();
+
+      // `type` is not an allowed property for a nym DID document
+      mockDoc.doc.type = 'SomeNewType';
+
+      mockOperation.recordPatch = mockDoc.commit();
+
+      const keyId = mockDoc.getVerificationMethod(
+        {proofPurpose: 'capabilityInvocation'}).id;
+      const capabilityInvocationKey = mockDoc.keys[keyId];
+
+      // add an AuthorizeRequest proof that will pass json-schema
+      // validation for
+      // testnet v2 *not* a valid signature
+      mockOperation.proof = clone(mockData.proof);
+      capabilityAction = 'update';
+      const s = await jsigs.sign(mockOperation, {
+        compactProof: false,
+        documentLoader,
+        suite: new Ed25519Signature2018({key: capabilityInvocationKey}),
+        purpose: new CapabilityInvocation({capability: did, capabilityAction})
+      });
+      const result = await voValidator.validate({
+        basisBlockHeight: 10,
+        ledgerNode: mockData.ledgerNode,
+        validatorInput: s,
+        validatorConfig: mockData.ledgerConfigurations.alpha
+          .operationValidator[0],
+      });
+      should.exist(result);
+      result.valid.should.be.a('boolean');
+      result.valid.should.be.false;
+      should.exist(result.error);
+      const {error} = result;
+      error.name.should.equal('ValidationError');
+      error.details.errors.should.be.an('array');
+      error.details.errors.should.have.length(1);
+      error.details.errors[0].message.should.equal(
+        'should NOT have additional properties');
+    });
 
     describe('Updates involving services', () => {
       const validatorParameterSet =
