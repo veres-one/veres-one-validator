@@ -4,6 +4,8 @@
   "private": true,
   "scripts": {
     "test": "node --preserve-symlinks test test",
+    "coverage": "nyc --reporter=lcov --reporter=text-summary npm test",
+    "coverage-report": "nyc report --reporter=html --reporter=text-summary",
     "watch": "grunt watch"
   },
   "dependencies": {
@@ -29,5 +31,18 @@
     "grunt": "^1.0.1",
     "jsonld-signatures": "^4.0.0",
     "veres-one-validator": "file:.."
+  },
+  "devDependencies": {
+    "nyc": "^14.1.1"
+  },
+  "nyc": {
+    "include": [
+      "node_modules/veres-one-validator/**"
+    ],
+    "exclude": [
+      "node_modules/veres-one-validator/node_modules/**",
+      "**/test/**"
+    ],
+    "excludeNodeModules": false
   }
 }
