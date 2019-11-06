@@ -28,6 +28,7 @@
   },
   "peerDependencies": {
     "bedrock": "^2.0.0",
+    "bedrock-jsonld-document-loader": "^1.0.0",
     "bedrock-ledger-context": "^13.0.0",
     "bedrock-ledger-node": "^9.0.0",
     "bedrock-ledger-utils": "^1.0.0",
