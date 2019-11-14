@@ -18,7 +18,7 @@
   "dependencies": {
     "bs58": "^4.0.1",
     "crypto-ld": "^3.4.1",
-    "did-veres-one": "^8.0.0",
+    "did-veres-one": "veres-one/did-veres-one#update-context",
     "fast-json-patch": "^2.0.6",
     "jsonld": "^1.8.0",
     "jsonld-signatures": "^4.0.0",
