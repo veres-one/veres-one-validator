@@ -128,16 +128,10 @@ const didDocumentContext = {
 };
 
 const didDocument = {
-  title: 'Veres One DID Document',
+  title: 'Veres One DID Document Base',
   additionalProperties: false,
-  // FIXME: what *are* required properties?
-  required: [
-    'id',
-    'authentication',
-    'capabilityDelegation',
-    'capabilityInvocation',
-  ],
   type: 'object',
+  required: ['@context'],
   properties: {
     '@context': didDocumentContext,
     id: did(),
@@ -147,6 +141,11 @@ const didDocument = {
     },
     invoker: {
       type: 'string',
+    },
+    assertionMethod: {
+      type: 'array',
+      minItems: 1,
+      items: publicKey,
     },
     authentication: {
       type: 'array',
@@ -169,6 +168,35 @@ const didDocument = {
       items: serviceDescriptor(),
     },
   },
+};
+
+const createDidDocument = {
+  type: 'object',
+  allOf: [
+    didDocument,
+    {
+      title: 'Create Veres One DID Document',
+      type: 'object',
+      required: [
+        'id',
+        'capabilityInvocation',
+      ],
+    }
+  ]
+};
+
+const updateDidDocument = {
+  allOf: [
+    didDocument,
+    {
+      title: 'Update Veres One DID Document',
+      type: 'object',
+      required: [
+        'id',
+        // it is possible to remove all methods during an update
+      ],
+    }
+  ]
 };
 
 const patchContext = {
@@ -619,7 +647,7 @@ const createWebLedgerRecord = {
         if: {
           properties: {id: did()}
         },
-        then: didDocument
+        then: createDidDocument
       }, {
         if: {
           properties: {id: didUuid()}
@@ -631,7 +659,7 @@ const createWebLedgerRecord = {
 };
 
 module.exports.operationValidator = () => operationValidator;
-module.exports.didDocument = () => didDocument;
+module.exports.updateDidDocument = () => updateDidDocument;
 module.exports.didDocumentPatch = () => didDocumentPatch;
 module.exports.electorPoolDocument = () => electorPoolDocument;
 module.exports.ledgerConfiguration = () => ledgerConfiguration;

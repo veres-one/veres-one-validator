@@ -71,6 +71,42 @@ describe('validate regular DIDs', () => {
       result.valid.should.be.a('boolean');
       result.valid.should.be.true;
     });
+    it('rejects create operation without a capabilityInvocation', async () => {
+      const {did, mockDoc, capabilityInvocationKey} = await _generateDid();
+      const mockOperation = clone(mockData.operations.create);
+      const capabilityAction = 'create';
+
+      // delete all methods
+      delete mockDoc.authentication;
+      delete mockDoc.capabilityDelegation;
+      delete mockDoc.capabilityInvocation;
+
+      mockOperation.record = mockDoc;
+      // FIXME: add an AuthorizeRequest proof that will pass json-schema
+      // validation for testnet v2 *not* a valid signature
+      mockOperation.proof = clone(mockData.proof);
+      const s = await jsigs.sign(mockOperation, {
+        compactProof: false,
+        documentLoader,
+        suite: new Ed25519Signature2018({key: capabilityInvocationKey}),
+        purpose: new CapabilityInvocation({capability: did, capabilityAction})
+      });
+      const result = await voValidator.validate({
+        basisBlockHeight: 0,
+        ledgerNode: mockData.ledgerNode,
+        validatorInput: s,
+        validatorConfig: mockData.ledgerConfigurations.alpha
+          .operationValidator[0],
+      });
+      should.exist(result);
+      result.valid.should.be.a('boolean');
+      result.valid.should.be.false;
+      should.exist(result.error);
+      result.error.name.should.equal('ValidationError');
+      result.error.message.should.contain('Veres One WebLedgerOperation');
+      result.error.details.errors[0].message.should.contain(
+        'capabilityInvocation');
+    });
     it('rejects an improper CreateWebLedgerRecord operation', async () => {
       const {did, mockDoc, capabilityInvocationKey} = await _generateBadDid();
       const mockOperation = clone(mockData.operations.create);
