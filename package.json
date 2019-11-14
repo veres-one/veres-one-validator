@@ -2,18 +2,19 @@
   "name": "veres-one-validator",
   "version": "5.0.1-0",
   "description": "veres-one-validator",
+  "license": "SEE LICENSE IN LICENSE.md",
   "main": "lib",
   "scripts": {
     "lint": "eslint lib"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/digitalbazaar/veres-one-validator.git"
+    "url": "https://github.com/veres-one/veres-one-validator.git"
   },
   "bugs": {
-    "url": "https://github.com/digitalbazaar/veres-one-validator/issues"
+    "url": "https://github.com/veres-one/veres-one-validator/issues"
   },
-  "homepage": "https://github.com/digitalbazaar/veres-one-validator#readme",
+  "homepage": "https://github.com/veres-one/veres-one-validator#readme",
   "dependencies": {
     "bs58": "^4.0.1",
     "crypto-ld": "^3.4.1",
@@ -27,9 +28,9 @@
     "ocapld": "^1.1.0"
   },
   "peerDependencies": {
-    "bedrock": "^2.0.0",
+    "bedrock": "2.x - 3.x",
     "bedrock-jsonld-document-loader": "^1.0.0",
-    "bedrock-ledger-context": "^13.0.0",
+    "bedrock-ledger-context": "^14.0.0",
     "bedrock-ledger-node": "^9.0.0",
     "bedrock-ledger-utils": "^1.0.0",
     "bedrock-validation": "^4.0.0",
