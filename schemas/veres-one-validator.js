@@ -54,7 +54,7 @@ const operationValidator = {
   required: [
     'type',
     'validatorFilter',
-    // 'validatorParameterSet',
+    'validatorParameterSet',
   ],
   properties: {
     type: {const: 'VeresOneValidator2017'},
