@@ -88,6 +88,24 @@ const operationValidator = {
     validatorParameterSet: didUuid(),
   },
 };
+const configurationValidator = {
+  title: 'Veres One Validator Config',
+  type: 'object',
+  additionalProperties: false,
+  required: [
+    'type',
+  ],
+  properties: {
+    type: {const: 'VeresOneValidator2017'},
+  },
+};
+
+const validatorConfig = {
+  oneOf: [
+    operationValidator,
+    configurationValidator
+  ]
+};
 
 const publicKey = {
   title: 'Veres One DID Public Key',
@@ -690,4 +708,5 @@ module.exports.operation = () => ({
     then: updateWebLedgerRecord
   }]
 });
+module.exports.validatorConfig = () => validatorConfig;
 module.exports.validatorParameterSet = () => validatorParameterSet;
