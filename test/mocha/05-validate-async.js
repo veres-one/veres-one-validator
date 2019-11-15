@@ -525,6 +525,103 @@ describe('validate regular DIDs', () => {
       should.exist(result.error);
       result.error.name.should.equal('ValidationError');
     });
+    it('rejects an update with an invalid sequence', async () => {
+      const {did, mockDoc, capabilityInvocationKey} = await _generateDid();
+      const mockOperation = clone(mockData.operations.update);
+      let capabilityAction = 'create';
+      // add the new document to the mock document loader as if it were on
+      // ledger
+      // clone here so we can proceed with making changes to mockDoc
+      mockData.existingDids[did] = clone(mockDoc);
+
+      const observer = jsonpatch.observe(mockDoc);
+
+      const newKey = await Ed25519KeyPair.generate({controller: did});
+      newKey.id = _generateKeyId({did, key: newKey});
+      mockDoc.authentication.push({
+        id: newKey.id,
+        type: newKey.type,
+        controller: newKey.controller,
+        publicKeyBase58: newKey.publicKeyBase58
+      });
+      mockOperation.recordPatch.patch = jsonpatch.generate(observer);
+      mockOperation.recordPatch.target = did;
+      // add an AuthorizeRequest proof that will pass json-schema validation for
+      // testnet v2 *not* a valid signature
+      mockOperation.proof = clone(mockData.proof);
+      capabilityAction = 'update';
+      // specify an invalid sequence
+      mockOperation.recordPatch.sequence = 10;
+
+      const s = await jsigs.sign(mockOperation, {
+        compactProof: false,
+        documentLoader,
+        suite: new Ed25519Signature2018({key: capabilityInvocationKey}),
+        purpose: new CapabilityInvocation({capability: did, capabilityAction})
+      });
+      const result = await voValidator.validate({
+        basisBlockHeight: 10,
+        ledgerNode: mockData.ledgerNode,
+        validatorInput: s,
+        validatorConfig: mockData.ledgerConfigurations.alpha
+          .operationValidator[0],
+      });
+      should.exist(result);
+      result.valid.should.be.a('boolean');
+      result.valid.should.be.false;
+      should.exist(result.error);
+      result.error.name.should.equal('ValidationError');
+      result.error.message.should.contain('sequence number does not match');
+    });
+    it('rejects an update with an invalid patch', async () => {
+      const {did, mockDoc, capabilityInvocationKey} = await _generateDid();
+      const mockOperation = clone(mockData.operations.update);
+      let capabilityAction = 'create';
+      // add the new document to the mock document loader as if it were on
+      // ledger
+      // clone here so we can proceed with making changes to mockDoc
+      mockData.existingDids[did] = clone(mockDoc);
+
+      const observer = jsonpatch.observe(mockDoc);
+
+      const newKey = await Ed25519KeyPair.generate({controller: did});
+      newKey.id = _generateKeyId({did, key: newKey});
+      mockDoc.authentication.push({
+        id: newKey.id,
+        type: newKey.type,
+        controller: newKey.controller,
+        publicKeyBase58: newKey.publicKeyBase58
+      });
+      mockOperation.recordPatch.patch = jsonpatch.generate(observer);
+      mockOperation.recordPatch.target = did;
+      // add an AuthorizeRequest proof that will pass json-schema validation for
+      // testnet v2 *not* a valid signature
+      mockOperation.proof = clone(mockData.proof);
+      capabilityAction = 'update';
+
+      // specifiy an invalid path to create an invalid JSON patch
+      mockOperation.recordPatch.patch[0].path = '/authentication/2';
+
+      const s = await jsigs.sign(mockOperation, {
+        compactProof: false,
+        documentLoader,
+        suite: new Ed25519Signature2018({key: capabilityInvocationKey}),
+        purpose: new CapabilityInvocation({capability: did, capabilityAction})
+      });
+      const result = await voValidator.validate({
+        basisBlockHeight: 10,
+        ledgerNode: mockData.ledgerNode,
+        validatorInput: s,
+        validatorConfig: mockData.ledgerConfigurations.alpha
+          .operationValidator[0],
+      });
+      should.exist(result);
+      result.valid.should.be.a('boolean');
+      result.valid.should.be.false;
+      should.exist(result.error);
+      result.error.name.should.equal('ValidationError');
+      result.error.message.should.equal('The given JSON patch is invalid.');
+    });
     // the operation is altered after the proof
     it('rejects an altered operation', async () => {
       const {did, mockDoc, capabilityInvocationKey} = await _generateDid();
