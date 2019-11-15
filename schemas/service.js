@@ -35,6 +35,8 @@ const serviceDescriptor = {
   properties: {
     id: serviceId,
     type: {
+      // FIXME: this will be validated on some const TBD, possibly
+      // SeeAlsoService
       type: 'string',
     },
     serviceEndpoint: {
