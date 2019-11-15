@@ -259,17 +259,56 @@ describe('validate regular DIDs', () => {
         result.valid.should.be.a('boolean');
         result.valid.should.be.true;
       });
-      it('rejects a DID with an invalid service endpoint', async () => {
+      it('rejects a DID with an invalid service baseUrl', async () => {
         const mockDoc = await v1.generate();
+        const did = mockDoc.id;
 
         mockDoc.addService({
           fragment: 'foo',
           type: 'urn:foo',
-          endpoint:
-            'https://invalid.com/api/e61388cf-2464-4739-b37b-81f178db010b',
+          endpoint: `https://invalid.com/api/${encodeURIComponent(did)}`,
         });
 
+        const keyId = mockDoc.getVerificationMethod(
+          {proofPurpose: 'capabilityInvocation'}).id;
+        const capabilityInvocationKey = mockDoc.keys[keyId];
+        const mockOperation = clone(mockData.operations.create);
+        const capabilityAction = 'create';
+        mockOperation.record = mockDoc.doc;
+        // add an AuthorizeRequest proof that will pass json-schema
+        // validation for
+        // testnet v2 *not* a valid signature
+        mockOperation.proof = clone(mockData.proof);
+        const s = await jsigs.sign(mockOperation, {
+          compactProof: false,
+          documentLoader,
+          suite: new Ed25519Signature2018({key: capabilityInvocationKey}),
+          purpose: new CapabilityInvocation({capability: did, capabilityAction})
+        });
+        const result = await voValidator.validate({
+          basisBlockHeight: 0,
+          ledgerNode: mockData.ledgerNode,
+          validatorInput: s,
+          validatorConfig,
+        });
+        should.exist(result);
+        result.valid.should.be.a('boolean');
+        result.valid.should.be.false;
+        should.exist(result.error);
+        const {error} = result;
+        error.name.should.equal('ValidationError');
+        should.exist(error.details.allowedServiceBaseUrl);
+      });
+      it('rejects a DID with endpoint that is not URI encoded', async () => {
+        const mockDoc = await v1.generate();
         const did = mockDoc.id;
+
+        mockDoc.addService({
+          fragment: 'foo',
+          type: 'urn:foo',
+          endpoint: `https://example.com/api/${did}`,
+        });
+
         const keyId = mockDoc.getVerificationMethod(
           {proofPurpose: 'capabilityInvocation'}).id;
         const capabilityInvocationKey = mockDoc.keys[keyId];
@@ -302,12 +341,12 @@ describe('validate regular DIDs', () => {
       });
       it('rejects a DID with good and bad service descriptors', async () => {
         const mockDoc = await v1.generate();
+        const did = mockDoc.id;
 
         mockDoc.addService({
           fragment: 'foo',
           type: 'urn:foo',
-          endpoint:
-            'https://example.com/api/e61388cf-2464-4739-b37b-81f178db010b',
+          endpoint: `https://example.com/api/${encodeURIComponent(did)}`,
         });
         mockDoc.addService({
           fragment: 'bar',
@@ -316,7 +355,6 @@ describe('validate regular DIDs', () => {
             'https://invalid.com/api/836cf564-e86c-4428-9822-ad8ad788c124',
         });
 
-        const did = mockDoc.id;
         const keyId = mockDoc.getVerificationMethod(
           {proofPurpose: 'capabilityInvocation'}).id;
         const capabilityInvocationKey = mockDoc.keys[keyId];
@@ -970,8 +1008,56 @@ describe('validate regular DIDs', () => {
         mockDoc.addService({
           fragment: 'foo',
           type: 'urn:foo',
-          endpoint:
-            'https://invalid.com/api/e61388cf-2464-4739-b37b-81f178db010b',
+          endpoint: `https://invalid.com/api/${encodeURIComponent(did)}`,
+        });
+
+        mockOperation.recordPatch = mockDoc.commit();
+
+        const keyId = mockDoc.getVerificationMethod(
+          {proofPurpose: 'capabilityInvocation'}).id;
+        const capabilityInvocationKey = mockDoc.keys[keyId];
+
+        // add an AuthorizeRequest proof that will pass json-schema
+        // validation for
+        // testnet v2 *not* a valid signature
+        mockOperation.proof = clone(mockData.proof);
+        capabilityAction = 'update';
+        const s = await jsigs.sign(mockOperation, {
+          compactProof: false,
+          documentLoader,
+          suite: new Ed25519Signature2018({key: capabilityInvocationKey}),
+          purpose: new CapabilityInvocation({capability: did, capabilityAction})
+        });
+        const result = await voValidator.validate({
+          basisBlockHeight: 10,
+          ledgerNode: mockData.ledgerNode,
+          validatorInput: s,
+          validatorConfig
+        });
+        should.exist(result);
+        result.valid.should.be.a('boolean');
+        result.valid.should.be.false;
+        should.exist(result.error);
+        const {error} = result;
+        error.name.should.equal('ValidationError');
+        should.exist(error.details.allowedServiceBaseUrl);
+      });
+      it('rejects a DID with endpoint that is not URI encoded', async () => {
+        const mockDoc = await v1.generate();
+        const mockOperation = clone(mockData.operations.update);
+        let capabilityAction = 'create';
+        // add the new document to the mock document loader as if it were on
+        // ledger
+        // clone here so we can proceed with making changes to mockDoc
+        const did = mockDoc.id;
+        mockData.existingDids[did] = clone(mockDoc.toJSON());
+
+        mockDoc.observe();
+
+        mockDoc.addService({
+          fragment: 'foo',
+          type: 'urn:foo',
+          endpoint: `https://example.com/api/${did}`,
         });
 
         mockOperation.recordPatch = mockDoc.commit();
@@ -1020,14 +1106,12 @@ describe('validate regular DIDs', () => {
         mockDoc.addService({
           fragment: 'foo',
           type: 'urn:foo',
-          endpoint:
-            'https://example.com/api/e61388cf-2464-4739-b37b-81f178db010b',
+          endpoint: `https://example.com/api/${encodeURIComponent(did)}`,
         });
         mockDoc.addService({
           fragment: 'bar',
           type: 'urn:bar',
-          endpoint:
-            'https://invalid.com/api/836cf564-e86c-4428-9822-ad8ad788c124',
+          endpoint: `https://invalid.com/api/${encodeURIComponent(did)}`,
         });
 
         mockOperation.recordPatch = mockDoc.commit();
