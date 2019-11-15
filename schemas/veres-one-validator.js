@@ -54,7 +54,7 @@ const operationValidator = {
   required: [
     'type',
     'validatorFilter',
-    'validatorParameterSet',
+    // 'validatorParameterSet',
   ],
   properties: {
     type: {const: 'VeresOneValidator2017'},
@@ -548,14 +548,14 @@ const ledgerConfiguration = {
         required: ['type'],
         type: 'object',
         properties: {
-          type: {
-            type: 'string',
-            enum: ['VeresOneValidator2017'],
-          }
+          type: {const: 'VeresOneValidator2017'}
         }
       }
     },
-    operationValidator,
+    operationValidator: {
+      type: 'array',
+      items: operationValidator
+    },
     proof: {
       allOf: [
         schemas.linkedDataSignature2018(), {
