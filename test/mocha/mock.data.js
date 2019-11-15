@@ -207,6 +207,9 @@ ledgerConfigurations.alpha = {
   type: 'WebLedgerConfiguration',
   ledger: 'did:v1:c02915fc-672d-4568-8e6e-b12a0b35cbb3',
   consensusMethod: 'Continuity2017',
+  electorSelectionMethod: {
+    type: 'MostRecentParticipants',
+  },
   operationValidator: [{
     type: 'VeresOneValidator2017',
     validatorFilter: [{
@@ -230,6 +233,7 @@ ledgerConfigurations.alpha = {
     ],
     minimumSignaturesRequired: 1
   }*/],
+  sequence: 0,
 };
 
 operations.create = {
