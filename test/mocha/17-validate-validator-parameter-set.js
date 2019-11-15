@@ -136,6 +136,62 @@ describe('validate API ValidatorParameterSet', () => {
         should.exist(result.error.details.actualValue);
         should.exist(result.error.details.expectedValue);
       });
+      it('rejects op with base URL that ends with `/`', async () => {
+        const validatorParameterSetDoc = _generateValidatorParameterSetDoc();
+
+        // add invalid baseUrl that ends in slash
+        validatorParameterSetDoc.allowedServiceBaseUrl.push(
+          'https://example.com/api_v3/'
+        );
+
+        let operation = await _wrap(
+          {didDocument: validatorParameterSetDoc, operationType: 'create'});
+        const key = _getMaintainerKeys();
+
+        // FIXME: add an AuthorizeRequest proof that will pass json-schema
+        // validation for testnet v2 *not* a valid signature
+        operation.proof = clone(mockData.proof);
+
+        operation = await didv1.attachInvocationProof({
+          operation,
+          // capability: maintainerDid,
+          capability: validatorParameterSetDoc.id,
+          capabilityAction: 'create',
+          key,
+        });
+
+        // FIXME: attach proof instead of mock proof above
+        // operation = await didv1.attachInvocationProof({
+        //   operation,
+        //   capability: maintainerDid,
+        //   capabilityAction: 'AuthorizeRequest',
+        //   key,
+        // });
+        const ledgerConfig = clone(mockData.ledgerConfigurations.alpha);
+
+        let err;
+        let result;
+        try {
+          result = await voValidator.validate({
+            ledgerConfig,
+            ledgerNode,
+            validatorInput: operation,
+            validatorConfig: mockData.ledgerConfigurations.alpha
+              .operationValidator[0]
+          });
+        } catch(e) {
+          err = e;
+        }
+        assertNoError(err);
+        should.exist(result);
+        result.should.be.an('object');
+        should.exist(result.valid);
+        result.valid.should.be.false;
+        should.exist(result.error);
+        result.error.name.should.equal('SyntaxError');
+        should.exist(result.error.details.baseUrl);
+        should.exist(result.error.details.allowedServiceBaseUrl);
+      });
     }); // end create electorPool operation
 
     describe('update ValidatorParameterSet operation', () => {
