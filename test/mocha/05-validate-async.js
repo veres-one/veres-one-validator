@@ -184,15 +184,14 @@ describe('validate regular DIDs', () => {
       });
       it('validates a DID with one proper service descriptor', async () => {
         const mockDoc = await v1.generate();
+        const did = mockDoc.id;
 
         mockDoc.addService({
           fragment: 'foo',
           type: 'urn:foo',
-          endpoint:
-            'https://example.com/api/e61388cf-2464-4739-b37b-81f178db010b',
+          endpoint: `https://example.com/api/${encodeURIComponent(did)}`,
         });
 
-        const did = mockDoc.id;
         const keyId = mockDoc.getVerificationMethod(
           {proofPurpose: 'capabilityInvocation'}).id;
         const capabilityInvocationKey = mockDoc.keys[keyId];
@@ -221,21 +220,19 @@ describe('validate regular DIDs', () => {
       });
       it('validates a DID with two proper service descriptors', async () => {
         const mockDoc = await v1.generate();
+        const did = mockDoc.id;
 
         mockDoc.addService({
           fragment: 'foo',
           type: 'urn:foo',
-          endpoint:
-            'https://example.com/api/e61388cf-2464-4739-b37b-81f178db010b',
+          endpoint: `https://example.com/api/${encodeURIComponent(did)}`,
         });
         mockDoc.addService({
           fragment: 'bar',
           type: 'urn:bar',
-          endpoint:
-            'https://example.com/api/836cf564-e86c-4428-9822-ad8ad788c124',
+          endpoint: `https://example.com/api_v2/${encodeURIComponent(did)}`,
         });
 
-        const did = mockDoc.id;
         const keyId = mockDoc.getVerificationMethod(
           {proofPurpose: 'capabilityInvocation'}).id;
         const capabilityInvocationKey = mockDoc.keys[keyId];
@@ -876,8 +873,7 @@ describe('validate regular DIDs', () => {
         mockDoc.addService({
           fragment: 'foo',
           type: 'urn:foo',
-          endpoint:
-            'https://example.com/api/e61388cf-2464-4739-b37b-81f178db010b',
+          endpoint: `https://example.com/api/${encodeURIComponent(did)}`,
         });
 
         mockOperation.recordPatch = mockDoc.commit();
@@ -923,14 +919,12 @@ describe('validate regular DIDs', () => {
         mockDoc.addService({
           fragment: 'foo',
           type: 'urn:foo',
-          endpoint:
-            'https://example.com/api/e61388cf-2464-4739-b37b-81f178db010b',
+          endpoint: `https://example.com/api/${encodeURIComponent(did)}`,
         });
         mockDoc.addService({
           fragment: 'bar',
           type: 'urn:bar',
-          endpoint:
-            'https://example.com/api/836cf564-e86c-4428-9822-ad8ad788c124',
+          endpoint: `https://example.com/api_v2/${encodeURIComponent(did)}`,
         });
 
         mockOperation.recordPatch = mockDoc.commit();

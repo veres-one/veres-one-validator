@@ -52,7 +52,7 @@ mock.proof = {
 // need to return document for beta but *not* for alpha
 mock.ledgerNode = {
   records: {
-    async get({maxBlockHeight, recordId}) {
+    async get({/*maxBlockHeight, */recordId}) {
       // must clone this going into the document loader, otherwise it will be
       // mutated
       const record = bedrock.util.clone(mock.existingDids[recordId]);
@@ -100,6 +100,7 @@ electorPoolDocument.alpha = {
   maximumElectorCount: 10,
 };
 
+/* eslint-disable quotes, quote-props, max-len */
 privateDidDocuments.alpha = {
   "@context": didContexts,
   "id": "did:v1:nym:z6MkiT7oVcbHWx5gwazyYk28nZMwKsSe6yc1JA9tFKgUr1tT",
@@ -176,6 +177,7 @@ privateDidDocuments.beta = {
     }
   ]
 };
+/* eslint-enable */
 
 didDocuments.alpha = privateDidDocuments.alpha;
 // didDocuments.alpha = _stripPrivateKeys(privateDidDocuments.alpha);
@@ -189,7 +191,8 @@ validatorParameterSet.alpha = {
   type: 'ValidatorParameterSet',
   controller: '', // replaced with maintainer's DID in test
   allowedServiceBaseUrl: [
-    'https://example.com/api'
+    'https://example.com/api',
+    'https://example.com/api_v2',
   ],
 };
 
@@ -270,12 +273,12 @@ operations.updateInvalidPatch = {
   type: 'UpdateWebLedgerRecord',
   recordPatch: {
     // FIXME: use constant and cached version when available
-    "@context": [
+    '@context': [
       'https://w3id.org/did/v0.11', constants.VERES_ONE_CONTEXT_V1_URL],
     // target: didDocuments.beta.id,
     sequence: 0,
     patch: [{
-      op: "invalid"
+      op: 'invalid'
     }]
   }
 };
@@ -285,14 +288,14 @@ operations.updateInvalidChange = {
   type: 'UpdateWebLedgerRecord',
   recordPatch: {
     // FIXME: use constant and cached version when available
-    "@context": [
+    '@context': [
       'https://w3id.org/did/v0.11', constants.VERES_ONE_CONTEXT_V1_URL],
     // target: didDocuments.beta.id,
     sequence: 0,
     patch: [{
-      op: "add",
-      path: "/foo:bar",
-      value: "test"
+      op: 'add',
+      path: '/foo:bar',
+      value: 'test'
     }]
   }
 };
