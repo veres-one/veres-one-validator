@@ -69,6 +69,7 @@ describe('validate API ValidatorParameterSet', () => {
         let result;
         try {
           result = await voValidator.validate({
+            basisBlockHeight: 0,
             ledgerConfig,
             ledgerNode,
             validatorInput: operation,
@@ -117,6 +118,7 @@ describe('validate API ValidatorParameterSet', () => {
         let result;
         try {
           result = await voValidator.validate({
+            basisBlockHeight: 0,
             ledgerConfig,
             ledgerNode,
             validatorInput: operation,
@@ -173,6 +175,7 @@ describe('validate API ValidatorParameterSet', () => {
         let result;
         try {
           result = await voValidator.validate({
+            basisBlockHeight: 0,
             ledgerConfig,
             ledgerNode,
             validatorInput: operation,
@@ -249,6 +252,7 @@ describe('validate API ValidatorParameterSet', () => {
         let result;
         try {
           result = await voValidator.validate({
+            basisBlockHeight: 0,
             ledgerConfig,
             ledgerNode,
             validatorInput: operation,
@@ -317,6 +321,7 @@ describe('validate API ValidatorParameterSet', () => {
         let result;
         try {
           result = await voValidator.validate({
+            basisBlockHeight: 0,
             ledgerConfig,
             ledgerNode,
             validatorInput: operation,
@@ -389,6 +394,7 @@ describe('validate API ValidatorParameterSet', () => {
         let result;
         try {
           result = await voValidator.validate({
+            basisBlockHeight: 0,
             ledgerConfig,
             ledgerNode,
             validatorInput: operation,
@@ -461,6 +467,7 @@ describe('validate API ValidatorParameterSet', () => {
         let result;
         try {
           result = await voValidator.validate({
+            basisBlockHeight: 0,
             ledgerConfig,
             ledgerNode,
             validatorInput: operation,
