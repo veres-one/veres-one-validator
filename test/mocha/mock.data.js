@@ -56,6 +56,11 @@ mock.ledgerNode = {
     async get({/*maxBlockHeight, */recordId}) {
       // must clone this going into the document loader, otherwise it will be
       // mutated
+      if(recordId === 'did:v1:uuid:40aea416-73b2-436f-bb91-41175494d72b') {
+        throw new BedrockError(
+          'A terrible mock validatorParameterSet error.',
+          'TerribleValidatorParameterSetError');
+      }
       if(recordId ===
         'did:v1:nym:z6MkwCGzK8WaRM6mfshwpZhJLQpUZD5ePj4PFetLMYa2NCAg') {
         terribleCounter++;

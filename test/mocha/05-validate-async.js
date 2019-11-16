@@ -284,6 +284,50 @@ describe('validate regular DIDs', () => {
         result.valid.should.be.a('boolean');
         result.valid.should.be.true;
       });
+      it('rejects a DID if validatorParameterSet is missing', async () => {
+        const mockDoc = await v1.generate();
+        const did = mockDoc.id;
+
+        mockDoc.addService({
+          fragment: 'foo',
+          type: 'urn:foo',
+          endpoint: `https://example.com/api/${encodeURIComponent(did)}`,
+        });
+
+        const keyId = mockDoc.getVerificationMethod(
+          {proofPurpose: 'capabilityInvocation'}).id;
+        const capabilityInvocationKey = mockDoc.keys[keyId];
+        const mockOperation = clone(mockData.operations.create);
+        const capabilityAction = 'create';
+        mockOperation.record = mockDoc.doc;
+        // add an AuthorizeRequest proof that will pass json-schema
+        // validation for
+        // testnet v2 *not* a valid signature
+        mockOperation.proof = clone(mockData.proof);
+        const s = await jsigs.sign(mockOperation, {
+          compactProof: false,
+          documentLoader,
+          suite: new Ed25519Signature2018({key: capabilityInvocationKey}),
+          purpose: new CapabilityInvocation({capability: did, capabilityAction})
+        });
+        const configMissingValidatorParameterSet = clone(validatorConfig);
+        // this DID triggers a TerribleValidatorParameterSetError
+        configMissingValidatorParameterSet.validatorParameterSet =
+          'did:v1:uuid:40aea416-73b2-436f-bb91-41175494d72b';
+        const result = await voValidator.validate({
+          basisBlockHeight: 0,
+          ledgerNode: mockData.ledgerNode,
+          validatorInput: s,
+          validatorConfig: configMissingValidatorParameterSet,
+        });
+        should.exist(result);
+        result.valid.should.be.a('boolean');
+        result.valid.should.be.false;
+        should.exist(result.error);
+        const {error} = result;
+        error.name.should.equal('UnknownError');
+        error.cause.name.should.equal('TerribleValidatorParameterSetError');
+      });
       it('validates a DID with two proper service descriptors', async () => {
         const mockDoc = await v1.generate();
         const did = mockDoc.id;
