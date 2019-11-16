@@ -107,6 +107,72 @@ describe('validate regular DIDs', () => {
       result.error.details.errors[0].message.should.contain(
         'capabilityInvocation');
     });
+    it('rejects operation on error occurs during record lookup', async () => {
+      const mockOperation = clone(mockData.operations.create);
+      const capabilityAction = 'create';
+
+      /* eslint-disable max-len */
+      const mockDoc = {
+        '@context': [ 'https://w3id.org/did/v0.11', 'https://w3id.org/veres-one/v1' ],
+        id: 'did:v1:nym:z6MkwCGzK8WaRM6mfshwpZhJLQpUZD5ePj4PFetLMYa2NCAg',
+        authentication: [
+          {
+            id: 'did:v1:nym:z6MkwCGzK8WaRM6mfshwpZhJLQpUZD5ePj4PFetLMYa2NCAg#z6MkpprzC9TauHH281sc2zSTexK6HyzRwuLFWxUCkDYVL2HB',
+            type: 'Ed25519VerificationKey2018',
+            controller: 'did:v1:nym:z6MkwCGzK8WaRM6mfshwpZhJLQpUZD5ePj4PFetLMYa2NCAg',
+            publicKeyBase58: 'BNbwbuD9ZjnZ1X2uMRUcorm6UQiaY25tpwZGuwaUQoVo'
+          }
+        ],
+        capabilityDelegation: [
+          {
+            id: 'did:v1:nym:z6MkwCGzK8WaRM6mfshwpZhJLQpUZD5ePj4PFetLMYa2NCAg#z6Mkr75JRmsNvjXKeKMFEaRai11g7XN945FdcCxoMVsg54oF',
+            type: 'Ed25519VerificationKey2018',
+            controller: 'did:v1:nym:z6MkwCGzK8WaRM6mfshwpZhJLQpUZD5ePj4PFetLMYa2NCAg',
+            publicKeyBase58: 'CepFqXcwbC2rXpWYZ1TjruTgHx6HeC1GvC3sXDuf9r1s'
+          }
+        ],
+        capabilityInvocation: [
+          {
+            id: 'did:v1:nym:z6MkwCGzK8WaRM6mfshwpZhJLQpUZD5ePj4PFetLMYa2NCAg#z6MkwCGzK8WaRM6mfshwpZhJLQpUZD5ePj4PFetLMYa2NCAg',
+            type: 'Ed25519VerificationKey2018',
+            controller: 'did:v1:nym:z6MkwCGzK8WaRM6mfshwpZhJLQpUZD5ePj4PFetLMYa2NCAg',
+            publicKeyBase58: 'Hk1witG95ocJZNsF8zjTVKGUjdonyqp2ZdyQXGc1SyPJ'
+          }
+        ]
+      };
+      const capabilityInvocationKey = new Ed25519KeyPair({
+        id: 'did:v1:nym:z6MkwCGzK8WaRM6mfshwpZhJLQpUZD5ePj4PFetLMYa2NCAg#z6MkwCGzK8WaRM6mfshwpZhJLQpUZD5ePj4PFetLMYa2NCAg',
+        controller: 'did:v1:nym:z6MkwCGzK8WaRM6mfshwpZhJLQpUZD5ePj4PFetLMYa2NCAg',
+        privateKeyBase58: '54heJ5mRWTss18kNdMNse1fUWmMQTcMKZ6J5TtJTzYHY3ghTNpUmnM5uN1jGncWxXVxCC48tQ7HHAYSTw6oAzxrg',
+        publicKeyBase58: 'Hk1witG95ocJZNsF8zjTVKGUjdonyqp2ZdyQXGc1SyPJ'
+      });
+      /* eslint-enable */
+      const did = mockDoc.id;
+
+      mockOperation.record = mockDoc;
+      // FIXME: add an AuthorizeRequest proof that will pass json-schema
+      // validation for testnet v2 *not* a valid signature
+      mockOperation.proof = clone(mockData.proof);
+      const s = await jsigs.sign(mockOperation, {
+        compactProof: false,
+        documentLoader,
+        suite: new Ed25519Signature2018({key: capabilityInvocationKey}),
+        purpose: new CapabilityInvocation({capability: did, capabilityAction})
+      });
+      const result = await voValidator.validate({
+        basisBlockHeight: 0,
+        ledgerNode: mockData.ledgerNode,
+        validatorInput: s,
+        validatorConfig: mockData.ledgerConfigurations.alpha
+          .operationValidator[0],
+      });
+      should.exist(result);
+      result.valid.should.be.a('boolean');
+      result.valid.should.be.false;
+      should.exist(result.error);
+      result.error.name.should.equal('OperationError');
+      result.error.cause.name.should.equal('TerribleMockError');
+    });
     it('rejects an improper CreateWebLedgerRecord operation', async () => {
       const {did, mockDoc, capabilityInvocationKey} = await _generateBadDid();
       const mockOperation = clone(mockData.operations.create);

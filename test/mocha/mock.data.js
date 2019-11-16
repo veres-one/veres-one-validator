@@ -50,11 +50,21 @@ mock.proof = {
 };
 
 // need to return document for beta but *not* for alpha
+let terribleCounter = 0;
 mock.ledgerNode = {
   records: {
     async get({/*maxBlockHeight, */recordId}) {
       // must clone this going into the document loader, otherwise it will be
       // mutated
+      if(recordId ===
+        'did:v1:nym:z6MkwCGzK8WaRM6mfshwpZhJLQpUZD5ePj4PFetLMYa2NCAg') {
+        terribleCounter++;
+        // throw NotFoundError for the first 3 requests
+        if(terribleCounter > 4) {
+          throw new BedrockError(
+            'A terrible mock error.', 'TerribleMockError');
+        }
+      }
       const record = bedrock.util.clone(mock.existingDids[recordId]);
       if(record) {
         return {
