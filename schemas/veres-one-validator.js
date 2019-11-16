@@ -101,6 +101,7 @@ const configurationValidator = {
 };
 
 const validatorConfig = {
+  title: 'Veres One Validator Configuration',
   oneOf: [
     operationValidator,
     configurationValidator
