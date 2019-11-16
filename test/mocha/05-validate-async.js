@@ -980,6 +980,56 @@ describe('validate regular DIDs', () => {
       error.details.errors[0].message.should.equal(
         'should NOT have additional properties');
     });
+    it('rejects a DID with an invalid key material', async () => {
+      const mockDoc = await v1.generate();
+      const mockOperation = clone(mockData.operations.update);
+      let capabilityAction = 'create';
+      // add the new document to the mock document loader as if it were on
+      // ledger
+      // clone here so we can proceed with making changes to mockDoc
+      const did = mockDoc.id;
+      mockData.existingDids[did] = clone(mockDoc.toJSON());
+
+      mockDoc.observe();
+
+      // attempt to change the publicKeyBase58
+      mockDoc.doc.capabilityInvocation[0].publicKeyBase58 =
+        '816k9JhRr4rAdaSnrh3AzubF4oDU3qLQwDz31nj1d2nU';
+
+      mockOperation.recordPatch = mockDoc.commit();
+
+      const keyId = mockDoc.getVerificationMethod(
+        {proofPurpose: 'capabilityInvocation'}).id;
+      const capabilityInvocationKey = mockDoc.keys[keyId];
+
+      // add an AuthorizeRequest proof that will pass json-schema
+      // validation for
+      // testnet v2 *not* a valid signature
+      mockOperation.proof = clone(mockData.proof);
+      capabilityAction = 'update';
+      const s = await jsigs.sign(mockOperation, {
+        compactProof: false,
+        documentLoader,
+        suite: new Ed25519Signature2018({key: capabilityInvocationKey}),
+        purpose: new CapabilityInvocation({capability: did, capabilityAction})
+      });
+      const result = await voValidator.validate({
+        basisBlockHeight: 10,
+        ledgerNode: mockData.ledgerNode,
+        validatorInput: s,
+        validatorConfig: mockData.ledgerConfigurations.alpha
+          .operationValidator[0],
+      });
+      should.exist(result);
+      result.valid.should.be.a('boolean');
+      result.valid.should.be.false;
+      should.exist(result.error);
+      const {error} = result;
+      error.name.should.equal('ValidationError');
+      error.message.should.equal('Error validating DID.');
+      error.cause.message.should.equal(
+        'The fingerprint does not match the public key.');
+    });
 
     describe('Updates involving services', () => {
       const validatorParameterSet =

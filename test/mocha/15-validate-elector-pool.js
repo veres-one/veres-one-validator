@@ -469,6 +469,86 @@ describe('validate API ElectorPool', () => {
         assertNoError(result.error);
         result.valid.should.be.true;
       });
+      it('rejects an operation removing electorPool', async () => {
+        const {id: electorDid} = electorDidDocumentFull.doc;
+        const {id: maintainerDid} = maintainerDidDocumentFull.doc;
+        const electorPoolDoc = bedrock.util.clone(
+          mockData.electorPoolDocument.alpha);
+        electorPoolDoc.electorPool[0].elector = electorDid;
+        electorPoolDoc.electorPool[0].service = electorServiceId;
+        electorPoolDoc.electorPool[0].capability[0].id = maintainerDid;
+        // the invocationTarget is the ledger ID
+        electorPoolDoc.electorPool[0].capability[0].invocationTarget =
+          'urn:uuid:e9e63a07-15b1-4e8f-b725-a71a362cfd99';
+        electorPoolDoc.controller = maintainerDid;
+        ldDocuments.set(electorPoolDoc.id, bedrock.util.clone(electorPoolDoc));
+        const observer = jsonpatch.observe(electorPoolDoc);
+
+        delete electorPoolDoc.electorPool;
+
+        const patch = jsonpatch.generate(observer);
+
+        let operation = {
+          '@context': constants.WEB_LEDGER_CONTEXT_V1_URL,
+          creator: 'https://example.com/some/ledger/node',
+          recordPatch: {
+            '@context': mockData.patchContext,
+            patch,
+            sequence: 0,
+            target: electorPoolDoc.id,
+          },
+          type: 'UpdateWebLedgerRecord',
+        };
+
+        const key = _getMaintainerKeys();
+
+        // FIXME: what are proper proofs for an update operation?
+
+        // FIXME: add an AuthorizeRequest proof that will pass json-schema
+        // validation for testnet v2 *not* a valid signature
+        operation.proof = bedrock.util.clone(mockData.proof);
+
+        operation = await didv1.attachInvocationProof({
+          operation,
+          capability: electorPoolDoc.id,
+          // capabilityAction: operation.type,
+          capabilityAction: 'update',
+          key,
+        });
+        // FIXME: replace mock proof above with legitimate proof
+        // operation = await didv1.attachInvocationProof({
+        //   operation,
+        //   capability: maintainerDid,
+        //   // capabilityAction: operation.type,
+        //   capabilityAction: 'AuthorizeRequest',
+        //   key,
+        // });
+        const ledgerConfig = bedrock.util.clone(
+          mockData.ledgerConfigurations.alpha);
+        ledgerConfig.electorSelectionMethod = {
+          type: 'VeresOne',
+          // corresponds to electorPoolDocument.alpha
+          electorPool: electorPoolDoc.id,
+        };
+        let err;
+        let result;
+        try {
+          result = await voValidator.validate({
+            ledgerConfig,
+            ledgerNode,
+            validatorInput: operation,
+            validatorConfig: mockData.ledgerConfigurations.alpha
+              .operationValidator[0]
+          });
+        } catch(e) {
+          err = e;
+        }
+        assertNoError(err);
+        result.valid.should.be.false;
+        should.exist(result.error);
+        result.error.name.should.equal('ValidationError');
+        result.error.message.should.contain('ElectorPool Document');
+      });
     }); // end update electorPool operation
   });
 });
