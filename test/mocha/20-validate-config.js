@@ -41,7 +41,9 @@ describe('validateConfiguration API', () => {
     result.error.name.should.equal('ValidationError');
   });
   describe('validatorParameterSet', () => {
-    it('rejects a config with missing validatorParameterSet', async () => {
+    // FIXME: enable when Veres One code is setting up a validatorParameterSet
+    // document
+    it.skip('rejects a config with missing validatorParameterSet', async () => {
       const validatorConfig =
         clone(mockData.ledgerConfigurations.alpha.operationValidator[0]);
       delete validatorConfig.validatorParameterSet;

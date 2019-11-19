@@ -54,7 +54,9 @@ const operationValidator = {
   required: [
     'type',
     'validatorFilter',
-    'validatorParameterSet',
+    // FIXME: enable when Veres One code is setting up a validatorParameterSet
+    // document
+    // 'validatorParameterSet',
   ],
   properties: {
     type: {const: 'VeresOneValidator2017'},
