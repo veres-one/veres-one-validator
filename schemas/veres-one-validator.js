@@ -537,8 +537,7 @@ const ledgerConfiguration = {
       additionalProperties: false,
       required: [
         // maximumElectorCount is *not* required in the configuration
-        // FIXME: electorPool not required for testnet_v2
-        // 'electorPool',
+        'electorPool',
         'type',
       ],
       type: 'object',
