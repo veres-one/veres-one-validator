@@ -319,7 +319,9 @@ const electorPoolDocument = {
     'id',
     'electorPool',
     'controller',
-    'maximumElectorCount',
+    // FIXME: DOES THIS BELONG HERE? IT'S ALSO IN THE LEDGER CONFIG IN THE
+    // ELECTOR SELECTION
+    // 'maximumElectorCount',
     'type'
   ],
   properties: {
@@ -332,7 +334,8 @@ const electorPoolDocument = {
       items: {
         type: 'object',
         required: [
-          'capability',
+          // FIXME: CAPABILITY?
+          // 'capability',
           'elector',
           'id',
           'service',
@@ -406,7 +409,12 @@ const baseCapability = {
   type: 'object',
   additionalProperties: false,
   required: [
-    'capability', 'capabilityAction', 'created', 'jws', 'proofPurpose', 'type'
+    'capability',
+    'capabilityAction',
+    'created',
+    'jws',
+    'proofPurpose',
+    'type'
   ],
   properties: {
     capability: {type: 'string'},
