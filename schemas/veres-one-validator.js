@@ -556,10 +556,9 @@ const ledgerConfiguration = {
         },
         electorPool: didUuid(),
         type: {
-          type: 'string',
-
-          // FIXME: using MostRecentParticipants for now
-          enum: ['MostRecentParticipants']
+          // FIXME: using ElectorPoolElectorSelection for now
+          // this should be a VeresOne specific method
+          const: 'ElectorPoolElectorSelection'
         }
       }
     },
