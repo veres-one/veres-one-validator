@@ -15,7 +15,7 @@
     "bedrock-injector": "^1.0.0",
     "bedrock-jobs": "^3.0.0",
     "bedrock-jsonld-document-loader": "^1.0.0",
-    "bedrock-ledger-context": "^14.0.0",
+    "bedrock-ledger-context": "^15.0.0",
     "bedrock-ledger-node": "^9.0.0",
     "bedrock-ledger-storage-mongodb": "^3.0.0",
     "bedrock-ledger-utils": "github:digitalbazaar/bedrock-ledger-utils#implementation",
@@ -26,10 +26,10 @@
     "bedrock-validation": "^4.0.0",
     "bedrock-veres-one-context": "^10.0.0",
     "crypto-ld": "^3.0.0",
-    "did-veres-one": "veres-one/did-veres-one#update-context",
+    "did-veres-one": "^10.0.0",
     "fast-json-patch": "^2.0.7",
     "grunt": "^1.0.1",
-    "jsonld-signatures": "^4.0.0",
+    "jsonld-signatures": "^4.5.0",
     "veres-one-validator": "file:.."
   },
   "devDependencies": {

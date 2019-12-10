@@ -18,10 +18,10 @@
   "dependencies": {
     "bs58": "^4.0.1",
     "crypto-ld": "^3.4.1",
-    "did-veres-one": "^9.0.0",
+    "did-veres-one": "^10.0.0",
     "fast-json-patch": "^2.0.6",
-    "jsonld": "^1.8.0",
-    "jsonld-signatures": "^4.0.0",
+    "jsonld": "^2.0.0",
+    "jsonld-signatures": "^4.5.0",
     "lodash": "^4.17.11",
     "multibase": "^0.6.0",
     "multicodec": "^0.5.0",
@@ -30,7 +30,7 @@
   "peerDependencies": {
     "bedrock": "2.x - 3.x",
     "bedrock-jsonld-document-loader": "^1.0.0",
-    "bedrock-ledger-context": "^14.0.0",
+    "bedrock-ledger-context": "^15.0.0",
     "bedrock-ledger-node": "^9.0.0",
     "bedrock-ledger-utils": "^1.0.0",
     "bedrock-validation": "^4.0.0",
