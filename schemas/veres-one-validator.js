@@ -334,9 +334,7 @@ const electorPoolDocument = {
       items: {
         type: 'object',
         required: [
-          // FIXME: CAPABILITY?
-          // 'capability',
-          'elector',
+          // `elector` is not required
           'id',
           'service',
           'type',
