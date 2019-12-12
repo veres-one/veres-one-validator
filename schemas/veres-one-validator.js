@@ -334,13 +334,11 @@ const electorPoolDocument = {
       items: {
         type: 'object',
         required: [
-          // `elector` is not required
           'id',
           'service',
           'type',
         ],
         properties: {
-          elector: did(),
           id: urnUuid(),
           service: {
             anyOf: [serviceDescriptor(), serviceId()]
