@@ -31,7 +31,7 @@
     "bedrock": "2.x - 3.x",
     "bedrock-jsonld-document-loader": "^1.0.0",
     "bedrock-ledger-context": "^15.0.0",
-    "bedrock-ledger-node": "^9.0.0",
+    "bedrock-ledger-node": "^10.0.0",
     "bedrock-ledger-utils": "^1.0.0",
     "bedrock-validation": "^4.0.0",
     "bedrock-veres-one-context": "^10.0.0"
