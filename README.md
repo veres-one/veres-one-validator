@@ -1,20 +1,26 @@
 # veres-one-validator
 
-[![Build Status](https://ci.digitalbazaar.com/buildStatus/icon?job=veres-one-validator)](https://ci.digitalbazaar.com/job/veres-one-validator)
-
 A validator for [bedrock-ledger-node] that determines if M of N
 digital signatures on a document, an Equihash proof, or any combination
 thereof satisfies the requirements.
 
 ## The Validator API
+
+The validator API consists of the following functions:
+
 - validateConfiguration(validatorConfig, callback(err))
 - validateEvent(signedDocument, validatorConfig, callback(err))
 - mustValidateEvent(signedDocument, validatorConfig, callback(err, result))
 
 ## Configuration
+
 For documentation on configuration, see [config.js](./lib/config.js).
 
 ## Usage Example
+
+The following example demonstrates how the Veres One ledger uses
+this validator for configuration, event identification, and event validation.
+
 ```javascript
 const brValidator = require('veres-one-validator');
 
