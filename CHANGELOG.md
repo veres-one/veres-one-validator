@@ -1,5 +1,29 @@
 # veres-one-validator ChangeLog
 
+## 6.0.0 - 2012-02-20
+
+### Added
+- **BREAKING**: Update electorPool schema to latest version.
+- **BREAKING**: Update service schema to match latest spec.
+- **BREAKING**: Add schema for web ledger configuration.
+- **BREAKING**: Update to latest ledger APIs.
+- **BREAKING**: Validate key IDs in DID Documents.
+- **BREAKING**: Remove Equihash.
+- **BREAKING**: Update jsigs API calls.
+- **BREAKING**: Add basisBlockHeight parameter.
+- **BREAKING**: Require configuration proof.
+- **BREAKING**: Update to use multibase.
+- **BREAKING**: Update invoker/controller code.
+- **BREAKING**: Add validation parameter set processing.
+- **BREAKING**: Add URN DID validation for test network.
+- Add more test coverage
+
+## 5.0.0 - 2018-10-10
+
+### Added
+- **BREAKING**: Add `bedrock-ledger-context` peer dependency.
+- Support for elector pool.
+
 ## 5.0.0 - 2018-10-10
 
 ### Added
