@@ -1,6 +1,6 @@
 # veres-one-validator ChangeLog
 
-## 6.0.0 - 2012-02-20
+## 6.0.0 - 2020-02-20
 
 ### Added
 - **BREAKING**: Update electorPool schema to latest version.
