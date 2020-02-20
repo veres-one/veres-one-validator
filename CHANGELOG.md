@@ -24,12 +24,6 @@
 - **BREAKING**: Add `bedrock-ledger-context` peer dependency.
 - Support for elector pool.
 
-## 5.0.0 - 2018-10-10
-
-### Added
-- **BREAKING**: Add `bedrock-ledger-context` peer dependency.
-- Support for elector pool.
-
 ## 4.0.0 - 2018-10-01
 
 ### Changed
