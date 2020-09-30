@@ -18,7 +18,7 @@
     "bedrock-ledger-context": "^15.0.0",
     "bedrock-ledger-node": "^9.0.0",
     "bedrock-ledger-storage-mongodb": "^3.0.0",
-    "bedrock-ledger-utils": "github:digitalbazaar/bedrock-ledger-utils#implementation",
+    "bedrock-ledger-utils": "^1.0.0",
     "bedrock-mongodb": "^6.0.0",
     "bedrock-permission": "^2.5.3",
     "bedrock-security-context": "^3.0.0",
