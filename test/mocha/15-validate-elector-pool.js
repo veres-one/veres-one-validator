@@ -28,7 +28,7 @@ describe('validate API ElectorPool', () => {
       ldDocuments.set(maintainerDidDocument.id, maintainerDidDocument);
       electorDidDocumentFull = await didv1.generate();
       const {doc: electorDidDocument} = electorDidDocumentFull;
-      electorServiceId = `${electorDidDocument.id};service=MyServiceName`;
+      electorServiceId = `${electorDidDocument.id}#MyServiceName`;
       electorDidDocument.service = [{
         id: electorServiceId,
         type: continuityServiceType,
