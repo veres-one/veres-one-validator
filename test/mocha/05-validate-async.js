@@ -827,7 +827,8 @@ describe('validate regular DIDs', () => {
       should.exist(result.error.details.proofVerifyResult);
       const {proofVerifyResult} = result.error.details;
       proofVerifyResult.verified.should.be.false;
-      proofVerifyResult.error[0].message.should.equal('Invalid signature.');
+      proofVerifyResult.error.errors[0].message
+        .should.equal('Invalid signature.');
     });
     it('rejects update operation signed by an alternate DID', async () => {
       // create an alternate DID that will sign the operation
@@ -882,7 +883,7 @@ describe('validate regular DIDs', () => {
       should.exist(result.error.details.proofVerifyResult);
       const {proofVerifyResult} = result.error.details;
       proofVerifyResult.verified.should.be.false;
-      proofVerifyResult.error[0].message.should.equal(
+      proofVerifyResult.error.errors[0].message.should.equal(
         'The authorized invoker does not match the verification method or ' +
         'its controller.');
     });
@@ -938,7 +939,7 @@ describe('validate regular DIDs', () => {
       should.exist(result.error.details.proofVerifyResult);
       const {proofVerifyResult} = result.error.details;
       proofVerifyResult.verified.should.be.false;
-      proofVerifyResult.error[0].message.should.contain(
+      proofVerifyResult.error.errors[0].message.should.contain(
         'does not match root capability target');
     });
     // proof has `capabilityAction` === `create`
@@ -1033,7 +1034,7 @@ describe('validate regular DIDs', () => {
       should.exist(result.error.details.proofVerifyResult);
       const {proofVerifyResult} = result.error.details;
       proofVerifyResult.verified.should.be.false;
-      proofVerifyResult.error[0].httpStatusCode.should.equal(404);
+      proofVerifyResult.error.errors[0].httpStatusCode.should.equal(404);
     });
     // proof is signed with a malicious key
     it('rejects operation when improper key used in proof 2', async () => {
@@ -1084,7 +1085,8 @@ describe('validate regular DIDs', () => {
       should.exist(result.error.details.proofVerifyResult);
       const {proofVerifyResult} = result.error.details;
       proofVerifyResult.verified.should.be.false;
-      proofVerifyResult.error[0].message.should.equal('Invalid signature.');
+      proofVerifyResult.error.errors[0].message
+        .should.equal('Invalid signature.');
     });
     it('rejects a DID with an invalid property', async () => {
       const mockDoc = await v1.generate();
