@@ -224,7 +224,8 @@ ledgerConfigurations.alpha = {
   ledger: 'did:v1:c02915fc-672d-4568-8e6e-b12a0b35cbb3',
   consensusMethod: 'Continuity2017',
   electorSelectionMethod: {
-    type: 'MostRecentParticipants',
+    type: 'ElectorPoolElectorSelection',
+    electorPool: 'did:v1:uuid:acc4c5af-7445-4046-a39c-10653a0c7ac0'
   },
   operationValidator: [{
     type: 'VeresOneValidator2017',
