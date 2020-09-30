@@ -18,6 +18,7 @@ mock.existingDids = {};
 const capabilities = mock.capabilities = {};
 const didDocuments = mock.didDocuments = {};
 const electorPoolDocument = mock.electorPoolDocument = {};
+// eslint-disable-next-line no-unused-vars
 const ldDocuments = mock.ldDocuments = {};
 const ledgerConfigurations = mock.ledgerConfigurations = {};
 const operations = mock.operations = {};

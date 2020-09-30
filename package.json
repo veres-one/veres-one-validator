@@ -5,7 +5,7 @@
   "license": "SEE LICENSE IN LICENSE.md",
   "main": "lib",
   "scripts": {
-    "lint": "eslint lib"
+    "lint": "eslint ."
   },
   "repository": {
     "type": "git",
@@ -37,7 +37,7 @@
     "bedrock-veres-one-context": "^10.0.0"
   },
   "devDependencies": {
-    "eslint": "^6.0.0",
+    "eslint": "^7.10.0",
     "eslint-config-digitalbazaar": "^2.0.0"
   }
 }

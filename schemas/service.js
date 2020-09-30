@@ -10,6 +10,7 @@ require('../lib/config');
 const cfg = config['veres-one-validator'];
 
 // TODO: improve regex for service IDs
+// eslint-disable-next-line no-unused-vars
 const pattern = cfg.environment === 'test' ?
   '^(did\:v1\:test\:nym\:|did\:v1\:test\:uuid\:)([-_A-Za-z0-9.]+)' +
     ';service=(.*)$' :

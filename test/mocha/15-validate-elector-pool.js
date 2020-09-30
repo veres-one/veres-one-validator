@@ -4,7 +4,7 @@
 'use strict';
 
 const bedrock = require('bedrock');
-const {config: {constants}, util: {uuid}} = bedrock;
+const {config: {constants}, util: {uuid, BedrockError}} = bedrock;
 const helpers = require('./helpers');
 const {httpsAgent} = require('bedrock-https-agent');
 const didv1 = new (require('did-veres-one')).VeresOne({httpsAgent});
@@ -38,7 +38,6 @@ describe('validate API ElectorPool', () => {
     });
     describe('create electorPool operation', () => {
       it('validates op with proper proof', async () => {
-        const {id: maintainerDid} = maintainerDidDocumentFull.doc;
         const electorPoolDoc = _generateElectorPoolDoc();
         let operation = await _wrap(
           {didDocument: electorPoolDoc, operationType: 'create'});
@@ -320,7 +319,6 @@ describe('validate API ElectorPool', () => {
         result.error.name.should.equal('ValidationError');
       });
       it('fails on op w/incorrect capability DID', async () => {
-        const {id: maintainerDid} = maintainerDidDocumentFull.doc;
         const electorPoolDoc = _generateElectorPoolDoc();
         let operation = await _wrap(
           {didDocument: electorPoolDoc, operationType: 'create'});
@@ -606,7 +604,7 @@ async function _wrap({didDocument, operationType = 'create'}) {
       operation.recordPatch = didDocument;
       break;
     default:
-      throw new Error(
+      throw new BedrockError(
         'Unknown operation type.', 'SyntaxError', {operationType});
   }
 
