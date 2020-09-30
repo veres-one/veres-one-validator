@@ -1,5 +1,11 @@
 # veres-one-validator ChangeLog
 
+## 7.0.0 - 2020-09-30
+
+### Changed
+- **BREAKING**: Use jsonld-signatures@6 that has breaking changes in error
+  return signature in the validate API.
+
 ## 6.0.0 - 2020-02-20
 
 ### Added
