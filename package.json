@@ -23,8 +23,8 @@
     "jsonld": "^2.0.0",
     "jsonld-signatures": "^4.5.0",
     "lodash": "^4.17.11",
-    "multibase": "^0.6.0",
-    "multicodec": "^0.5.0",
+    "multibase": "^3.0.1",
+    "multicodec": "^2.0.1",
     "ocapld": "^1.1.0"
   },
   "peerDependencies": {
