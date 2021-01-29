@@ -8,6 +8,12 @@ const {util: {clone, BedrockError}} = bedrock;
 
 exports.createMockLedgerNode = ({ldDocuments}) => {
   return {
+    operations: {
+      async exists({recordId}) {
+        const doc = ldDocuments.get(recordId);
+        return !!doc;
+      }
+    },
     records: {
       async get({/*maxBlockHeight, */recordId}) {
         const doc = ldDocuments.get(recordId);

@@ -51,19 +51,31 @@ mock.proof = {
 };
 
 // need to return document for beta but *not* for alpha
+const didAlpha = 'did:v1:uuid:40aea416-73b2-436f-bb91-41175494d72b';
+const didBeta = 'did:v1:nym:z6MkwCGzK8WaRM6mfshwpZhJLQpUZD5ePj4PFetLMYa2NCAg';
+const terribleDids = new Set([didAlpha, didBeta]);
+
 let terribleCounter = 0;
 mock.ledgerNode = {
+  operations: {
+    async exists({recordId}) {
+      if(terribleDids.has(recordId)) {
+        return true;
+      }
+      const record = bedrock.util.clone(mock.existingDids[recordId]);
+      return !!record;
+    }
+  },
   records: {
     async get({/*maxBlockHeight, */recordId}) {
       // must clone this going into the document loader, otherwise it will be
       // mutated
-      if(recordId === 'did:v1:uuid:40aea416-73b2-436f-bb91-41175494d72b') {
+      if(recordId === didAlpha) {
         throw new BedrockError(
           'A terrible mock validatorParameterSet error.',
           'TerribleValidatorParameterSetError');
       }
-      if(recordId ===
-        'did:v1:nym:z6MkwCGzK8WaRM6mfshwpZhJLQpUZD5ePj4PFetLMYa2NCAg') {
+      if(recordId === didBeta) {
         terribleCounter++;
         // throw NotFoundError for the first 3 requests
         if(terribleCounter > 4) {
