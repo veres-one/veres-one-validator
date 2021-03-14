@@ -1,5 +1,5 @@
 /*!
- * Copyright (c) 2017-2018 Digital Bazaar, Inc. All rights reserved.
+ * Copyright (c) 2017-2021 Digital Bazaar, Inc. All rights reserved.
  */
 'use strict';
 
@@ -55,7 +55,6 @@ const didAlpha = 'did:v1:uuid:40aea416-73b2-436f-bb91-41175494d72b';
 const didBeta = 'did:v1:nym:z6MkwCGzK8WaRM6mfshwpZhJLQpUZD5ePj4PFetLMYa2NCAg';
 const terribleDids = new Set([didAlpha, didBeta]);
 
-let terribleCounter = 0;
 mock.ledgerNode = {
   operations: {
     async exists({recordId}) {
@@ -74,14 +73,6 @@ mock.ledgerNode = {
         throw new BedrockError(
           'A terrible mock validatorParameterSet error.',
           'TerribleValidatorParameterSetError');
-      }
-      if(recordId === didBeta) {
-        terribleCounter++;
-        // throw NotFoundError for the first 3 requests
-        if(terribleCounter > 4) {
-          throw new BedrockError(
-            'A terrible mock error.', 'TerribleMockError');
-        }
       }
       const record = bedrock.util.clone(mock.existingDids[recordId]);
       if(record) {
