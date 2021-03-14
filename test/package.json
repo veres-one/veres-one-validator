@@ -30,7 +30,7 @@
     "did-veres-one": "^12.1.1",
     "fast-json-patch": "^2.0.7",
     "grunt": "^1.0.1",
-    "jsonld-signatures": "^6.0.0",
+    "jsonld-signatures": "^7.0.0",
     "nyc": "^15.1.0",
     "veres-one-validator": "file:.."
   },
