@@ -9,8 +9,11 @@ const jsigs = require('jsonld-signatures');
 const mockData = require('./mock.data');
 const voValidator = require('veres-one-validator');
 const v1 = new (require('did-veres-one')).VeresOne();
-const {purposes: {AssertionProofPurpose}, suites: {Ed25519Signature2018}} =
-  jsigs;
+const {Ed25519Signature2018} =
+  require('@digitalbazaar/ed25519-signature-2018');
+const {Ed25519VerificationKey2018} =
+  require('@digitalbazaar/ed25519-verification-key-2018');
+const {purposes: {AssertionProofPurpose}} = jsigs;
 
 describe('validate API WebLedgerConfiguration', () => {
   it('should validate a ledgerConfiguration', async () => {
@@ -21,7 +24,9 @@ describe('validate API WebLedgerConfiguration', () => {
     const maintainerDoc = await v1.generate();
     const method = maintainerDoc.getVerificationMethod(
       {proofPurpose: 'capabilityInvocation'});
-    const signingKey = maintainerDoc.keys[method.id];
+    const signingKey = new Ed25519VerificationKey2018(
+      maintainerDoc.keys[method.id]
+    );
     const s = await jsigs.sign(ledgerConfiguration, {
       compactProof: false,
       documentLoader,
@@ -47,7 +52,9 @@ describe('validate API WebLedgerConfiguration', () => {
     const maintainerDoc = await v1.generate();
     const method = maintainerDoc.getVerificationMethod(
       {proofPurpose: 'capabilityInvocation'});
-    const signingKey = maintainerDoc.keys[method.id];
+    const signingKey = new Ed25519VerificationKey2018(
+      maintainerDoc.keys[method.id]
+    );
     const s = await jsigs.sign(ledgerConfiguration, {
       compactProof: false,
       documentLoader,
@@ -75,7 +82,9 @@ describe('validate API WebLedgerConfiguration', () => {
     const maintainerDoc = await v1.generate();
     const method = maintainerDoc.getVerificationMethod(
       {proofPurpose: 'capabilityInvocation'});
-    const signingKey = maintainerDoc.keys[method.id];
+    const signingKey = new Ed25519VerificationKey2018(
+      maintainerDoc.keys[method.id]
+    );
     const s = await jsigs.sign(ledgerConfiguration, {
       compactProof: false,
       documentLoader,
@@ -101,8 +110,9 @@ describe('validate API WebLedgerConfiguration', () => {
     const maintainerDoc = await v1.generate();
     const method = maintainerDoc.getVerificationMethod(
       {proofPurpose: 'capabilityInvocation'});
-    const signingKey = maintainerDoc.keys[method.id];
-
+    const signingKey = new Ed25519VerificationKey2018(
+      maintainerDoc.keys[method.id]
+    );
     const s = await jsigs.sign(ledgerConfiguration, {
       compactProof: false,
       documentLoader,
@@ -131,8 +141,9 @@ describe('validate API WebLedgerConfiguration', () => {
     const maintainerDoc = await v1.generate();
     const method = maintainerDoc.getVerificationMethod(
       {proofPurpose: 'capabilityInvocation'});
-    const signingKey = maintainerDoc.keys[method.id];
-
+    const signingKey = new Ed25519VerificationKey2018(
+      maintainerDoc.keys[method.id]
+    );
     const s = await jsigs.sign(ledgerConfiguration, {
       compactProof: false,
       documentLoader,
@@ -166,8 +177,9 @@ describe('validate API WebLedgerConfiguration', () => {
     const maintainerDoc = await v1.generate();
     const method = maintainerDoc.getVerificationMethod(
       {proofPurpose: 'capabilityInvocation'});
-    const signingKey = maintainerDoc.keys[method.id];
-
+    const signingKey = new Ed25519VerificationKey2018(
+      maintainerDoc.keys[method.id]
+    );
     const s = await jsigs.sign(ledgerConfiguration, {
       compactProof: false,
       documentLoader,
