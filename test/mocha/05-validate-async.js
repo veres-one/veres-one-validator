@@ -6,13 +6,15 @@
 const bedrock = require('bedrock');
 const {util: {clone}} = bedrock;
 const {documentLoader} = require('bedrock-jsonld-document-loader');
-const {Ed25519KeyPair} = require('crypto-ld');
+const {Ed25519Signature2018} =
+  require('@digitalbazaar/ed25519-signature-2018');
+const {Ed25519VerificationKey2018} =
+  require('@digitalbazaar/ed25519-verification-key-2018');
 const jsigs = require('jsonld-signatures');
 const jsonpatch = require('fast-json-patch');
 const mockData = require('./mock.data');
 const voValidator = require('veres-one-validator');
-const {CapabilityInvocation} = require('ocapld');
-const {suites: {Ed25519Signature2018}} = jsigs;
+const {CapabilityInvocation} = require('@digitalbazaar/zcapld');
 const v1 = new (require('did-veres-one')).VeresOne();
 
 describe('validate regular DIDs', () => {
@@ -93,7 +95,9 @@ describe('validate regular DIDs', () => {
       const did = mockDoc.id;
       const keyId = mockDoc.getVerificationMethod(
         {proofPurpose: 'capabilityInvocation'}).id;
-      const capabilityInvocationKey = mockDoc.keys[keyId];
+      const capabilityInvocationKey = new Ed25519VerificationKey2018(
+        mockDoc.keys[keyId]
+      );
       const mockOperation = clone(mockData.operations.create);
       const capabilityAction = 'create';
       mockOperation.record = mockDoc.doc;
@@ -240,7 +244,9 @@ describe('validate regular DIDs', () => {
 
         const keyId = mockDoc.getVerificationMethod(
           {proofPurpose: 'capabilityInvocation'}).id;
-        const capabilityInvocationKey = mockDoc.keys[keyId];
+        const capabilityInvocationKey = new Ed25519VerificationKey2018(
+          mockDoc.keys[keyId]
+        );
         const mockOperation = clone(mockData.operations.create);
         const capabilityAction = 'create';
         mockOperation.record = mockDoc.doc;
@@ -276,7 +282,9 @@ describe('validate regular DIDs', () => {
 
         const keyId = mockDoc.getVerificationMethod(
           {proofPurpose: 'capabilityInvocation'}).id;
-        const capabilityInvocationKey = mockDoc.keys[keyId];
+        const capabilityInvocationKey = new Ed25519VerificationKey2018(
+          mockDoc.keys[keyId]
+        );
         const mockOperation = clone(mockData.operations.create);
         const capabilityAction = 'create';
         mockOperation.record = mockDoc.doc;
@@ -325,7 +333,9 @@ describe('validate regular DIDs', () => {
 
         const keyId = mockDoc.getVerificationMethod(
           {proofPurpose: 'capabilityInvocation'}).id;
-        const capabilityInvocationKey = mockDoc.keys[keyId];
+        const capabilityInvocationKey = new Ed25519VerificationKey2018(
+          mockDoc.keys[keyId]
+        );
         const mockOperation = clone(mockData.operations.create);
         const capabilityAction = 'create';
         mockOperation.record = mockDoc.doc;
@@ -361,7 +371,9 @@ describe('validate regular DIDs', () => {
 
         const keyId = mockDoc.getVerificationMethod(
           {proofPurpose: 'capabilityInvocation'}).id;
-        const capabilityInvocationKey = mockDoc.keys[keyId];
+        const capabilityInvocationKey = new Ed25519VerificationKey2018(
+          mockDoc.keys[keyId]
+        );
         const mockOperation = clone(mockData.operations.create);
         const capabilityAction = 'create';
         mockOperation.record = mockDoc.doc;
@@ -401,7 +413,9 @@ describe('validate regular DIDs', () => {
 
         const keyId = mockDoc.getVerificationMethod(
           {proofPurpose: 'capabilityInvocation'}).id;
-        const capabilityInvocationKey = mockDoc.keys[keyId];
+        const capabilityInvocationKey = new Ed25519VerificationKey2018(
+          mockDoc.keys[keyId]
+        );
         const mockOperation = clone(mockData.operations.create);
         const capabilityAction = 'create';
         mockOperation.record = mockDoc.doc;
@@ -447,7 +461,9 @@ describe('validate regular DIDs', () => {
 
         const keyId = mockDoc.getVerificationMethod(
           {proofPurpose: 'capabilityInvocation'}).id;
-        const capabilityInvocationKey = mockDoc.keys[keyId];
+        const capabilityInvocationKey = new Ed25519VerificationKey2018(
+          mockDoc.keys[keyId]
+        );
         const mockOperation = clone(mockData.operations.create);
         const capabilityAction = 'create';
         mockOperation.record = mockDoc.doc;
@@ -488,7 +504,9 @@ describe('validate regular DIDs', () => {
         const did = mockDoc.id;
         const keyId = mockDoc.getVerificationMethod(
           {proofPurpose: 'capabilityInvocation'}).id;
-        const capabilityInvocationKey = mockDoc.keys[keyId];
+        const capabilityInvocationKey = new Ed25519VerificationKey2018(
+          mockDoc.keys[keyId]
+        );
         const mockOperation = clone(mockData.operations.create);
         const capabilityAction = 'create';
         mockOperation.record = mockDoc.doc;
@@ -536,7 +554,9 @@ describe('validate regular DIDs', () => {
       mockData.existingDids[did] = clone(mockDoc);
 
       const observer = jsonpatch.observe(mockDoc);
-      const newKey = await Ed25519KeyPair.generate({controller: did});
+      const newKey = await Ed25519VerificationKey2018.generate({
+        controller: did
+      });
       newKey.id = _generateKeyId({did, key: newKey});
       mockDoc.authentication.push({
         id: newKey.id,
@@ -582,7 +602,9 @@ describe('validate regular DIDs', () => {
       mockDoc.id =
         'did:v1:nym:z6MknY7qbTmVNPUC2xRyfSzcf3LxQGBx4t8uBVhGkKq7XXXX';
 
-      const newKey = await Ed25519KeyPair.generate({controller: did});
+      const newKey = await Ed25519VerificationKey2018.generate({
+        controller: did
+      });
       newKey.id = _generateKeyId({did, key: newKey});
       mockDoc.authentication.push({
         id: newKey.id,
@@ -625,7 +647,9 @@ describe('validate regular DIDs', () => {
       //mockData.existingDids[did] = clone(mockDoc);
 
       const observer = jsonpatch.observe(mockDoc);
-      const newKey = await Ed25519KeyPair.generate({controller: did});
+      const newKey = await Ed25519VerificationKey2018.generate({
+        controller: did
+      });
       newKey.id = _generateKeyId({did, key: newKey});
       mockDoc.authentication.push({
         id: newKey.id,
@@ -675,7 +699,9 @@ describe('validate regular DIDs', () => {
 
       const observer = jsonpatch.observe(mockDoc);
 
-      const newKey = await Ed25519KeyPair.generate({controller: did});
+      const newKey = await Ed25519VerificationKey2018.generate({
+        controller: did
+      });
       newKey.id = _generateKeyId({did, key: newKey});
       mockDoc.authentication.push({
         id: newKey.id,
@@ -723,7 +749,9 @@ describe('validate regular DIDs', () => {
 
       const observer = jsonpatch.observe(mockDoc);
 
-      const newKey = await Ed25519KeyPair.generate({controller: did});
+      const newKey = await Ed25519VerificationKey2018.generate({
+        controller: did
+      });
       newKey.id = _generateKeyId({did, key: newKey});
       mockDoc.authentication.push({
         id: newKey.id,
@@ -772,7 +800,9 @@ describe('validate regular DIDs', () => {
       mockData.existingDids[did] = clone(mockDoc);
 
       const observer = jsonpatch.observe(mockDoc);
-      const newKey = await Ed25519KeyPair.generate({controller: did});
+      const newKey = await Ed25519VerificationKey2018.generate({
+        controller: did
+      });
       newKey.id = _generateKeyId({did, key: newKey});
       mockDoc.authentication.push({
         id: newKey.id,
@@ -830,7 +860,9 @@ describe('validate regular DIDs', () => {
       mockData.existingDids[did] = clone(mockDoc);
 
       const observer = jsonpatch.observe(mockDoc);
-      const newKey = await Ed25519KeyPair.generate({controller: did});
+      const newKey = await Ed25519VerificationKey2018.generate({
+        controller: did
+      });
       newKey.id = _generateKeyId({did, key: newKey});
       mockDoc.authentication.push({
         id: newKey.id,
@@ -885,7 +917,9 @@ describe('validate regular DIDs', () => {
 
       // `did` generates a patch against `did1`
       const observer = jsonpatch.observe(mockDoc1);
-      const newKey = await Ed25519KeyPair.generate({controller: did});
+      const newKey = await Ed25519VerificationKey2018.generate({
+        controller: did
+      });
       newKey.id = _generateKeyId({did, key: newKey});
       mockDoc1.authentication.push({
         id: newKey.id,
@@ -935,7 +969,9 @@ describe('validate regular DIDs', () => {
       // clone here so we can proceed with making changes to mockDoc
       mockData.existingDids[did] = clone(mockDoc);
       const observer = jsonpatch.observe(mockDoc);
-      const newKey = await Ed25519KeyPair.generate({controller: did});
+      const newKey = await Ed25519VerificationKey2018.generate({
+        controller: did
+      });
       newKey.id = _generateKeyId({did, key: newKey});
       mockDoc.authentication.push({
         id: newKey.id,
@@ -981,7 +1017,9 @@ describe('validate regular DIDs', () => {
       // clone here so we can proceed with making changes to mockDoc
       mockData.existingDids[did] = clone(mockDoc);
       const observer = jsonpatch.observe(mockDoc);
-      const newKey = await Ed25519KeyPair.generate({controller: did});
+      const newKey = await Ed25519VerificationKey2018.generate({
+        controller: did
+      });
       newKey.id = _generateKeyId({did, key: newKey});
       mockDoc.authentication.push({
         id: newKey.id,
@@ -1029,7 +1067,9 @@ describe('validate regular DIDs', () => {
       // clone here so we can proceed with making changes to mockDoc
       mockData.existingDids[did] = clone(mockDoc);
       const observer = jsonpatch.observe(mockDoc);
-      const newKey = await Ed25519KeyPair.generate({controller: did});
+      const newKey = await Ed25519VerificationKey2018.generate({
+        controller: did
+      });
 
       // maliciously put the id from capabilityInvocationKey on new key
       newKey.id = capabilityInvocationKey.id;
@@ -1090,8 +1130,9 @@ describe('validate regular DIDs', () => {
 
       const keyId = mockDoc.getVerificationMethod(
         {proofPurpose: 'capabilityInvocation'}).id;
-      const capabilityInvocationKey = mockDoc.keys[keyId];
-
+      const capabilityInvocationKey = new Ed25519VerificationKey2018(
+        mockDoc.keys[keyId]
+      );
       // add an AuthorizeRequest proof that will pass json-schema
       // validation for
       // testnet v2 *not* a valid signature
@@ -1141,8 +1182,9 @@ describe('validate regular DIDs', () => {
 
       const keyId = mockDoc.getVerificationMethod(
         {proofPurpose: 'capabilityInvocation'}).id;
-      const capabilityInvocationKey = mockDoc.keys[keyId];
-
+      const capabilityInvocationKey = new Ed25519VerificationKey2018(
+        mockDoc.keys[keyId]
+      );
       // add an AuthorizeRequest proof that will pass json-schema
       // validation for
       // testnet v2 *not* a valid signature
@@ -1206,7 +1248,9 @@ describe('validate regular DIDs', () => {
 
         const keyId = mockDoc.getVerificationMethod(
           {proofPurpose: 'capabilityInvocation'}).id;
-        const capabilityInvocationKey = mockDoc.keys[keyId];
+        const capabilityInvocationKey = new Ed25519VerificationKey2018(
+          mockDoc.keys[keyId]
+        );
 
         // add an AuthorizeRequest proof that will pass json-schema
         // validation for
@@ -1257,7 +1301,9 @@ describe('validate regular DIDs', () => {
 
         const keyId = mockDoc.getVerificationMethod(
           {proofPurpose: 'capabilityInvocation'}).id;
-        const capabilityInvocationKey = mockDoc.keys[keyId];
+        const capabilityInvocationKey = new Ed25519VerificationKey2018(
+          mockDoc.keys[keyId]
+        );
 
         // add an AuthorizeRequest proof that will pass json-schema
         // validation for
@@ -1303,7 +1349,9 @@ describe('validate regular DIDs', () => {
 
         const keyId = mockDoc.getVerificationMethod(
           {proofPurpose: 'capabilityInvocation'}).id;
-        const capabilityInvocationKey = mockDoc.keys[keyId];
+        const capabilityInvocationKey = new Ed25519VerificationKey2018(
+          mockDoc.keys[keyId]
+        );
 
         // add an AuthorizeRequest proof that will pass json-schema
         // validation for
@@ -1352,7 +1400,9 @@ describe('validate regular DIDs', () => {
 
         const keyId = mockDoc.getVerificationMethod(
           {proofPurpose: 'capabilityInvocation'}).id;
-        const capabilityInvocationKey = mockDoc.keys[keyId];
+        const capabilityInvocationKey = new Ed25519VerificationKey2018(
+          mockDoc.keys[keyId]
+        );
 
         // add an AuthorizeRequest proof that will pass json-schema
         // validation for
@@ -1406,7 +1456,9 @@ describe('validate regular DIDs', () => {
 
         const keyId = mockDoc.getVerificationMethod(
           {proofPurpose: 'capabilityInvocation'}).id;
-        const capabilityInvocationKey = mockDoc.keys[keyId];
+        const capabilityInvocationKey = new Ed25519VerificationKey2018(
+          mockDoc.keys[keyId]
+        );
 
         // add an AuthorizeRequest proof that will pass json-schema
         // validation for
@@ -1444,7 +1496,7 @@ function _generateKeyId({did, key}) {
 // the keys for `authentication` and `capabilityDelegation` do not match the DID
 async function _generateBadDid() {
   const mockDoc = clone(mockData.privateDidDocuments.alpha);
-  const capabilityInvocationKey = await Ed25519KeyPair.generate();
+  const capabilityInvocationKey = await Ed25519VerificationKey2018.generate();
   const keyFingerprint = capabilityInvocationKey.fingerprint();
 
   const did = `did:v1:nym:${keyFingerprint}`;
@@ -1465,7 +1517,7 @@ async function _generateBadDid() {
 
 async function _generateDid() {
   const mockDoc = clone(mockData.privateDidDocuments.alpha);
-  const capabilityInvocationKey = await Ed25519KeyPair.generate();
+  const capabilityInvocationKey = await Ed25519VerificationKey2018.generate();
   const keyFingerprint = capabilityInvocationKey.fingerprint();
 
   const did = `did:v1:nym:${keyFingerprint}`;
@@ -1474,10 +1526,14 @@ async function _generateDid() {
   capabilityInvocationKey.id = _generateKeyId(
     {did, key: capabilityInvocationKey});
   const controller = did;
-  const capabilityDelegationKey = await Ed25519KeyPair.generate({controller});
+  const capabilityDelegationKey = await Ed25519VerificationKey2018.generate({
+    controller
+  });
   capabilityDelegationKey.id = _generateKeyId(
     {did, key: capabilityDelegationKey});
-  const authenticationKey = await Ed25519KeyPair.generate({controller});
+  const authenticationKey = await Ed25519VerificationKey2018.generate({
+    controller
+  });
   authenticationKey.id = _generateKeyId({did, key: authenticationKey});
   capabilityInvocationKey.controller = controller;
   mockDoc.capabilityInvocation[0] = {
