@@ -29,12 +29,12 @@
     "did-veres-one": "^12.1.1",
     "fast-json-patch": "^2.0.7",
     "grunt": "^1.0.1",
-    "jsonld-signatures": "^8.0.0",
+    "jsonld-signatures": "^8.0.2",
     "nyc": "^15.1.0",
     "veres-one-validator": "file:.."
   },
   "devDependencies": {
-    "@digitalbazaar/ed25519-signature-2018": "^1.0.0",
+    "@digitalbazaar/ed25519-signature-2018": "digitalbazaar/ed25519-signature-2018#v1",
     "@digitalbazaar/ed25519-verification-key-2018": "^3.0.0"
   },
   "nyc": {
