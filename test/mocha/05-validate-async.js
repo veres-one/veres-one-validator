@@ -61,6 +61,7 @@ describe('validate regular DIDs', () => {
           .operationValidator[0],
       });
       should.exist(result);
+console.log(JSON.stringify(result, null, 2));
       result.valid.should.be.a('boolean');
       result.valid.should.be.true;
     });
@@ -601,7 +602,6 @@ describe('validate regular DIDs', () => {
       // FIXME: add a write proof for the accelerator that will pass
       // json-schema validation for testnet v2 *not* a valid signature
       mockOperation.proof = clone(mockData.proof);
-
       const s = await jsigs.sign(mockOperation, {
         documentLoader,
         suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
@@ -653,7 +653,6 @@ describe('validate regular DIDs', () => {
       // FIXME: add a write proof for the accelerator that will pass
       // json-schema validation for testnet v2 *not* a valid signature
       mockOperation.proof = clone(mockData.proof);
-
       const s = await jsigs.sign(mockOperation, {
         documentLoader,
         suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
@@ -936,6 +935,8 @@ describe('validate regular DIDs', () => {
           invocationTarget: did
         })
       });
+      // remove that proof before validating
+      s.proof = [s.proof[1]];
       const result = await voValidator.validate({
         basisBlockHeight: 10,
         ledgerNode: mockData.ledgerNode,
@@ -994,6 +995,8 @@ describe('validate regular DIDs', () => {
           invocationTarget: did1
         })
       });
+      // remove that proof before validating
+      s.proof = [s.proof[1]];
       const result = await voValidator.validate({
         basisBlockHeight: 10,
         ledgerNode: mockData.ledgerNode,
@@ -1099,6 +1102,8 @@ describe('validate regular DIDs', () => {
           invocationTarget: did
         })
       });
+      // remove that proof before validating
+      s.proof = [s.proof[1]];
       const result = await voValidator.validate({
         basisBlockHeight: 10,
         ledgerNode: mockData.ledgerNode,
@@ -1156,6 +1161,8 @@ describe('validate regular DIDs', () => {
           invocationTarget: did
         })
       });
+      // remove that proof before validating
+      s.proof = [s.proof[1]];
       const result = await voValidator.validate({
         basisBlockHeight: 10,
         ledgerNode: mockData.ledgerNode,
