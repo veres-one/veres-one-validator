@@ -218,7 +218,6 @@ console.log(JSON.stringify(result, null, 2));
       // FIXME: add a write proof for the accelerator that will pass
       // json-schema validation for testnet v2 *not* a valid signature
       mockOperation.proof = clone(mockData.proof);
-
       const s = await jsigs.sign(mockOperation, {
         documentLoader,
         suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
@@ -700,7 +699,6 @@ console.log(JSON.stringify(result, null, 2));
       // add a write proof for the ledger that will pass json-schema
       // validation for testnet v2 *not* a valid signature
       mockOperation.proof = clone(mockData.proof);
-
       const s = await jsigs.sign(mockOperation, {
         documentLoader,
         suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
@@ -757,7 +755,6 @@ console.log(JSON.stringify(result, null, 2));
       // FIXME: add a write proof for the accelerator that will pass
       // json-schema validation for testnet v2 *not* a valid signature
       mockOperation.proof = clone(mockData.proof);
-
       const s = await jsigs.sign(mockOperation, {
         documentLoader,
         suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
@@ -986,6 +983,7 @@ console.log(JSON.stringify(result, null, 2));
       // FIXME: add a write proof for the accelerator that will pass
       // json-schema validation for testnet v2 *not* a valid signature
       mockOperation.proof = clone(mockData.proof);
+      // signing with a key from another valid DID
       const s = await jsigs.sign(mockOperation, {
         documentLoader,
         suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
@@ -1323,7 +1321,6 @@ console.log(JSON.stringify(result, null, 2));
         // validation for
         // testnet v2 *not* a valid signature
         mockOperation.proof = clone(mockData.proof);
-
         const s = await jsigs.sign(mockOperation, {
           documentLoader,
           suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
@@ -1377,7 +1374,6 @@ console.log(JSON.stringify(result, null, 2));
         // validation for
         // testnet v2 *not* a valid signature
         mockOperation.proof = clone(mockData.proof);
-
         const s = await jsigs.sign(mockOperation, {
           documentLoader,
           suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
@@ -1406,7 +1402,6 @@ console.log(JSON.stringify(result, null, 2));
         const mockOperation = clone(mockData.operations.update);
         const capabilityAction = 'write';
         mockData.existingDids[did] = clone(didDocument);
-
         updater.observe();
 
         _addService({
@@ -1425,7 +1420,6 @@ console.log(JSON.stringify(result, null, 2));
         // validation for
         // testnet v2 *not* a valid signature
         mockOperation.proof = clone(mockData.proof);
-
         const s = await jsigs.sign(mockOperation, {
           documentLoader,
           suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
@@ -1457,9 +1451,7 @@ console.log(JSON.stringify(result, null, 2));
         const mockOperation = clone(mockData.operations.update);
         const capabilityAction = 'write';
         mockData.existingDids[did] = clone(didDocument);
-
         updater.observe();
-
         _addService({
           updater,
           fragment: 'foo',
@@ -1476,7 +1468,6 @@ console.log(JSON.stringify(result, null, 2));
         // validation for
         // testnet v2 *not* a valid signature
         mockOperation.proof = clone(mockData.proof);
-
         const s = await jsigs.sign(mockOperation, {
           documentLoader,
           suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
@@ -1533,7 +1524,6 @@ console.log(JSON.stringify(result, null, 2));
         // validation for
         // testnet v2 *not* a valid signature
         mockOperation.proof = clone(mockData.proof);
-
         const s = await jsigs.sign(mockOperation, {
           documentLoader,
           suite: new Ed25519Signature2020({key: capabilityInvocationKey}),

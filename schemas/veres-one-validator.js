@@ -5,6 +5,7 @@
 
 const {config: {constants}} = require('bedrock');
 const {schemas} = require('bedrock-validation');
+const {maxLength} = require('../lib/constants');
 const did = require('./did');
 const didReference = require('./didReference');
 const didUuid = require('./did-uuid');
@@ -44,6 +45,7 @@ const capability = {
     invocationTarget: {
       // FIXME: more specific pattern?
       type: 'string',
+      maxLength
     }
   },
 };
@@ -117,19 +119,20 @@ const publicKey = {
   required: [
     'controller',
     'id',
-    'type'
+    'type',
+    'publicKeyMultibase'
   ],
   type: 'object',
   properties: {
     id: {
       type: 'string',
+      maxLength
     },
     type: {
       type: 'string',
       enum: ['Ed25519VerificationKey2020', 'X25519KeyAgreementKey2020'],
     },
     controller: did(),
-    // FIXME: make schema require this for Ed25519VerificationKey2020
     publicKeyMultibase: {
       type: 'string'
     }
@@ -170,9 +173,11 @@ const didDocument = {
     // FIXME: be more specific with restrictions for all properties below
     invocationTarget: {
       type: 'string',
+      maxLength
     },
     invoker: {
       type: 'string',
+      maxLength
     },
     assertionMethod: {
       type: 'array',
@@ -305,9 +310,11 @@ const didDocumentPatch = {
           },
           from: {
             type: 'string',
+            maxLength
           },
           path: {
             type: 'string',
+            maxLength
           },
           value: {
             //type: ['number', 'string', 'boolean', 'object', 'array'],
@@ -440,15 +447,22 @@ const baseCapability = {
     'type'
   ],
   properties: {
-    capability: {type: 'string'},
+    capability: {
+      type: 'string',
+      maxLength
+    },
     capabilityAction: {
       type: 'string',
       enum: ['write'],
     },
     created: schemas.w3cDateTime(),
-    creator: {type: 'string'},
     invocationTarget: {type: 'string'},
     proofValue: {type: 'string'},
+    // FIXME is creator always a did?
+    creator: {
+      type: 'string',
+      maxLength
+    },
     proofPurpose: {
       type: 'string',
       enum: ['capabilityInvocation'],
@@ -457,7 +471,10 @@ const baseCapability = {
       type: 'string',
       enum: ['Ed25519Signature2020']
     },
-    verificationMethod: {type: 'string'},
+    verificationMethod: {
+      type: 'string',
+      maxLength
+    },
   }
 };
 
@@ -482,7 +499,11 @@ const writeCapability = {
       properties: {
         capabilityAction: {
           enum: ['write'],
-        }
+        },
+        // FIXME: this is for testnet v2 only
+        jws: {
+          enum: ['MOCKPROOF'],
+        },
       }
     }]
 };
@@ -538,7 +559,10 @@ const ledgerConfiguration = {
       constants.ED25519_2020_CONTEXT_V1_URL
     ]),
     consensusMethod: {const: 'Continuity2017'},
-    creator: {type: 'string'},
+    creator: {
+      type: 'string',
+      maxLength
+    },
     electorSelectionMethod: {
       additionalProperties: false,
       required: [
@@ -563,6 +587,7 @@ const ledgerConfiguration = {
     ledger: {
       // FIXME: enforce? did:v1:eb8c22dc-bde6-4315-92e2-59bd3f3c7d59
       type: 'string',
+      maxLength
     },
     ledgerConfigurationValidator: {
       type: 'array',

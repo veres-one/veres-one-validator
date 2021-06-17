@@ -4,6 +4,7 @@
 'use strict';
 
 const bedrock = require('bedrock');
+const {maxLength} = require('../lib/constants');
 const {config} = bedrock;
 require('../lib/config');
 
@@ -18,6 +19,8 @@ const schema = {
   description: 'A decentralized identifier.',
   type: 'string',
   pattern,
+  minLength: cfg.environment === 'test' ? 17 : 12,
+  maxLength,
   errors: {
     invalid: 'The decentralized identifier is invalid.',
     missing: 'Please enter a decentralized identifier.'
