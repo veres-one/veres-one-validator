@@ -52,7 +52,7 @@ describe('validate API ValidatorParameterSet', () => {
         operation = await attachInvocationProof(operation, {
           // capability: maintainerDid,
           capability: validatorParameterSetDoc.id,
-          capabilityAction: 'create',
+          capabilityAction: 'write',
           key,
         });
 
@@ -99,7 +99,7 @@ describe('validate API ValidatorParameterSet', () => {
         operation = await attachInvocationProof(operation, {
           // capability: maintainerDid,
           capability: validatorParameterSetDoc.id,
-          capabilityAction: 'create',
+          capabilityAction: 'write',
           key,
         });
 
@@ -154,7 +154,7 @@ describe('validate API ValidatorParameterSet', () => {
         operation = await attachInvocationProof(operation, {
           // capability: maintainerDid,
           capability: validatorParameterSetDoc.id,
-          capabilityAction: 'create',
+          capabilityAction: 'write',
           key,
         });
 
@@ -227,7 +227,7 @@ describe('validate API ValidatorParameterSet', () => {
         operation = await attachInvocationProof(operation, {
           capability: validatorParameterSetDoc.id,
           // capabilityAction: operation.type,
-          capabilityAction: 'update',
+          capabilityAction: 'write',
           key,
         });
         // FIXME: replace mock proof above with legitimate proof
@@ -294,7 +294,7 @@ describe('validate API ValidatorParameterSet', () => {
         operation = await attachInvocationProof(operation, {
           capability: validatorParameterSetDoc.id,
           // capabilityAction: operation.type,
-          capabilityAction: 'update',
+          capabilityAction: 'write',
           key,
         });
         // FIXME: replace mock proof above with legitimate proof
@@ -365,7 +365,7 @@ describe('validate API ValidatorParameterSet', () => {
         operation = await attachInvocationProof(operation, {
           capability: validatorParameterSetDoc.id,
           // capabilityAction: operation.type,
-          capabilityAction: 'update',
+          capabilityAction: 'write',
           key,
         });
         // FIXME: replace mock proof above with legitimate proof
@@ -436,7 +436,7 @@ describe('validate API ValidatorParameterSet', () => {
         operation = await attachInvocationProof(operation, {
           capability: validatorParameterSetDoc.id,
           // capabilityAction: operation.type,
-          capabilityAction: 'update',
+          capabilityAction: 'write',
           key,
         });
         // FIXME: replace mock proof above with legitimate proof

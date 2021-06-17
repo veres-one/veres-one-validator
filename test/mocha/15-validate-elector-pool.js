@@ -49,7 +49,7 @@ describe('validate API ElectorPool', () => {
         operation = await attachInvocationProof(operation, {
           // capability: maintainerDid,
           capability: electorPoolDoc.id,
-          capabilityAction: 'create',
+          capabilityAction: 'write',
           key,
           signer: key.signer()
         });
@@ -103,7 +103,7 @@ describe('validate API ElectorPool', () => {
         operation.proof = bedrock.util.clone(mockData.proof);
         operation = await attachInvocationProof(operation, {
           capability: electorPoolDoc.id,
-          capabilityAction: 'create',
+          capabilityAction: 'write',
           key,
           signer: key.signer()
         });
@@ -139,7 +139,7 @@ describe('validate API ElectorPool', () => {
         result.valid.should.be.false;
         result.error.name.should.equal('NotFoundError');
       });
-      it('fails on op w/missing create capability', async () => {
+      it('fails on op if proof is not an array', async () => {
         const {id: maintainerDid} = maintainerDidDocumentFull.didDocument;
         const electorPoolDoc = _generateElectorPoolDoc();
         let operation = await _wrap(
@@ -147,10 +147,9 @@ describe('validate API ElectorPool', () => {
         const key = _getMaintainerKeys();
 
         // no create proof added
-
         operation = await attachInvocationProof(operation, {
           capability: maintainerDid,
-          capabilityAction: 'AuthorizeRequest',
+          capabilityAction: 'write',
           key,
         });
         const ledgerConfig = bedrock.util.clone(
@@ -191,7 +190,7 @@ describe('validate API ElectorPool', () => {
 
         operation = await attachInvocationProof(operation, {
           capability: maintainerDid,
-          capabilityAction: 'create',
+          capabilityAction: 'write',
           key,
         });
         const ledgerConfig = bedrock.util.clone(
@@ -229,12 +228,12 @@ describe('validate API ElectorPool', () => {
 
         operation = await attachInvocationProof(operation, {
           capability: electorPoolDoc.id,
-          capabilityAction: 'create',
+          capabilityAction: 'write',
           key,
         });
         operation = await attachInvocationProof(operation, {
           capability: electorPoolDoc.id,
-          capabilityAction: 'create',
+          capabilityAction: 'write',
           key,
         });
         const ledgerConfig = bedrock.util.clone(
@@ -274,13 +273,13 @@ describe('validate API ElectorPool', () => {
         operation = await attachInvocationProof(operation, {
           algorithm: 'Ed25519Signature2018',
           capability: maintainerDid,
-          capabilityAction: 'AuthorizeRequest',
+          capabilityAction: 'write',
           key,
         });
         operation = await attachInvocationProof(operation, {
           algorithm: 'Ed25519Signature2018',
           capability: maintainerDid,
-          capabilityAction: 'AuthorizeRequest',
+          capabilityAction: 'write',
           key,
         });
         const ledgerConfig = bedrock.util.clone(
@@ -322,7 +321,7 @@ describe('validate API ElectorPool', () => {
         operation = await attachInvocationProof(operation, {
           // this DID document does not exist
           capability: 'did:v1:uuid:e798d4cf-f4f5-40cb-9f06-7fa56cf55d95',
-          capabilityAction: 'create',
+          capabilityAction: 'write',
           key,
         });
 
@@ -426,7 +425,7 @@ describe('validate API ElectorPool', () => {
         operation = await attachInvocationProof(operation, {
           capability: electorPoolDoc.id,
           // capabilityAction: operation.type,
-          capabilityAction: 'update',
+          capabilityAction: 'write',
           key,
         });
         // FIXME: replace mock proof above with legitimate proof
@@ -503,7 +502,7 @@ describe('validate API ElectorPool', () => {
         operation = await attachInvocationProof(operation, {
           capability: electorPoolDoc.id,
           // capabilityAction: operation.type,
-          capabilityAction: 'update',
+          capabilityAction: 'write',
           key,
         });
         // FIXME: replace mock proof above with legitimate proof

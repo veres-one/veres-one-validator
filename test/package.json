@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "test": "node --preserve-symlinks test test",
+    "debug": "node --preserve-symlinks test test --log-level debug",
     "coverage": "cross-env NODE_ENV=test nyc --reporter=lcov --reporter=text-summary npm test",
     "coverage-ci": "cross-env NODE_ENV=test nyc --reporter=lcov npm test",
     "coverage-report": "nyc report"

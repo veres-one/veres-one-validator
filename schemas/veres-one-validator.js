@@ -439,7 +439,7 @@ const baseCapability = {
     capability: {type: 'string'},
     capabilityAction: {
       type: 'string',
-      enum: ['write', 'create', 'update'],
+      enum: ['write'],
     },
     created: schemas.w3cDateTime(),
     creator: {type: 'string'},
@@ -488,7 +488,7 @@ const createCapability = {
     creatorOrVerificationMethod, {
       properties: {
         capabilityAction: {
-          enum: ['create'],
+          enum: ['write'],
         },
       }
     }]
@@ -500,7 +500,7 @@ const updateDidCapability = {
     creatorOrVerificationMethod, {
       properties: {
         capabilityAction: {
-          enum: ['update'],
+          enum: ['write'],
         },
       }
     }]
