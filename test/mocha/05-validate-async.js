@@ -58,7 +58,6 @@ describe('validate regular DIDs', () => {
           .operationValidator[0],
       });
       should.exist(result);
-console.log(JSON.stringify(result, null, 2));
       result.valid.should.be.a('boolean');
       result.valid.should.be.true;
     });
@@ -624,7 +623,7 @@ console.log(JSON.stringify(result, null, 2));
     it('rejects an update when the document does not exist', async () => {
       const {did, mockDoc, capabilityInvocationKey} = await _generateDid();
       const mockOperation = clone(mockData.operations.update);
-      let capabilityAction = 'create';
+      const capabilityAction = 'write';
       // add the new document to the mock document loader as if it were on
       // ledger
       // clone here so we can proceed with making changes to mockDoc
@@ -643,16 +642,17 @@ console.log(JSON.stringify(result, null, 2));
       });
       mockOperation.recordPatch.patch = jsonpatch.generate(observer);
       mockOperation.recordPatch.target = did;
-      // add an AuthorizeRequest proof that will pass json-schema validation for
-      // testnet v2 *not* a valid signature
+      // add a write proof for the ledger that will pass json-schema
+      // validation for testnet v2 *not* a valid signature
       mockOperation.proof = clone(mockData.proof);
-      capabilityAction = 'write';
       const s = await jsigs.sign(mockOperation, {
         compactProof: false,
         documentLoader,
         suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
         purpose: new CapabilityInvocation({capability: did, capabilityAction})
       });
+      // FIXME this removes the mockData.proof
+      s.proof = [s.proof[1]];
       const result = await voValidator.validate({
         basisBlockHeight: 10,
         ledgerNode: mockData.ledgerNode,

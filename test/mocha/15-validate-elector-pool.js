@@ -218,7 +218,7 @@ describe('validate API ElectorPool', () => {
         result.valid.should.be.false;
         result.error.name.should.equal('ValidationError');
       });
-      it('fails on op w/two create capability proofs', async () => {
+      it('fails on op w/ two create capability proofs', async () => {
         const electorPoolDoc = _generateElectorPoolDoc();
         let operation = await _wrap(
           {didDocument: electorPoolDoc, operationType: 'create'});
@@ -307,7 +307,7 @@ describe('validate API ElectorPool', () => {
         result.valid.should.be.false;
         result.error.name.should.equal('ValidationError');
       });
-      it('fails on op w/incorrect capability DID', async () => {
+      it('fails on op w/ incorrect capability DID', async () => {
         const electorPoolDoc = _generateElectorPoolDoc();
         let operation = await _wrap(
           {didDocument: electorPoolDoc, operationType: 'create'});
@@ -338,6 +338,8 @@ describe('validate API ElectorPool', () => {
           // corresponds to electorPoolDocument.alpha
           electorPool: electorPoolDoc.id,
         };
+        // remove the mock proof before validating
+        operation.proof = [operation.proof[1]];
         let err;
         let result;
         try {
