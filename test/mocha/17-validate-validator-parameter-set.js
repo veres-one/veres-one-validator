@@ -45,7 +45,7 @@ describe('validate API ValidatorParameterSet', () => {
           {didDocument: validatorParameterSetDoc, operationType: 'create'});
         const key = _getMaintainerKeys();
 
-        // FIXME: add an AuthorizeRequest proof that will pass json-schema
+        // FIXME: add a write proof for the ledger that will pass json-schema
         // validation for testnet v2 *not* a valid signature
         operation.proof = clone(mockData.proof);
 
@@ -92,7 +92,7 @@ describe('validate API ValidatorParameterSet', () => {
           {didDocument: validatorParameterSetDoc, operationType: 'create'});
         const key = _getMaintainerKeys();
 
-        // FIXME: add an AuthorizeRequest proof that will pass json-schema
+        // FIXME: add a write proof for the ledger that will pass json-schema
         // validation for testnet v2 *not* a valid signature
         operation.proof = clone(mockData.proof);
 
@@ -147,7 +147,7 @@ describe('validate API ValidatorParameterSet', () => {
           {didDocument: validatorParameterSetDoc, operationType: 'create'});
         const key = _getMaintainerKeys();
 
-        // FIXME: add an AuthorizeRequest proof that will pass json-schema
+        // FIXME: add a write proof for the ledger that will pass json-schema
         // validation for testnet v2 *not* a valid signature
         operation.proof = clone(mockData.proof);
 
@@ -220,7 +220,7 @@ describe('validate API ValidatorParameterSet', () => {
 
         // FIXME: what are proper proofs for an update operation?
 
-        // FIXME: add an AuthorizeRequest proof that will pass json-schema
+        // FIXME: add a write proof for the ledger that will pass json-schema
         // validation for testnet v2 *not* a valid signature
         operation.proof = clone(mockData.proof);
 
@@ -287,7 +287,7 @@ describe('validate API ValidatorParameterSet', () => {
 
         // FIXME: what are proper proofs for an update operation?
 
-        // FIXME: add an AuthorizeRequest proof that will pass json-schema
+        // FIXME: add a write proof for the ledger that will pass json-schema
         // validation for testnet v2 *not* a valid signature
         operation.proof = clone(mockData.proof);
 
@@ -358,7 +358,7 @@ describe('validate API ValidatorParameterSet', () => {
 
         // FIXME: what are proper proofs for an update operation?
 
-        // FIXME: add an AuthorizeRequest proof that will pass json-schema
+        // FIXME: add a write proof for the ledger that will pass json-schema
         // validation for testnet v2 *not* a valid signature
         operation.proof = clone(mockData.proof);
 
@@ -429,7 +429,7 @@ describe('validate API ValidatorParameterSet', () => {
 
         // FIXME: what are proper proofs for an update operation?
 
-        // FIXME: add an AuthorizeRequest proof that will pass json-schema
+        // FIXME: add a write proof for the ledger that will pass json-schema
         // validation for testnet v2 *not* a valid signature
         operation.proof = clone(mockData.proof);
 

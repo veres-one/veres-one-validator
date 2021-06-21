@@ -43,7 +43,7 @@ describe('validate API ElectorPool', () => {
           {didDocument: electorPoolDoc, operationType: 'create'});
         const key = _getMaintainerKeys();
 
-        // FIXME: add an AuthorizeRequest proof that will pass json-schema
+        // FIXME: add a write proof for the ledger that will pass json-schema
         // validation for testnet v2 *not* a valid signature
         operation.proof = bedrock.util.clone(mockData.proof);
         operation = await attachInvocationProof(operation, {
@@ -98,7 +98,7 @@ describe('validate API ElectorPool', () => {
           {didDocument: electorPoolDoc, operationType: 'create'});
         const key = _getMaintainerKeys();
 
-        // FIXME: add an AuthorizeRequest proof that will pass json-schema
+        // FIXME: add a write proof for the ledger that will pass json-schema
         // validation for testnet v2 *not* a valid signature
         operation.proof = bedrock.util.clone(mockData.proof);
         operation = await attachInvocationProof(operation, {
@@ -179,15 +179,14 @@ describe('validate API ElectorPool', () => {
         result.error.name.should.equal('ValidationError');
       });
 
-      it('fails on op w/missing AuthorizeRequest capability', async () => {
+      it('fails on op w/only one write capability', async () => {
         const {id: maintainerDid} = maintainerDidDocumentFull.didDocument;
         const electorPoolDoc = _generateElectorPoolDoc();
         let operation = await _wrap(
           {didDocument: electorPoolDoc, operationType: 'create'});
         const key = _getMaintainerKeys();
-
-        // no AuthorizeRequest proof added
-
+        // no ledger write proof added
+        // this proof is for writing to a single did
         operation = await attachInvocationProof(operation, {
           capability: maintainerDid,
           capabilityAction: 'write',
@@ -218,14 +217,15 @@ describe('validate API ElectorPool', () => {
         result.valid.should.be.false;
         result.error.name.should.equal('ValidationError');
       });
-      it('fails on op w/ two create capability proofs', async () => {
+      it('fails on op w/ two write capability proofs', async () => {
         const electorPoolDoc = _generateElectorPoolDoc();
         let operation = await _wrap(
           {didDocument: electorPoolDoc, operationType: 'create'});
         const key = _getMaintainerKeys();
 
-        // no AuthorizeRequest proof added
-
+        // no ledger write proof added
+        // this operation has 2 write proofs with dids, but no
+        // proof for writing to the ledger itself
         operation = await attachInvocationProof(operation, {
           capability: electorPoolDoc.id,
           capabilityAction: 'write',
@@ -261,14 +261,15 @@ describe('validate API ElectorPool', () => {
         result.valid.should.be.false;
         result.error.name.should.equal('ValidationError');
       });
-      it('fails on op w/two AuthorizeRequest capability proofs', async () => {
+      it('fails on op w/two ledger write capability proofs', async () => {
         const {id: maintainerDid} = maintainerDidDocumentFull.didDocument;
         const electorPoolDoc = _generateElectorPoolDoc();
         let operation = await _wrap(
           {didDocument: electorPoolDoc, operationType: 'create'});
         const key = _getMaintainerKeys();
 
-        // no create proof added
+        // we have 2 ledger write proofs, but no did specific
+        // write proof
 
         operation = await attachInvocationProof(operation, {
           algorithm: 'Ed25519Signature2018',
@@ -313,7 +314,7 @@ describe('validate API ElectorPool', () => {
           {didDocument: electorPoolDoc, operationType: 'create'});
         const key = _getMaintainerKeys();
 
-        // FIXME: add an AuthorizeRequest proof that will pass json-schema
+        // FIXME: add a write proof for the ledger that will pass json-schema
         // validation for testnet v2 *not* a valid signature
         operation.proof = bedrock.util.clone(mockData.proof);
 
@@ -420,7 +421,7 @@ describe('validate API ElectorPool', () => {
 
         // FIXME: what are proper proofs for an update operation?
 
-        // FIXME: add an AuthorizeRequest proof that will pass json-schema
+        // FIXME: add a write proof for the ledger that will pass json-schema
         // validation for testnet v2 *not* a valid signature
         operation.proof = bedrock.util.clone(mockData.proof);
 
@@ -497,7 +498,7 @@ describe('validate API ElectorPool', () => {
 
         // FIXME: what are proper proofs for an update operation?
 
-        // FIXME: add an AuthorizeRequest proof that will pass json-schema
+        // FIXME: add a write proof for the ledger that will pass json-schema
         // validation for testnet v2 *not* a valid signature
         operation.proof = bedrock.util.clone(mockData.proof);
 
