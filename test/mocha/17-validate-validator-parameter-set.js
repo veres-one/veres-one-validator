@@ -59,7 +59,7 @@ describe('validate API ValidatorParameterSet', () => {
         // FIXME: attach proof instead of mock proof above
         // operation = await attachInvocationProof(operation, {
         //   capability: maintainerDid,
-        //   capabilityAction: 'AuthorizeRequest',
+        //   capabilityAction: 'write',
         //   key,
         // });
         const ledgerConfig = clone(mockData.ledgerConfigurations.alpha);
@@ -106,7 +106,7 @@ describe('validate API ValidatorParameterSet', () => {
         // FIXME: attach proof instead of mock proof above
         // operation = await attachInvocationProof(operation, {
         //   capability: maintainerDid,
-        //   capabilityAction: 'AuthorizeRequest',
+        //   capabilityAction: 'write',
         //   key,
         // });
         const ledgerConfig = clone(mockData.ledgerConfigurations.alpha);
@@ -161,7 +161,7 @@ describe('validate API ValidatorParameterSet', () => {
         // FIXME: attach proof instead of mock proof above
         // operation = await attachInvocationProof(operation, {
         //   capability: maintainerDid,
-        //   capabilityAction: 'AuthorizeRequest',
+        //   capabilityAction: 'write',
         //   key,
         // });
         const ledgerConfig = clone(mockData.ledgerConfigurations.alpha);
@@ -234,7 +234,7 @@ describe('validate API ValidatorParameterSet', () => {
         // operation = await attachInvocationProof(operation, {
         //   capability: maintainerDid,
         //   // capabilityAction: operation.type,
-        //   capabilityAction: 'AuthorizeRequest',
+        //   capabilityAction: 'write',
         //   key,
         // });
         const ledgerConfig = clone(mockData.ledgerConfigurations.alpha);
@@ -301,7 +301,7 @@ describe('validate API ValidatorParameterSet', () => {
         // operation = await attachInvocationProof(operation, {
         //   capability: maintainerDid,
         //   // capabilityAction: operation.type,
-        //   capabilityAction: 'AuthorizeRequest',
+        //   capabilityAction: 'write',
         //   key,
         // });
         const ledgerConfig = clone(mockData.ledgerConfigurations.alpha);
@@ -372,7 +372,7 @@ describe('validate API ValidatorParameterSet', () => {
         // operation = await attachInvocationProof(operation, {
         //   capability: maintainerDid,
         //   // capabilityAction: operation.type,
-        //   capabilityAction: 'AuthorizeRequest',
+        //   capabilityAction: 'write',
         //   key,
         // });
         const ledgerConfig = clone(mockData.ledgerConfigurations.alpha);
@@ -443,7 +443,7 @@ describe('validate API ValidatorParameterSet', () => {
         // operation = await attachInvocationProof(operation, {
         //   capability: maintainerDid,
         //   // capabilityAction: operation.type,
-        //   capabilityAction: 'AuthorizeRequest',
+        //   capabilityAction: 'write',
         //   key,
         // });
         const ledgerConfig = clone(mockData.ledgerConfigurations.alpha);

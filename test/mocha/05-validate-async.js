@@ -646,7 +646,7 @@ console.log(JSON.stringify(result, null, 2));
       // add an AuthorizeRequest proof that will pass json-schema validation for
       // testnet v2 *not* a valid signature
       mockOperation.proof = clone(mockData.proof);
-      capabilityAction = 'update';
+      capabilityAction = 'write';
       const s = await jsigs.sign(mockOperation, {
         compactProof: false,
         documentLoader,

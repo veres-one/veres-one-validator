@@ -57,7 +57,7 @@ describe('validate API ElectorPool', () => {
         // FIXME: attach proof instead of mock proof above
         // operation = await attachInvocationProof(operation, {
         //   capability: maintainerDid,
-        //   capabilityAction: 'AuthorizeRequest',
+        //   capabilityAction: 'write',
         //   key,
         // });
         const ledgerConfig = bedrock.util.clone(
@@ -111,7 +111,7 @@ describe('validate API ElectorPool', () => {
         // FIXME: attach proof instead of mock proof above
         // operation = await attachInvocationProof(operation, {
         //   capability: maintainerDid,
-        //   capabilityAction: 'AuthorizeRequest',
+        //   capabilityAction: 'write',
         //   key,
         // });
         const ledgerConfig = bedrock.util.clone(
@@ -328,7 +328,7 @@ describe('validate API ElectorPool', () => {
         // FIXME: attach proof instead of mock proof above
         // operation = await attachInvocationProof(operation, {
         //   capability: maintainerDid,
-        //   capabilityAction: 'AuthorizeRequest',
+        //   capabilityAction: 'write',
         //   key,
         // });
         const ledgerConfig = bedrock.util.clone(
@@ -432,7 +432,7 @@ describe('validate API ElectorPool', () => {
         // operation = await attachInvocationProof(operation, {
         //   capability: maintainerDid,
         //   // capabilityAction: operation.type,
-        //   capabilityAction: 'AuthorizeRequest',
+        //   capabilityAction: 'write',
         //   key,
         // });
         const ledgerConfig = bedrock.util.clone(
@@ -509,7 +509,7 @@ describe('validate API ElectorPool', () => {
         // operation = await attachInvocationProof(operation, {
         //   capability: maintainerDid,
         //   // capabilityAction: operation.type,
-        //   capabilityAction: 'AuthorizeRequest',
+        //   capabilityAction: 'write',
         //   key,
         // });
         const ledgerConfig = bedrock.util.clone(
