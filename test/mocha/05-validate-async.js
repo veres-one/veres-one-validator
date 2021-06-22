@@ -649,8 +649,6 @@ describe('validate regular DIDs', () => {
         suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
         purpose: new CapabilityInvocation({capability: did, capabilityAction})
       });
-      // FIXME this removes the mockData.proof
-      s.proof = [s.proof[1]];
       const result = await voValidator.validate({
         basisBlockHeight: 10,
         ledgerNode: mockData.ledgerNode,
@@ -801,8 +799,6 @@ describe('validate regular DIDs', () => {
         suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
         purpose: new CapabilityInvocation({capability: did, capabilityAction})
       });
-      // remove that proof before validating
-      s.proof = [s.proof[1]];
       // after proof, change the patch target
       const {did: did2} = await _generateDid();
       mockOperation.recordPatch.target = did2;
@@ -864,8 +860,6 @@ describe('validate regular DIDs', () => {
         suite: new Ed25519Signature2020({key: capabilityInvocationKey1}),
         purpose: new CapabilityInvocation({capability: did, capabilityAction})
       });
-      // remove that proof before validating
-      s.proof = [s.proof[1]];
       const result = await voValidator.validate({
         basisBlockHeight: 10,
         ledgerNode: mockData.ledgerNode,
@@ -923,8 +917,6 @@ describe('validate regular DIDs', () => {
         suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
         purpose: new CapabilityInvocation({capability: did, capabilityAction})
       });
-      // remove that proof before validating
-      s.proof = [s.proof[1]];
       const result = await voValidator.validate({
         basisBlockHeight: 10,
         ledgerNode: mockData.ledgerNode,
@@ -1022,8 +1014,6 @@ describe('validate regular DIDs', () => {
         suite: new Ed25519Signature2020({key: newKey}),
         purpose: new CapabilityInvocation({capability: did, capabilityAction})
       });
-      // remove that proof before validating
-      s.proof = [s.proof[1]];
       const result = await voValidator.validate({
         basisBlockHeight: 10,
         ledgerNode: mockData.ledgerNode,
@@ -1076,8 +1066,6 @@ describe('validate regular DIDs', () => {
         suite: new Ed25519Signature2020({key: newKey}),
         purpose: new CapabilityInvocation({capability: did, capabilityAction})
       });
-      // remove that proof before validating
-      s.proof = [s.proof[1]];
       const result = await voValidator.validate({
         basisBlockHeight: 10,
         ledgerNode: mockData.ledgerNode,
