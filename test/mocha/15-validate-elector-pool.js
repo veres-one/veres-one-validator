@@ -339,8 +339,6 @@ describe('validate API ElectorPool', () => {
           // corresponds to electorPoolDocument.alpha
           electorPool: electorPoolDoc.id,
         };
-        // remove the mock proof before validating
-        operation.proof = [operation.proof[1]];
         let err;
         let result;
         try {
