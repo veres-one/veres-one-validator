@@ -529,7 +529,7 @@ describe('validate regular DIDs', () => {
     it('validates an update operation', async () => {
       const {did, mockDoc, capabilityInvocationKey} = await _generateDid();
       const mockOperation = clone(mockData.operations.update);
-      let capabilityAction = 'write';
+      const capabilityAction = 'write';
       // add the new document to the mock document loader as if it were on
       // ledger
       // clone here so we can proceed with making changes to mockDoc
@@ -551,7 +551,6 @@ describe('validate regular DIDs', () => {
       // FIXME: add a write proof for the accelerator that will pass
       // json-schema validation for testnet v2 *not* a valid signature
       mockOperation.proof = clone(mockData.proof);
-      capabilityAction = 'write';
       const s = await jsigs.sign(mockOperation, {
         compactProof: false,
         documentLoader,
@@ -574,7 +573,7 @@ describe('validate regular DIDs', () => {
     it('rejects an update that changes the document ID', async () => {
       const {did, mockDoc, capabilityInvocationKey} = await _generateDid();
       const mockOperation = clone(mockData.operations.update);
-      let capabilityAction = 'write';
+      const capabilityAction = 'write';
       // add the new document to the mock document loader as if it were on
       // ledger
       // clone here so we can proceed with making changes to mockDoc
@@ -600,7 +599,6 @@ describe('validate regular DIDs', () => {
       // FIXME: add a write proof for the accelerator that will pass
       // json-schema validation for testnet v2 *not* a valid signature
       mockOperation.proof = clone(mockData.proof);
-      capabilityAction = 'write';
       const s = await jsigs.sign(mockOperation, {
         compactProof: false,
         documentLoader,
@@ -675,7 +673,7 @@ describe('validate regular DIDs', () => {
     it('rejects an update with an invalid sequence', async () => {
       const {did, mockDoc, capabilityInvocationKey} = await _generateDid();
       const mockOperation = clone(mockData.operations.update);
-      let capabilityAction = 'write';
+      const capabilityAction = 'write';
       // add the new document to the mock document loader as if it were on
       // ledger
       // clone here so we can proceed with making changes to mockDoc
@@ -698,7 +696,6 @@ describe('validate regular DIDs', () => {
       // FIXME: add a write proof for the accelerator that will pass
       // json-schema validation for testnet v2 *not* a valid signature
       mockOperation.proof = clone(mockData.proof);
-      capabilityAction = 'write';
       // specify an invalid sequence
       mockOperation.recordPatch.sequence = 10;
 
@@ -725,7 +722,7 @@ describe('validate regular DIDs', () => {
     it('rejects an update with an invalid patch', async () => {
       const {did, mockDoc, capabilityInvocationKey} = await _generateDid();
       const mockOperation = clone(mockData.operations.update);
-      let capabilityAction = 'write';
+      const capabilityAction = 'write';
       // add the new document to the mock document loader as if it were on
       // ledger
       // clone here so we can proceed with making changes to mockDoc
@@ -748,7 +745,6 @@ describe('validate regular DIDs', () => {
       // FIXME: add a write proof for the accelerator that will pass
       // json-schema validation for testnet v2 *not* a valid signature
       mockOperation.proof = clone(mockData.proof);
-      capabilityAction = 'write';
 
       // specifiy an invalid path to create an invalid JSON patch
       mockOperation.recordPatch.patch[0].path = '/authentication/2';
@@ -777,7 +773,7 @@ describe('validate regular DIDs', () => {
     it('rejects an altered operation', async () => {
       const {did, mockDoc, capabilityInvocationKey} = await _generateDid();
       const mockOperation = clone(mockData.operations.update);
-      let capabilityAction = 'write';
+      const capabilityAction = 'write';
       // add the new document to the mock document loader as if it were on
       // ledger
       // clone here so we can proceed with making changes to mockDoc
@@ -799,7 +795,6 @@ describe('validate regular DIDs', () => {
       // FIXME: add a write proof for the accelerator that will pass
       // json-schema validation for testnet v2 *not* a valid signature
       mockOperation.proof = clone(mockData.proof);
-      capabilityAction = 'write';
       const s = await jsigs.sign(mockOperation, {
         compactProof: false,
         documentLoader,
@@ -837,7 +832,7 @@ describe('validate regular DIDs', () => {
 
       const {did, mockDoc} = await _generateDid();
       const mockOperation = clone(mockData.operations.update);
-      let capabilityAction = 'write';
+      const capabilityAction = 'write';
       // add the new document to the mock document loader as if it were on
       // ledger
       // clone here so we can proceed with making changes to mockDoc
@@ -861,7 +856,6 @@ describe('validate regular DIDs', () => {
       // FIXME: add a write proof for the accelerator that will pass
       // json-schema validation for testnet v2 *not* a valid signature
       mockOperation.proof = clone(mockData.proof);
-      capabilityAction = 'write';
 
       // signing with a key from another valid DID
       const s = await jsigs.sign(mockOperation, {
@@ -895,7 +889,7 @@ describe('validate regular DIDs', () => {
 
       const {did, mockDoc, capabilityInvocationKey} = await _generateDid();
       const mockOperation = clone(mockData.operations.update);
-      let capabilityAction = 'write';
+      const capabilityAction = 'write';
       // add the new document to the mock document loader as if it were on
       // ledger
       // clone here so we can proceed with making changes to mockDoc
@@ -921,7 +915,6 @@ describe('validate regular DIDs', () => {
       // FIXME: add a write proof for the accelerator that will pass
       // json-schema validation for testnet v2 *not* a valid signature
       mockOperation.proof = clone(mockData.proof);
-      capabilityAction = 'write';
 
       // signing with a key from another valid DID
       const s = await jsigs.sign(mockOperation, {
@@ -1051,7 +1044,7 @@ describe('validate regular DIDs', () => {
     it('rejects operation when improper key used in proof 2', async () => {
       const {did, mockDoc, capabilityInvocationKey} = await _generateDid();
       const mockOperation = clone(mockData.operations.update);
-      let capabilityAction = 'write';
+      const capabilityAction = 'write';
       // add the new document to the mock document loader as if it were on
       // ledger
       // clone here so we can proceed with making changes to mockDoc
@@ -1075,7 +1068,6 @@ describe('validate regular DIDs', () => {
       // FIXME: add a write proof for the accelerator that will pass
       // json-schema validation for testnet v2 *not* a valid signature
       mockOperation.proof = clone(mockData.proof);
-      capabilityAction = 'write';
 
       // *must* use `capabilityInvocationKey`
       const s = await jsigs.sign(mockOperation, {
@@ -1109,7 +1101,7 @@ describe('validate regular DIDs', () => {
       const did = didDocument.id;
       const updater = new VeresOneDidDoc({didDocument});
       const mockOperation = clone(mockData.operations.update);
-      let capabilityAction = 'write';
+      const capabilityAction = 'write';
       // add the new document to the mock document loader as if it were on
       // ledger
       // clone here so we can proceed with making changes to mockDoc
@@ -1128,7 +1120,6 @@ describe('validate regular DIDs', () => {
       // add a write proof for the ledger that will pass json-schema
       // validation for testnet v2 *not* a valid signature
       mockOperation.proof = clone(mockData.proof);
-      capabilityAction = 'write';
       const s = await jsigs.sign(mockOperation, {
         compactProof: false,
         documentLoader,
@@ -1159,7 +1150,7 @@ describe('validate regular DIDs', () => {
       const did = didDocument.id;
       const updater = new VeresOneDidDoc({didDocument});
       const mockOperation = clone(mockData.operations.update);
-      let capabilityAction = 'write';
+      const capabilityAction = 'write';
       // add the new document to the mock document loader as if it were on
       // ledger
       // clone here so we can proceed with making changes to mockDoc
@@ -1180,7 +1171,6 @@ describe('validate regular DIDs', () => {
       // add a write proof that will pass json-schema
       // validation for testnet v2 *not* a valid signature
       mockOperation.proof = clone(mockData.proof);
-      capabilityAction = 'write';
       const s = await jsigs.sign(mockOperation, {
         compactProof: false,
         documentLoader,
@@ -1223,7 +1213,7 @@ describe('validate regular DIDs', () => {
         const did = didDocument.id;
         const updater = new VeresOneDidDoc({didDocument});
         const mockOperation = clone(mockData.operations.update);
-        let capabilityAction = 'write';
+        const capabilityAction = 'write';
         mockData.existingDids[did] = clone(didDocument);
 
         updater.observe();
@@ -1244,7 +1234,6 @@ describe('validate regular DIDs', () => {
         // validation for
         // testnet v2 *not* a valid signature
         mockOperation.proof = clone(mockData.proof);
-        capabilityAction = 'write';
         const s = await jsigs.sign(mockOperation, {
           compactProof: false,
           documentLoader,
@@ -1268,7 +1257,7 @@ describe('validate regular DIDs', () => {
         const did = didDocument.id;
         const updater = new VeresOneDidDoc({didDocument});
         const mockOperation = clone(mockData.operations.update);
-        let capabilityAction = 'write';
+        const capabilityAction = 'write';
         mockData.existingDids[did] = clone(didDocument);
 
         updater.observe();
@@ -1295,7 +1284,6 @@ describe('validate regular DIDs', () => {
         // validation for
         // testnet v2 *not* a valid signature
         mockOperation.proof = clone(mockData.proof);
-        capabilityAction = 'write';
         const s = await jsigs.sign(mockOperation, {
           compactProof: false,
           documentLoader,
@@ -1319,7 +1307,7 @@ describe('validate regular DIDs', () => {
         const did = didDocument.id;
         const updater = new VeresOneDidDoc({didDocument});
         const mockOperation = clone(mockData.operations.update);
-        let capabilityAction = 'write';
+        const capabilityAction = 'write';
         mockData.existingDids[did] = clone(didDocument);
 
         updater.observe();
@@ -1340,7 +1328,6 @@ describe('validate regular DIDs', () => {
         // validation for
         // testnet v2 *not* a valid signature
         mockOperation.proof = clone(mockData.proof);
-        capabilityAction = 'write';
         const s = await jsigs.sign(mockOperation, {
           compactProof: false,
           documentLoader,
@@ -1367,7 +1354,7 @@ describe('validate regular DIDs', () => {
         const did = didDocument.id;
         const updater = new VeresOneDidDoc({didDocument});
         const mockOperation = clone(mockData.operations.update);
-        let capabilityAction = 'write';
+        const capabilityAction = 'write';
         mockData.existingDids[did] = clone(didDocument);
 
         updater.observe();
@@ -1388,7 +1375,6 @@ describe('validate regular DIDs', () => {
         // validation for
         // testnet v2 *not* a valid signature
         mockOperation.proof = clone(mockData.proof);
-        capabilityAction = 'write';
         const s = await jsigs.sign(mockOperation, {
           compactProof: false,
           documentLoader,
@@ -1415,7 +1401,7 @@ describe('validate regular DIDs', () => {
         const did = didDocument.id;
         const updater = new VeresOneDidDoc({didDocument});
         const mockOperation = clone(mockData.operations.update);
-        let capabilityAction = 'write';
+        const capabilityAction = 'write';
         mockData.existingDids[did] = clone(didDocument);
 
         updater.observe();
@@ -1442,7 +1428,6 @@ describe('validate regular DIDs', () => {
         // validation for
         // testnet v2 *not* a valid signature
         mockOperation.proof = clone(mockData.proof);
-        capabilityAction = 'write';
         const s = await jsigs.sign(mockOperation, {
           compactProof: false,
           documentLoader,
