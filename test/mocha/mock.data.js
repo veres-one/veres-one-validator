@@ -40,12 +40,13 @@ const privateDidDocuments = mock.privateDidDocuments = {};
 const validatorParameterSet = mock.validatorParameterSet = {};
 // TODO: for testnet v2, this proof is only validated using json-schema
 mock.proof = {
-  type: 'Ed25519Signature2018',
-  created: '2019-01-10T23:10:25Z',
+  type: 'Ed25519Signature2020',
+  created: '2021-01-10T23:10:25Z',
   capability: 'did:v1:uuid:c37e914a-1e2a-4d59-9668-ee93458fd19a',
   capabilityAction: 'write',
-  jws: 'MOCKPROOF',
   proofPurpose: 'capabilityInvocation',
+  proofValue: 'z3t9it5yhFHkqWnHKMQ2DWVj7aHDN37f95UzhQYQGYd9LyTSGzufCiTwDWN' +
+    'fCdxQA9ZHcTTVAhHwoAji2AJnk2E6',
   verificationMethod: 'did:v1:nym:z279yHL6HsxRzCPU78DAWgZVieb8xPK1mJKJBb' +
     'P8T2CezuFY#z279tKmToKKMjQ8tsCgTbBBthw5xEzHWL6GCqZyQnzZr7wUo'
 };
@@ -122,24 +123,24 @@ electorPoolDocument.alpha = {
 /* eslint-disable quotes, quote-props, max-len */
 privateDidDocuments.alpha = {
   "@context": didContexts,
-  "id": "did:v1:nym:z6MkiT7oVcbHWx5gwazyYk28nZMwKsSe6yc1JA9tFKgUr1tT",
-  "authentication": [{
-    "id": "did:v1:nym:z6MkiT7oVcbHWx5gwazyYk28nZMwKsSe6yc1JA9tFKgUr1tT#z6MkmmG7QFgfHPfsg9i4hxKQKstCtodmyfrhvaqdWSdT7Vnw",
-    "type": "Ed25519VerificationKey2018",
-    "controller": "did:v1:nym:z6MkiT7oVcbHWx5gwazyYk28nZMwKsSe6yc1JA9tFKgUr1tT",
-    "publicKeyBase58": "8K14p1SDwrBQZesN2PMZUnLD5EMvZncMEZvhgAfSCH1Z"
+  id: 'did:v1:nym:z6MkvTVoxyV4SLdSRxFBY2zgaCgRRU8EpzjxJrRPeKzUrq9w',
+  authentication: [{
+    id: 'did:v1:nym:z6MkvTVoxyV4SLdSRxFBY2zgaCgRRU8EpzjxJrRPeKzUrq9w#z6MkvTVoxyV4SLdSRxFBY2zgaCgRRU8EpzjxJrRPeKzUrq9w',
+    type: 'Ed25519VerificationKey2020',
+    controller: 'did:v1:nym:z6MkvTVoxyV4SLdSRxFBY2zgaCgRRU8EpzjxJrRPeKzUrq9w',
+    publicKeyMultibase: 'z6MkvTVoxyV4SLdSRxFBY2zgaCgRRU8EpzjxJrRPeKzUrq9w'
   }],
   "capabilityDelegation": [{
-    "id": "did:v1:nym:z6MkiT7oVcbHWx5gwazyYk28nZMwKsSe6yc1JA9tFKgUr1tT#z6MkgmbiEyzSwaTNNi47uXAbfsFTYmuMx1c3cTLwP8EuBimh",
-    "type": "Ed25519VerificationKey2018",
-    "controller": "did:v1:nym:z6MkiT7oVcbHWx5gwazyYk28nZMwKsSe6yc1JA9tFKgUr1tT",
-    "publicKeyBase58": "3KLfejk1c2xuGDDRDxCkpmhTjCdWY8MgvSS1YrGtGVzK"
+    id: 'did:v1:nym:z6MkvTVoxyV4SLdSRxFBY2zgaCgRRU8EpzjxJrRPeKzUrq9w#z6MkwHphHeS9GM6hDFnM2bnfu1Ekf9fz8gBcs5cviTDhuV2F',
+    type: 'Ed25519VerificationKey2020',
+    controller: 'did:v1:nym:z6MkwHphHeS9GM6hDFnM2bnfu1Ekf9fz8gBcs5cviTDhuV2F',
+    publicKeyMultibase: 'z6MkwHphHeS9GM6hDFnM2bnfu1Ekf9fz8gBcs5cviTDhuV2F'
   }],
   "capabilityInvocation": [{
-    "id": "did:v1:nym:z6MkiT7oVcbHWx5gwazyYk28nZMwKsSe6yc1JA9tFKgUr1tT#z6MkiT7oVcbHWx5gwazyYk28nZMwKsSe6yc1JA9tFKgUr1tT",
-    "type": "Ed25519VerificationKey2018",
-    "controller": "did:v1:nym:z6MkiT7oVcbHWx5gwazyYk28nZMwKsSe6yc1JA9tFKgUr1tT",
-    "publicKeyBase58": "4zrkuNLrBQbDq6AGsB4HwTowWJAnh6Mec9ExR3iTvo75"
+    id: 'did:v1:nym:z6MkvTVoxyV4SLdSRxFBY2zgaCgRRU8EpzjxJrRPeKzUrq9w#z6MkmzCb5xJTgWjATFq8q9y8rXJNyYFT6Eeaxeb3eY4Kv1iy',
+    type: 'Ed25519VerificationKey2020',
+    controller: 'did:v1:nym:z6MkmzCb5xJTgWjATFq8q9y8rXJNyYFT6Eeaxeb3eY4Kv1iy',
+    publicKeyMultibase: 'z6MkmzCb5xJTgWjATFq8q9y8rXJNyYFT6Eeaxeb3eY4Kv1iy'
   }]
 };
 
@@ -153,7 +154,7 @@ privateDidDocuments.beta = {
       "publicKey": [
         {
           "id": "did:v1:nym:z279nCCZVzxreYfLw3EtFLtBMSVVY2pA6uxKengriMCdG3DF#authn-key-1",
-          "type": "Ed25519VerificationKey2018",
+          "type": "Ed25519VerificationKey201X",
           "controller": "did:v1:nym:z279nCCZVzxreYfLw3EtFLtBMSVVY2pA6uxKengriMCdG3DF",
           "publicKeyBase58": "7tJdgUebDRaVFR2d8LzV9BK7RMz5aw2AuW5LsEBBAKWs",
           "privateKey": {
