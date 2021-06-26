@@ -17,6 +17,7 @@ const mockData = require('./mock.data');
 const voValidator = require('veres-one-validator');
 const {CapabilityInvocation} = require('@digitalbazaar/zcapld');
 const v1 = require('did-veres-one').driver();
+const {VeresOneDidDoc} = require('did-veres-one');
 
 describe('validate regular DIDs', () => {
   describe('validate API', () => {
@@ -538,12 +539,12 @@ describe('validate regular DIDs', () => {
       // ledger
       // clone here so we can proceed with making changes to mockDoc
       mockData.existingDids[did] = clone(mockDoc);
-
       const observer = jsonpatch.observe(mockDoc);
       const newKey = await Ed25519VerificationKey2020.generate({
         controller: did
       });
       newKey.id = _generateKeyId({did, key: newKey});
+
       mockDoc.authentication.push({
         id: newKey.id,
         type: newKey.type,
@@ -569,6 +570,7 @@ describe('validate regular DIDs', () => {
         validatorConfig: mockData.ledgerConfigurations.alpha
           .operationValidator[0],
       });
+
       should.exist(result);
       result.valid.should.be.a('boolean');
       result.valid.should.be.true;
@@ -1099,23 +1101,24 @@ describe('validate regular DIDs', () => {
     });
     it('rejects a DID with an invalid property', async () => {
       const mockDoc = await v1.generate();
+      const {didDocument} = mockDoc;
+      const did = didDocument.id;
+      const updater = new VeresOneDidDoc({didDocument});
       const mockOperation = clone(mockData.operations.update);
       let capabilityAction = 'create';
       // add the new document to the mock document loader as if it were on
       // ledger
       // clone here so we can proceed with making changes to mockDoc
-      const did = mockDoc.didDocument.id;
-      mockData.existingDids[did] = clone(mockDoc.toJSON());
+      mockData.existingDids[did] = clone(didDocument);
 
-      mockDoc.observe();
-
+      updater.observe();
       // `type` is not an allowed property for a nym DID document
-      mockDoc.doc.type = 'SomeNewType';
-
-      mockOperation.recordPatch = mockDoc.commit();
+      updater.didDocument.type = 'SomeNewType';
+      mockOperation.recordPatch = updater.commit();
 
       const capabilityInvocationKey =
         mockDoc.methodFor({purpose: 'capabilityInvocation'});
+
       // add an AuthorizeRequest proof that will pass json-schema
       // validation for
       // testnet v2 *not* a valid signature
@@ -1147,21 +1150,23 @@ describe('validate regular DIDs', () => {
     });
     it('rejects a DID with an invalid key material', async () => {
       const mockDoc = await v1.generate();
+      const {didDocument} = mockDoc;
+      const did = didDocument.id;
+      const updater = new VeresOneDidDoc({didDocument});
       const mockOperation = clone(mockData.operations.update);
       let capabilityAction = 'create';
       // add the new document to the mock document loader as if it were on
       // ledger
       // clone here so we can proceed with making changes to mockDoc
-      const did = mockDoc.didDocument.id;
-      mockData.existingDids[did] = clone(mockDoc.toJSON());
+      mockData.existingDids[did] = clone(didDocument);
 
-      mockDoc.observe();
+      updater.observe();
 
       // attempt to change the publicKeyMultibase
-      mockDoc.doc.capabilityInvocation[0].publicKeyMultibase =
-        '816k9JhRr4rAdaSnrh3AzubF4oDU3qLQwDz31nj1d2nU';
+      mockDoc.didDocument.capabilityInvocation[0].publicKeyMultibase =
+        'z6MkvTVoxyV4gRRU8EpzjxJrRPeKzUrSLdSRxFBY2zgaCq9w';
 
-      mockOperation.recordPatch = mockDoc.commit();
+      mockOperation.recordPatch = updater.commit();
 
       const capabilityInvocationKey =
         mockDoc.methodFor({purpose: 'capabilityInvocation'});
@@ -1208,24 +1213,23 @@ describe('validate regular DIDs', () => {
       });
       it('validates a DID with one proper service descriptor', async () => {
         const mockDoc = await v1.generate();
+        const {didDocument} = mockDoc;
+        const did = didDocument.id;
+        const updater = new VeresOneDidDoc({didDocument});
         const mockOperation = clone(mockData.operations.update);
         let capabilityAction = 'create';
-        // add the new document to the mock document loader as if it were on
-        // ledger
-        // clone here so we can proceed with making changes to mockDoc
-        const did = mockDoc.didDocument.id;
-        mockData.existingDids[did] = clone(mockDoc.toJSON());
+        mockData.existingDids[did] = clone(didDocument);
 
-        mockDoc.observe();
+        updater.observe();
 
         _addService({
-          updater: mockDoc,
+          updater,
           fragment: 'foo',
           type: 'urn:foo',
           endpoint: `https://example.com/api/${encodeURIComponent(did)}`,
         });
 
-        mockOperation.recordPatch = mockDoc.commit();
+        mockOperation.recordPatch = updater.commit();
 
         const capabilityInvocationKey =
           mockDoc.methodFor({purpose: 'capabilityInvocation'});
@@ -1254,30 +1258,29 @@ describe('validate regular DIDs', () => {
       });
       it('validates a DID with two proper service descriptors', async () => {
         const mockDoc = await v1.generate();
+        const {didDocument} = mockDoc;
+        const did = didDocument.id;
+        const updater = new VeresOneDidDoc({didDocument});
         const mockOperation = clone(mockData.operations.update);
         let capabilityAction = 'create';
-        // add the new document to the mock document loader as if it were on
-        // ledger
-        // clone here so we can proceed with making changes to mockDoc
-        const did = mockDoc.didDocument.id;
-        mockData.existingDids[did] = clone(mockDoc.toJSON());
+        mockData.existingDids[did] = clone(didDocument);
 
-        mockDoc.observe();
+        updater.observe();
 
         _addService({
-          updater: mockDoc,
+          updater,
           fragment: 'foo',
           type: 'urn:foo',
           endpoint: `https://example.com/api/${encodeURIComponent(did)}`,
         });
         _addService({
-          updater: mockDoc,
+          updater,
           fragment: 'bar',
           type: 'urn:bar',
           endpoint: `https://example.com/api_v2/${encodeURIComponent(did)}`,
         });
 
-        mockOperation.recordPatch = mockDoc.commit();
+        mockOperation.recordPatch = updater.commit();
 
         const capabilityInvocationKey =
           mockDoc.methodFor({purpose: 'capabilityInvocation'});
@@ -1306,24 +1309,23 @@ describe('validate regular DIDs', () => {
       });
       it('rejects a DID with an invalid service endpoint', async () => {
         const mockDoc = await v1.generate();
+        const {didDocument} = mockDoc;
+        const did = didDocument.id;
+        const updater = new VeresOneDidDoc({didDocument});
         const mockOperation = clone(mockData.operations.update);
         let capabilityAction = 'create';
-        // add the new document to the mock document loader as if it were on
-        // ledger
-        // clone here so we can proceed with making changes to mockDoc
-        const did = mockDoc.didDocument.id;
-        mockData.existingDids[did] = clone(mockDoc.toJSON());
+        mockData.existingDids[did] = clone(didDocument);
 
-        mockDoc.observe();
+        updater.observe();
 
         _addService({
-          updater: mockDoc,
+          updater,
           fragment: 'foo',
           type: 'urn:foo',
           endpoint: `https://invalid.com/api/${encodeURIComponent(did)}`,
         });
 
-        mockOperation.recordPatch = mockDoc.commit();
+        mockOperation.recordPatch = updater.commit();
 
         const capabilityInvocationKey =
           mockDoc.methodFor({purpose: 'capabilityInvocation'});
@@ -1355,24 +1357,23 @@ describe('validate regular DIDs', () => {
       });
       it('rejects a DID with endpoint that is not URI encoded', async () => {
         const mockDoc = await v1.generate();
+        const {didDocument} = mockDoc;
+        const did = didDocument.id;
+        const updater = new VeresOneDidDoc({didDocument});
         const mockOperation = clone(mockData.operations.update);
         let capabilityAction = 'create';
-        // add the new document to the mock document loader as if it were on
-        // ledger
-        // clone here so we can proceed with making changes to mockDoc
-        const did = mockDoc.didDocument.id;
-        mockData.existingDids[did] = clone(mockDoc.toJSON());
+        mockData.existingDids[did] = clone(didDocument);
 
-        mockDoc.observe();
+        updater.observe();
 
         _addService({
-          updater: mockDoc,
+          updater,
           fragment: 'foo',
           type: 'urn:foo',
           endpoint: `https://example.com/api/${did}`,
         });
 
-        mockOperation.recordPatch = mockDoc.commit();
+        mockOperation.recordPatch = updater.commit();
 
         const capabilityInvocationKey =
           mockDoc.methodFor({purpose: 'capabilityInvocation'});
@@ -1404,30 +1405,29 @@ describe('validate regular DIDs', () => {
       });
       it('rejects a DID with good and bad service descriptors', async () => {
         const mockDoc = await v1.generate();
+        const {didDocument} = mockDoc;
+        const did = didDocument.id;
+        const updater = new VeresOneDidDoc({didDocument});
         const mockOperation = clone(mockData.operations.update);
         let capabilityAction = 'create';
-        // add the new document to the mock document loader as if it were on
-        // ledger
-        // clone here so we can proceed with making changes to mockDoc
-        const did = mockDoc.didDocument.id;
-        mockData.existingDids[did] = clone(mockDoc.toJSON());
+        mockData.existingDids[did] = clone(didDocument);
 
-        mockDoc.observe();
+        updater.observe();
 
         _addService({
-          updater: mockDoc,
+          updater,
           fragment: 'foo',
           type: 'urn:foo',
           endpoint: `https://example.com/api/${encodeURIComponent(did)}`,
         });
         _addService({
-          updater: mockDoc,
+          updater,
           fragment: 'bar',
           type: 'urn:bar',
           endpoint: `https://invalid.com/api/${encodeURIComponent(did)}`,
         });
 
-        mockOperation.recordPatch = mockDoc.commit();
+        mockOperation.recordPatch = updater.commit();
 
         const capabilityInvocationKey =
           mockDoc.methodFor({purpose: 'capabilityInvocation'});

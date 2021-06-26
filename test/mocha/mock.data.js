@@ -11,7 +11,9 @@ module.exports = mock;
 
 const didContexts = [
   constants.DID_CONTEXT_URL,
-  constants.VERES_ONE_CONTEXT_V1_URL
+  constants.VERES_ONE_CONTEXT_V1_URL,
+  constants.ED25519_2020_CONTEXT_V1_URL,
+  constants.X25519_2020_CONTEXT_V1_URL
 ];
 
 mock.existingDids = {};
