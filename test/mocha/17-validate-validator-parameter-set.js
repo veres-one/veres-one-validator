@@ -3,11 +3,12 @@
  */
 'use strict';
 
+const {attachInvocationProof} = require('did-veres-one');
 const bedrock = require('bedrock');
 const {config: {constants}, util: {clone}} = bedrock;
 const helpers = require('./helpers');
 const {httpsAgent} = require('bedrock-https-agent');
-const didv1 = new (require('did-veres-one')).VeresOne({httpsAgent});
+const v1 = require('did-veres-one').driver({httpsAgent});
 const voValidator = require('veres-one-validator');
 const jsonpatch = require('fast-json-patch');
 
@@ -24,12 +25,12 @@ let electorServiceId;
 describe('validate API ValidatorParameterSet', () => {
   describe('operationValidator', () => {
     beforeEach(async () => {
-      maintainerDidDocumentFull = await didv1.generate();
-      const {doc: maintainerDidDocument} = maintainerDidDocumentFull;
+      maintainerDidDocumentFull = await v1.generate();
+      const {didDocument: maintainerDidDocument} = maintainerDidDocumentFull;
       ldDocuments.set(maintainerDidDocument.id, maintainerDidDocument);
-      electorDidDocumentFull = await didv1.generate();
-      const {doc: electorDidDocument} = electorDidDocumentFull;
-      electorServiceId = `${electorDidDocument.id};service=MyServiceName`;
+      electorDidDocumentFull = await v1.generate();
+      const {didDocument: electorDidDocument} = electorDidDocumentFull;
+      electorServiceId = `${electorDidDocument.id}#MyServiceName`;
       electorDidDocument.service = [{
         id: electorServiceId,
         type: continuityServiceType,
@@ -48,8 +49,7 @@ describe('validate API ValidatorParameterSet', () => {
         // validation for testnet v2 *not* a valid signature
         operation.proof = clone(mockData.proof);
 
-        operation = await didv1.attachInvocationProof({
-          operation,
+        operation = await attachInvocationProof(operation, {
           // capability: maintainerDid,
           capability: validatorParameterSetDoc.id,
           capabilityAction: 'create',
@@ -57,8 +57,7 @@ describe('validate API ValidatorParameterSet', () => {
         });
 
         // FIXME: attach proof instead of mock proof above
-        // operation = await didv1.attachInvocationProof({
-        //   operation,
+        // operation = await attachInvocationProof(operation, {
         //   capability: maintainerDid,
         //   capabilityAction: 'AuthorizeRequest',
         //   key,
@@ -97,8 +96,7 @@ describe('validate API ValidatorParameterSet', () => {
         // validation for testnet v2 *not* a valid signature
         operation.proof = clone(mockData.proof);
 
-        operation = await didv1.attachInvocationProof({
-          operation,
+        operation = await attachInvocationProof(operation, {
           // capability: maintainerDid,
           capability: validatorParameterSetDoc.id,
           capabilityAction: 'create',
@@ -106,8 +104,7 @@ describe('validate API ValidatorParameterSet', () => {
         });
 
         // FIXME: attach proof instead of mock proof above
-        // operation = await didv1.attachInvocationProof({
-        //   operation,
+        // operation = await attachInvocationProof(operation, {
         //   capability: maintainerDid,
         //   capabilityAction: 'AuthorizeRequest',
         //   key,
@@ -154,8 +151,7 @@ describe('validate API ValidatorParameterSet', () => {
         // validation for testnet v2 *not* a valid signature
         operation.proof = clone(mockData.proof);
 
-        operation = await didv1.attachInvocationProof({
-          operation,
+        operation = await attachInvocationProof(operation, {
           // capability: maintainerDid,
           capability: validatorParameterSetDoc.id,
           capabilityAction: 'create',
@@ -163,8 +159,7 @@ describe('validate API ValidatorParameterSet', () => {
         });
 
         // FIXME: attach proof instead of mock proof above
-        // operation = await didv1.attachInvocationProof({
-        //   operation,
+        // operation = await attachInvocationProof(operation, {
         //   capability: maintainerDid,
         //   capabilityAction: 'AuthorizeRequest',
         //   key,
@@ -229,16 +224,14 @@ describe('validate API ValidatorParameterSet', () => {
         // validation for testnet v2 *not* a valid signature
         operation.proof = clone(mockData.proof);
 
-        operation = await didv1.attachInvocationProof({
-          operation,
+        operation = await attachInvocationProof(operation, {
           capability: validatorParameterSetDoc.id,
           // capabilityAction: operation.type,
           capabilityAction: 'update',
           key,
         });
         // FIXME: replace mock proof above with legitimate proof
-        // operation = await didv1.attachInvocationProof({
-        //   operation,
+        // operation = await attachInvocationProof(operation, {
         //   capability: maintainerDid,
         //   // capabilityAction: operation.type,
         //   capabilityAction: 'AuthorizeRequest',
@@ -298,16 +291,14 @@ describe('validate API ValidatorParameterSet', () => {
         // validation for testnet v2 *not* a valid signature
         operation.proof = clone(mockData.proof);
 
-        operation = await didv1.attachInvocationProof({
-          operation,
+        operation = await attachInvocationProof(operation, {
           capability: validatorParameterSetDoc.id,
           // capabilityAction: operation.type,
           capabilityAction: 'update',
           key,
         });
         // FIXME: replace mock proof above with legitimate proof
-        // operation = await didv1.attachInvocationProof({
-        //   operation,
+        // operation = await attachInvocationProof(operation, {
         //   capability: maintainerDid,
         //   // capabilityAction: operation.type,
         //   capabilityAction: 'AuthorizeRequest',
@@ -371,16 +362,14 @@ describe('validate API ValidatorParameterSet', () => {
         // validation for testnet v2 *not* a valid signature
         operation.proof = clone(mockData.proof);
 
-        operation = await didv1.attachInvocationProof({
-          operation,
+        operation = await attachInvocationProof(operation, {
           capability: validatorParameterSetDoc.id,
           // capabilityAction: operation.type,
           capabilityAction: 'update',
           key,
         });
         // FIXME: replace mock proof above with legitimate proof
-        // operation = await didv1.attachInvocationProof({
-        //   operation,
+        // operation = await attachInvocationProof(operation, {
         //   capability: maintainerDid,
         //   // capabilityAction: operation.type,
         //   capabilityAction: 'AuthorizeRequest',
@@ -444,16 +433,14 @@ describe('validate API ValidatorParameterSet', () => {
         // validation for testnet v2 *not* a valid signature
         operation.proof = clone(mockData.proof);
 
-        operation = await didv1.attachInvocationProof({
-          operation,
+        operation = await attachInvocationProof(operation, {
           capability: validatorParameterSetDoc.id,
           // capabilityAction: operation.type,
           capabilityAction: 'update',
           key,
         });
         // FIXME: replace mock proof above with legitimate proof
-        // operation = await didv1.attachInvocationProof({
-        //   operation,
+        // operation = await attachInvocationProof(operation, {
         //   capability: maintainerDid,
         //   // capabilityAction: operation.type,
         //   capabilityAction: 'AuthorizeRequest',
@@ -488,7 +475,7 @@ describe('validate API ValidatorParameterSet', () => {
 });
 
 function _generateValidatorParameterSetDoc() {
-  const {id: maintainerDid} = maintainerDidDocumentFull.doc;
+  const {id: maintainerDid} = maintainerDidDocumentFull.didDocument;
   const validatorParameterSetDoc = clone(
     mockData.validatorParameterSet.alpha);
   validatorParameterSetDoc.controller = maintainerDid;
@@ -496,9 +483,9 @@ function _generateValidatorParameterSetDoc() {
 }
 
 function _getMaintainerKeys() {
-  const invokePublicKey = maintainerDidDocumentFull.doc
-    .capabilityInvocation[0];
-  return maintainerDidDocumentFull.keys[invokePublicKey.id];
+  const invokePublicKey =
+    maintainerDidDocumentFull.didDocument.capabilityInvocation[0];
+  return maintainerDidDocumentFull.keyPairs.get(invokePublicKey.id);
 }
 
 // this is a modified version of the wrap API found in did-veres-one and
