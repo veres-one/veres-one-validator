@@ -31,8 +31,8 @@ mock.patchContext = [
     value: {
       '@id': 'jldp:value',
       '@context': [
-        'https://w3id.org/did/v0.11',
-        'https://w3id.org/veres-one/v1'
+        constants.DID_CONTEXT_URL,
+        constants.VERES_ONE_CONTEXT_V1_URL
       ]
     }
   }
@@ -99,7 +99,12 @@ for(let i = 0; i < 10; ++i) {
 }
 
 electorPoolDocument.alpha = {
-  '@context': didContexts,
+  '@context': [
+    constants.DID_CONTEXT_URL,
+    constants.VERES_ONE_CONTEXT_V1_URL,
+    constants.WEB_LEDGER_CONTEXT_V1_URL,
+    constants.ED25519_2020_CONTEXT_V1_URL,
+  ],
   id: 'did:v1:uuid:b3275fed-daf4-4c07-b63a-747fa8857609',
   type: 'ElectorPool',
   // FIXME: this has to be in the v1 context before we can sign documents
@@ -148,7 +153,7 @@ privateDidDocuments.alpha = {
 
 privateDidDocuments.beta = {
   // FIXME: use constant and cached version when available
-  "@context": ['https://w3id.org/did/v0.11', constants.VERES_ONE_CONTEXT_V1_URL],
+  "@context": [constants.DID_CONTEXT_URL, constants.VERES_ONE_CONTEXT_V1_URL],
   "id": "did:v1:nym:z279nCCZVzxreYfLw3EtFLtBMSVVY2pA6uxKengriMCdG3DF",
   "authentication": [
     {
@@ -301,7 +306,7 @@ operations.updateInvalidPatch = {
   recordPatch: {
     // FIXME: use constant and cached version when available
     '@context': [
-      'https://w3id.org/did/v0.11', constants.VERES_ONE_CONTEXT_V1_URL],
+      constants.DID_CONTEXT_URL, constants.VERES_ONE_CONTEXT_V1_URL],
     // target: didDocuments.beta.id,
     sequence: 0,
     patch: [{
@@ -316,7 +321,7 @@ operations.updateInvalidChange = {
   recordPatch: {
     // FIXME: use constant and cached version when available
     '@context': [
-      'https://w3id.org/did/v0.11', constants.VERES_ONE_CONTEXT_V1_URL],
+      constants.DID_CONTEXT_URL, constants.VERES_ONE_CONTEXT_V1_URL],
     // target: didDocuments.beta.id,
     sequence: 0,
     patch: [{
