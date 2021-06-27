@@ -2,12 +2,13 @@
  * Copyright (c) 2017-2018 Digital Bazaar, Inc. All rights reserved.
  */
 'use strict';
-
+const util = require('util');
+const {attachInvocationProof} = require('did-veres-one');
 const bedrock = require('bedrock');
 const {config: {constants}, util: {uuid, BedrockError}} = bedrock;
 const helpers = require('./helpers');
 const {httpsAgent} = require('bedrock-https-agent');
-const didv1 = new (require('did-veres-one')).VeresOne({httpsAgent});
+const v1 = require('did-veres-one').driver({httpsAgent});
 const voValidator = require('veres-one-validator');
 const jsonpatch = require('fast-json-patch');
 
@@ -23,11 +24,11 @@ let electorServiceId;
 describe('validate API ElectorPool', () => {
   describe('operationValidator', () => {
     beforeEach(async () => {
-      maintainerDidDocumentFull = await didv1.generate();
-      const {doc: maintainerDidDocument} = maintainerDidDocumentFull;
+      maintainerDidDocumentFull = await v1.generate();
+      const {didDocument: maintainerDidDocument} = maintainerDidDocumentFull;
       ldDocuments.set(maintainerDidDocument.id, maintainerDidDocument);
-      electorDidDocumentFull = await didv1.generate();
-      const {doc: electorDidDocument} = electorDidDocumentFull;
+      electorDidDocumentFull = await v1.generate();
+      const {didDocument: electorDidDocument} = electorDidDocumentFull;
       electorServiceId = `${electorDidDocument.id}#MyServiceName`;
       electorDidDocument.service = [{
         id: electorServiceId,
@@ -46,18 +47,16 @@ describe('validate API ElectorPool', () => {
         // FIXME: add an AuthorizeRequest proof that will pass json-schema
         // validation for testnet v2 *not* a valid signature
         operation.proof = bedrock.util.clone(mockData.proof);
-
-        operation = await didv1.attachInvocationProof({
-          operation,
+        operation = await attachInvocationProof(operation, {
           // capability: maintainerDid,
           capability: electorPoolDoc.id,
           capabilityAction: 'create',
           key,
+          signer: key.signer()
         });
 
         // FIXME: attach proof instead of mock proof above
-        // operation = await didv1.attachInvocationProof({
-        //   operation,
+        // operation = await attachInvocationProof(operation, {
         //   capability: maintainerDid,
         //   capabilityAction: 'AuthorizeRequest',
         //   key,
@@ -90,7 +89,7 @@ describe('validate API ElectorPool', () => {
         result.valid.should.be.true;
       });
       it('fails on op with serviceId mismatch', async () => {
-        const {id: maintainerDid} = maintainerDidDocumentFull.doc;
+        const {id: maintainerDid} = maintainerDidDocumentFull.didDocument;
         const electorPoolDoc = _generateElectorPoolDoc();
 
         const incorrectServiceId = `${maintainerDid};service=Unknown`;
@@ -103,17 +102,15 @@ describe('validate API ElectorPool', () => {
         // FIXME: add an AuthorizeRequest proof that will pass json-schema
         // validation for testnet v2 *not* a valid signature
         operation.proof = bedrock.util.clone(mockData.proof);
-
-        operation = await didv1.attachInvocationProof({
-          operation,
+        operation = await attachInvocationProof(operation, {
           capability: electorPoolDoc.id,
           capabilityAction: 'create',
           key,
+          signer: key.signer()
         });
 
         // FIXME: attach proof instead of mock proof above
-        // operation = await didv1.attachInvocationProof({
-        //   operation,
+        // operation = await attachInvocationProof(operation, {
         //   capability: maintainerDid,
         //   capabilityAction: 'AuthorizeRequest',
         //   key,
@@ -144,7 +141,7 @@ describe('validate API ElectorPool', () => {
         result.error.name.should.equal('NotFoundError');
       });
       it('fails on op w/missing create capability', async () => {
-        const {id: maintainerDid} = maintainerDidDocumentFull.doc;
+        const {id: maintainerDid} = maintainerDidDocumentFull.didDocument;
         const electorPoolDoc = _generateElectorPoolDoc();
         let operation = await _wrap(
           {didDocument: electorPoolDoc, operationType: 'create'});
@@ -152,8 +149,7 @@ describe('validate API ElectorPool', () => {
 
         // no create proof added
 
-        operation = await didv1.attachInvocationProof({
-          operation,
+        operation = await attachInvocationProof(operation, {
           capability: maintainerDid,
           capabilityAction: 'AuthorizeRequest',
           key,
@@ -186,7 +182,7 @@ describe('validate API ElectorPool', () => {
       });
 
       it('fails on op w/missing AuthorizeRequest capability', async () => {
-        const {id: maintainerDid} = maintainerDidDocumentFull.doc;
+        const {id: maintainerDid} = maintainerDidDocumentFull.didDocument;
         const electorPoolDoc = _generateElectorPoolDoc();
         let operation = await _wrap(
           {didDocument: electorPoolDoc, operationType: 'create'});
@@ -194,8 +190,7 @@ describe('validate API ElectorPool', () => {
 
         // no AuthorizeRequest proof added
 
-        operation = await didv1.attachInvocationProof({
-          operation,
+        operation = await attachInvocationProof(operation, {
           capability: maintainerDid,
           capabilityAction: 'create',
           key,
@@ -233,14 +228,12 @@ describe('validate API ElectorPool', () => {
 
         // no AuthorizeRequest proof added
 
-        operation = await didv1.attachInvocationProof({
-          operation,
+        operation = await attachInvocationProof(operation, {
           capability: electorPoolDoc.id,
           capabilityAction: 'create',
           key,
         });
-        operation = await didv1.attachInvocationProof({
-          operation,
+        operation = await attachInvocationProof(operation, {
           capability: electorPoolDoc.id,
           capabilityAction: 'create',
           key,
@@ -271,7 +264,7 @@ describe('validate API ElectorPool', () => {
         result.error.name.should.equal('ValidationError');
       });
       it('fails on op w/two AuthorizeRequest capability proofs', async () => {
-        const {id: maintainerDid} = maintainerDidDocumentFull.doc;
+        const {id: maintainerDid} = maintainerDidDocumentFull.didDocument;
         const electorPoolDoc = _generateElectorPoolDoc();
         let operation = await _wrap(
           {didDocument: electorPoolDoc, operationType: 'create'});
@@ -279,16 +272,14 @@ describe('validate API ElectorPool', () => {
 
         // no create proof added
 
-        operation = await didv1.attachInvocationProof({
+        operation = await attachInvocationProof(operation, {
           algorithm: 'Ed25519Signature2018',
-          operation,
           capability: maintainerDid,
           capabilityAction: 'AuthorizeRequest',
           key,
         });
-        operation = await didv1.attachInvocationProof({
+        operation = await attachInvocationProof(operation, {
           algorithm: 'Ed25519Signature2018',
-          operation,
           capability: maintainerDid,
           capabilityAction: 'AuthorizeRequest',
           key,
@@ -329,8 +320,7 @@ describe('validate API ElectorPool', () => {
         operation.proof = bedrock.util.clone(mockData.proof);
 
         // replacing electorDid with maintainerDid
-        operation = await didv1.attachInvocationProof({
-          operation,
+        operation = await attachInvocationProof(operation, {
           // this DID document does not exist
           capability: 'did:v1:uuid:e798d4cf-f4f5-40cb-9f06-7fa56cf55d95',
           capabilityAction: 'create',
@@ -338,8 +328,7 @@ describe('validate API ElectorPool', () => {
         });
 
         // FIXME: attach proof instead of mock proof above
-        // operation = await didv1.attachInvocationProof({
-        //   operation,
+        // operation = await attachInvocationProof(operation, {
         //   capability: maintainerDid,
         //   capabilityAction: 'AuthorizeRequest',
         //   key,
@@ -379,8 +368,8 @@ describe('validate API ElectorPool', () => {
 
     describe('update electorPool operation', () => {
       it('validates an operation with proper proof', async () => {
-        const {id: electorDid} = electorDidDocumentFull.doc;
-        const {id: maintainerDid} = maintainerDidDocumentFull.doc;
+        const {id: electorDid} = electorDidDocumentFull.didDocument;
+        const {id: maintainerDid} = maintainerDidDocumentFull.didDocument;
         const electorPoolDoc = bedrock.util.clone(
           mockData.electorPoolDocument.alpha);
         electorPoolDoc.electorPool[0].elector = electorDid;
@@ -435,16 +424,14 @@ describe('validate API ElectorPool', () => {
         // validation for testnet v2 *not* a valid signature
         operation.proof = bedrock.util.clone(mockData.proof);
 
-        operation = await didv1.attachInvocationProof({
-          operation,
+        operation = await attachInvocationProof(operation, {
           capability: electorPoolDoc.id,
           // capabilityAction: operation.type,
           capabilityAction: 'update',
           key,
         });
         // FIXME: replace mock proof above with legitimate proof
-        // operation = await didv1.attachInvocationProof({
-        //   operation,
+        // operation = await attachInvocationProof(operation, {
         //   capability: maintainerDid,
         //   // capabilityAction: operation.type,
         //   capabilityAction: 'AuthorizeRequest',
@@ -476,8 +463,8 @@ describe('validate API ElectorPool', () => {
         result.valid.should.be.true;
       });
       it('rejects an operation removing electorPool', async () => {
-        const {id: electorDid} = electorDidDocumentFull.doc;
-        const {id: maintainerDid} = maintainerDidDocumentFull.doc;
+        const {id: electorDid} = electorDidDocumentFull.didDocument;
+        const {id: maintainerDid} = maintainerDidDocumentFull.didDocument;
         const electorPoolDoc = bedrock.util.clone(
           mockData.electorPoolDocument.alpha);
         electorPoolDoc.electorPool[0].elector = electorDid;
@@ -514,16 +501,14 @@ describe('validate API ElectorPool', () => {
         // validation for testnet v2 *not* a valid signature
         operation.proof = bedrock.util.clone(mockData.proof);
 
-        operation = await didv1.attachInvocationProof({
-          operation,
+        operation = await attachInvocationProof(operation, {
           capability: electorPoolDoc.id,
           // capabilityAction: operation.type,
           capabilityAction: 'update',
           key,
         });
         // FIXME: replace mock proof above with legitimate proof
-        // operation = await didv1.attachInvocationProof({
-        //   operation,
+        // operation = await attachInvocationProof(operation, {
         //   capability: maintainerDid,
         //   // capabilityAction: operation.type,
         //   capabilityAction: 'AuthorizeRequest',
@@ -561,8 +546,8 @@ describe('validate API ElectorPool', () => {
 });
 
 function _generateElectorPoolDoc() {
-  const {id: electorDid} = electorDidDocumentFull.doc;
-  const {id: maintainerDid} = maintainerDidDocumentFull.doc;
+  const {id: electorDid} = electorDidDocumentFull.didDocument;
+  const {id: maintainerDid} = maintainerDidDocumentFull.didDocument;
   const electorPoolDoc = bedrock.util.clone(
     mockData.electorPoolDocument.alpha);
   electorPoolDoc.electorPool[0].elector = electorDid;
@@ -580,9 +565,9 @@ function _generateUrnUuid() {
 }
 
 function _getMaintainerKeys() {
-  const invokePublicKey = maintainerDidDocumentFull.doc
-    .capabilityInvocation[0];
-  return maintainerDidDocumentFull.keys[invokePublicKey.id];
+  const invokePublicKey =
+    maintainerDidDocumentFull.didDocument.capabilityInvocation[0];
+  return maintainerDidDocumentFull.keyPairs.get(invokePublicKey.id);
 }
 
 // this is a modified version of the wrap API found in did-veres-one and
