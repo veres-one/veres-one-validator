@@ -2,7 +2,6 @@
  * Copyright (c) 2017-2018 Digital Bazaar, Inc. All rights reserved.
  */
 'use strict';
-const util = require('util');
 const {attachInvocationProof} = require('did-veres-one');
 const bedrock = require('bedrock');
 const {config: {constants}, util: {uuid, BedrockError}} = bedrock;
