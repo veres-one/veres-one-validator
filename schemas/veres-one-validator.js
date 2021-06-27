@@ -138,15 +138,20 @@ const publicKey = {
 
 const didDocumentContext = {
   type: 'array',
-  items: [{
-    const: constants.DID_CONTEXT_URL
-  }, {
-    const: constants.VERES_ONE_CONTEXT_V1_URL
-  }, {
-    const: constants.ED25519_2020_CONTEXT_V1_URL
-  }, {
-    const: constants.X25519_2020_CONTEXT_V1_URL
-  }],
+  items: {
+    // FIXME: Force first two items to be DID and V1 context?
+    anyOf: [{
+      const: constants.DID_CONTEXT_URL
+    }, {
+      const: constants.VERES_ONE_CONTEXT_V1_URL
+    }, {
+      const: constants.WEB_LEDGER_CONTEXT_V1_URL
+    }, {
+      const: constants.ED25519_2020_CONTEXT_V1_URL
+    }, {
+      const: constants.X25519_2020_CONTEXT_V1_URL
+    }]
+  },
   maxItems: 4,
   minItems: 2,
 };
