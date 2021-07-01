@@ -31,11 +31,11 @@
   "peerDependencies": {
     "bedrock": "2.x - 3.x",
     "bedrock-jsonld-document-loader": "^1.0.0",
-    "bedrock-ledger-context": "digitalbazaar/bedrock-ledger-context#v1-dingo-rc1",
+    "bedrock-ledger-context": "^18.1.0",
     "bedrock-ledger-node": "^10.0.0",
     "bedrock-ledger-utils": "^1.0.0",
-    "bedrock-validation": "digitalbazaar/bedrock-validation#v1-dingo-rc1",
-    "bedrock-veres-one-context": "digitalbazaar/bedrock-veres-one-context#update-did-context"
+    "bedrock-validation": "^5.1.0",
+    "bedrock-veres-one-context": "^11.0.0"
   },
   "devDependencies": {
     "eslint": "^7.10.0",
