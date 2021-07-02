@@ -1103,8 +1103,6 @@ describe('validate regular DIDs', () => {
       const capabilityInvocationKey =
         mockDoc.methodFor({purpose: 'capabilityInvocation'});
 
-      const keyId = mockDoc.getVerificationMethod(
-        {proofPurpose: 'capabilityInvocation'}).id;
       // add a write proof for the ledger that will pass json-schema
       // validation for testnet v2 *not* a valid signature
       mockOperation.proof = clone(mockData.proof);
@@ -1154,8 +1152,6 @@ describe('validate regular DIDs', () => {
 
       const capabilityInvocationKey =
         mockDoc.methodFor({purpose: 'capabilityInvocation'});
-      const keyId = mockDoc.getVerificationMethod(
-        {proofPurpose: 'capabilityInvocation'}).id;
       // add a write proof that will pass json-schema
       // validation for testnet v2 *not* a valid signature
       mockOperation.proof = clone(mockData.proof);
