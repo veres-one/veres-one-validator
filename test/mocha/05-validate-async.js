@@ -43,17 +43,18 @@ describe('validate regular DIDs', () => {
       mockOperation.record = mockDoc;
       // FIXME: add a write proof for the ledger that will pass
       // json-schema validation for testnet v2 *not* a valid signature
-      mockOperation.proof = clone(mockData.proof);
-      mockOperation.proof.invocationTarget = mockOperation.record.id;
+      //mockOperation.proof = clone(mockData.proof);
+      //mockOperation.proof.invocationTarget = mockOperation.record.id;
+      const purpose = new CapabilityInvocation({
+        capability: did,
+        capabilityAction,
+        // FIXME this is not making it into the signature
+        invocationTarget: 'SEE ME'
+      });
       const s = await jsigs.sign(mockOperation, {
         documentLoader,
         suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
-        purpose: new CapabilityInvocation({
-          capability: did,
-          capabilityAction,
-          // FIXME this is not making it into the signature
-          invocationTarget: mockDoc.id
-        })
+        purpose
       });
       const result = await voValidator.validate({
         basisBlockHeight: 0,
