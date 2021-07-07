@@ -44,11 +44,16 @@ describe('validate regular DIDs', () => {
       // FIXME: add a write proof for the ledger that will pass
       // json-schema validation for testnet v2 *not* a valid signature
       mockOperation.proof = clone(mockData.proof);
+      mockOperation.proof.invocationTarget = mockOperation.record.id;
       const s = await jsigs.sign(mockOperation, {
-        compactProof: false,
         documentLoader,
         suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
-        purpose: new CapabilityInvocation({capability: did, capabilityAction})
+        purpose: new CapabilityInvocation({
+          capability: did,
+          capabilityAction,
+          // FIXME this is not making it into the signature
+          invocationTarget: mockDoc.id
+        })
       });
       const result = await voValidator.validate({
         basisBlockHeight: 0,
@@ -70,7 +75,7 @@ describe('validate regular DIDs', () => {
       // json-schema validation for testnet v2 *not* a valid signature
       mockOperation.proof = clone(mockData.proof);
       const s = await jsigs.sign(mockOperation, {
-        compactProof: false,
+
         documentLoader,
         suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
         purpose: new CapabilityInvocation({capability: did, capabilityAction})
@@ -104,7 +109,7 @@ describe('validate regular DIDs', () => {
       // json-schema validation for testnet v2 *not* a valid signature
       mockOperation.proof = clone(mockData.proof);
       const s = await jsigs.sign(mockOperation, {
-        compactProof: false,
+
         documentLoader,
         suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
         purpose: new CapabilityInvocation({capability: did, capabilityAction})
@@ -135,7 +140,7 @@ describe('validate regular DIDs', () => {
       // json-schema validation for testnet v2 *not* a valid signature
       mockOperation.proof = clone(mockData.proof);
       const s = await jsigs.sign(mockOperation, {
-        compactProof: false,
+
         documentLoader,
         suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
         purpose: new CapabilityInvocation({capability: did, capabilityAction})
@@ -165,7 +170,7 @@ describe('validate regular DIDs', () => {
       // json-schema validation for testnet v2 *not* a valid signature
       mockOperation.proof = clone(mockData.proof);
       const s = await jsigs.sign(mockOperation, {
-        compactProof: false,
+
         documentLoader,
         suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
         purpose: new CapabilityInvocation({capability: did, capabilityAction})
@@ -199,7 +204,7 @@ describe('validate regular DIDs', () => {
       // json-schema validation for testnet v2 *not* a valid signature
       mockOperation.proof = clone(mockData.proof);
       const s = await jsigs.sign(mockOperation, {
-        compactProof: false,
+
         documentLoader,
         suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
         purpose: new CapabilityInvocation({capability: did, capabilityAction})
@@ -253,7 +258,7 @@ describe('validate regular DIDs', () => {
         // testnet v2 *not* a valid signature
         mockOperation.proof = clone(mockData.proof);
         const s = await jsigs.sign(mockOperation, {
-          compactProof: false,
+
           documentLoader,
           suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
           purpose: new CapabilityInvocation({capability: did, capabilityAction})
@@ -288,7 +293,7 @@ describe('validate regular DIDs', () => {
         // validation for testnet v2 *not* a valid signature
         mockOperation.proof = clone(mockData.proof);
         const s = await jsigs.sign(mockOperation, {
-          compactProof: false,
+
           documentLoader,
           suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
           purpose: new CapabilityInvocation({capability: did, capabilityAction})
@@ -337,7 +342,7 @@ describe('validate regular DIDs', () => {
         // validation for testnet v2 *not* a valid signature
         mockOperation.proof = clone(mockData.proof);
         const s = await jsigs.sign(mockOperation, {
-          compactProof: false,
+
           documentLoader,
           suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
           purpose: new CapabilityInvocation({capability: did, capabilityAction})
@@ -372,7 +377,7 @@ describe('validate regular DIDs', () => {
         // validation for testnet v2 *not* a valid signature
         mockOperation.proof = clone(mockData.proof);
         const s = await jsigs.sign(mockOperation, {
-          compactProof: false,
+
           documentLoader,
           suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
           purpose: new CapabilityInvocation({capability: did, capabilityAction})
@@ -411,7 +416,7 @@ describe('validate regular DIDs', () => {
         // validation for testnet v2 *not* a valid signature
         mockOperation.proof = clone(mockData.proof);
         const s = await jsigs.sign(mockOperation, {
-          compactProof: false,
+
           documentLoader,
           suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
           purpose: new CapabilityInvocation({capability: did, capabilityAction})
@@ -457,7 +462,7 @@ describe('validate regular DIDs', () => {
         // validation for testnet v2 *not* a valid signature
         mockOperation.proof = clone(mockData.proof);
         const s = await jsigs.sign(mockOperation, {
-          compactProof: false,
+
           documentLoader,
           suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
           purpose: new CapabilityInvocation({capability: did, capabilityAction})
@@ -497,7 +502,7 @@ describe('validate regular DIDs', () => {
         // validation for testnet v2 *not* a valid signature
         mockOperation.proof = clone(mockData.proof);
         const s = await jsigs.sign(mockOperation, {
-          compactProof: false,
+
           documentLoader,
           suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
           purpose: new CapabilityInvocation({capability: did, capabilityAction})
@@ -552,7 +557,7 @@ describe('validate regular DIDs', () => {
       // json-schema validation for testnet v2 *not* a valid signature
       mockOperation.proof = clone(mockData.proof);
       const s = await jsigs.sign(mockOperation, {
-        compactProof: false,
+
         documentLoader,
         suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
         purpose: new CapabilityInvocation({capability: did, capabilityAction})
@@ -600,7 +605,7 @@ describe('validate regular DIDs', () => {
       // json-schema validation for testnet v2 *not* a valid signature
       mockOperation.proof = clone(mockData.proof);
       const s = await jsigs.sign(mockOperation, {
-        compactProof: false,
+
         documentLoader,
         suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
         purpose: new CapabilityInvocation({capability: did, capabilityAction})
@@ -644,7 +649,7 @@ describe('validate regular DIDs', () => {
       // validation for testnet v2 *not* a valid signature
       mockOperation.proof = clone(mockData.proof);
       const s = await jsigs.sign(mockOperation, {
-        compactProof: false,
+
         documentLoader,
         suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
         purpose: new CapabilityInvocation({capability: did, capabilityAction})
@@ -698,7 +703,7 @@ describe('validate regular DIDs', () => {
       mockOperation.recordPatch.sequence = 10;
 
       const s = await jsigs.sign(mockOperation, {
-        compactProof: false,
+
         documentLoader,
         suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
         purpose: new CapabilityInvocation({capability: did, capabilityAction})
@@ -748,7 +753,7 @@ describe('validate regular DIDs', () => {
       mockOperation.recordPatch.patch[0].path = '/authentication/2';
 
       const s = await jsigs.sign(mockOperation, {
-        compactProof: false,
+
         documentLoader,
         suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
         purpose: new CapabilityInvocation({capability: did, capabilityAction})
@@ -794,7 +799,7 @@ describe('validate regular DIDs', () => {
       // json-schema validation for testnet v2 *not* a valid signature
       mockOperation.proof = clone(mockData.proof);
       const s = await jsigs.sign(mockOperation, {
-        compactProof: false,
+
         documentLoader,
         suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
         purpose: new CapabilityInvocation({capability: did, capabilityAction})
@@ -855,7 +860,7 @@ describe('validate regular DIDs', () => {
 
       // signing with a key from another valid DID
       const s = await jsigs.sign(mockOperation, {
-        compactProof: false,
+
         documentLoader,
         suite: new Ed25519Signature2020({key: capabilityInvocationKey1}),
         purpose: new CapabilityInvocation({capability: did, capabilityAction})
@@ -912,7 +917,7 @@ describe('validate regular DIDs', () => {
 
       // signing with a key from another valid DID
       const s = await jsigs.sign(mockOperation, {
-        compactProof: false,
+
         documentLoader,
         suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
         purpose: new CapabilityInvocation({capability: did, capabilityAction})
@@ -962,7 +967,7 @@ describe('validate regular DIDs', () => {
       capabilityAction = 'read';
 
       const s = await jsigs.sign(mockOperation, {
-        compactProof: false,
+
         documentLoader,
         suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
         purpose: new CapabilityInvocation({capability: did, capabilityAction})
@@ -1009,7 +1014,7 @@ describe('validate regular DIDs', () => {
 
       // *must* use `capabilityInvocationKey`
       const s = await jsigs.sign(mockOperation, {
-        compactProof: false,
+
         documentLoader,
         suite: new Ed25519Signature2020({key: newKey}),
         purpose: new CapabilityInvocation({capability: did, capabilityAction})
@@ -1061,7 +1066,7 @@ describe('validate regular DIDs', () => {
 
       // *must* use `capabilityInvocationKey`
       const s = await jsigs.sign(mockOperation, {
-        compactProof: false,
+
         documentLoader,
         suite: new Ed25519Signature2020({key: newKey}),
         purpose: new CapabilityInvocation({capability: did, capabilityAction})
@@ -1107,7 +1112,7 @@ describe('validate regular DIDs', () => {
       // validation for testnet v2 *not* a valid signature
       mockOperation.proof = clone(mockData.proof);
       const s = await jsigs.sign(mockOperation, {
-        compactProof: false,
+
         documentLoader,
         suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
         purpose: new CapabilityInvocation({capability: did, capabilityAction})
@@ -1156,7 +1161,7 @@ describe('validate regular DIDs', () => {
       // validation for testnet v2 *not* a valid signature
       mockOperation.proof = clone(mockData.proof);
       const s = await jsigs.sign(mockOperation, {
-        compactProof: false,
+
         documentLoader,
         suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
         purpose: new CapabilityInvocation({capability: did, capabilityAction})
@@ -1219,7 +1224,7 @@ describe('validate regular DIDs', () => {
         // testnet v2 *not* a valid signature
         mockOperation.proof = clone(mockData.proof);
         const s = await jsigs.sign(mockOperation, {
-          compactProof: false,
+
           documentLoader,
           suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
           purpose: new CapabilityInvocation({capability: did, capabilityAction})
@@ -1269,7 +1274,7 @@ describe('validate regular DIDs', () => {
         // testnet v2 *not* a valid signature
         mockOperation.proof = clone(mockData.proof);
         const s = await jsigs.sign(mockOperation, {
-          compactProof: false,
+
           documentLoader,
           suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
           purpose: new CapabilityInvocation({capability: did, capabilityAction})
@@ -1313,7 +1318,7 @@ describe('validate regular DIDs', () => {
         // testnet v2 *not* a valid signature
         mockOperation.proof = clone(mockData.proof);
         const s = await jsigs.sign(mockOperation, {
-          compactProof: false,
+
           documentLoader,
           suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
           purpose: new CapabilityInvocation({capability: did, capabilityAction})
@@ -1360,7 +1365,7 @@ describe('validate regular DIDs', () => {
         // testnet v2 *not* a valid signature
         mockOperation.proof = clone(mockData.proof);
         const s = await jsigs.sign(mockOperation, {
-          compactProof: false,
+
           documentLoader,
           suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
           purpose: new CapabilityInvocation({capability: did, capabilityAction})
@@ -1413,7 +1418,7 @@ describe('validate regular DIDs', () => {
         // testnet v2 *not* a valid signature
         mockOperation.proof = clone(mockData.proof);
         const s = await jsigs.sign(mockOperation, {
-          compactProof: false,
+
           documentLoader,
           suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
           purpose: new CapabilityInvocation({capability: did, capabilityAction})

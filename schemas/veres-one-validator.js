@@ -438,6 +438,7 @@ const baseCapability = {
     'capability',
     'capabilityAction',
     'created',
+    'invocationTarget',
     'proofValue',
     'proofPurpose',
     'type'
@@ -450,6 +451,7 @@ const baseCapability = {
     },
     created: schemas.w3cDateTime(),
     creator: {type: 'string'},
+    invocationTarget: {type: 'string'},
     proofValue: {type: 'string'},
     proofPurpose: {
       type: 'string',
