@@ -138,20 +138,27 @@ const publicKey = {
 
 const didDocumentContext = {
   type: 'array',
-  items: {
-    // FIXME: Force first two items to be DID and V1 context?
-    anyOf: [{
+  items: [
+    {
+      // the first context should be the DID Context
       const: constants.DID_CONTEXT_URL
     }, {
+      // the second context should be the V1 Context
       const: constants.VERES_ONE_CONTEXT_V1_URL
     }, {
-      const: constants.WEB_LEDGER_CONTEXT_V1_URL
-    }, {
-      const: constants.ED25519_2020_CONTEXT_V1_URL
-    }, {
-      const: constants.X25519_2020_CONTEXT_V1_URL
-    }]
-  },
+      // the remaining 2 contexts can be any of these
+      anyOf: [{
+        const: constants.DID_CONTEXT_URL
+      }, {
+        const: constants.VERES_ONE_CONTEXT_V1_URL
+      }, {
+        const: constants.WEB_LEDGER_CONTEXT_V1_URL
+      }, {
+        const: constants.ED25519_2020_CONTEXT_V1_URL
+      }, {
+        const: constants.X25519_2020_CONTEXT_V1_URL
+      }]}
+  ],
   maxItems: 4,
   minItems: 2,
 };
