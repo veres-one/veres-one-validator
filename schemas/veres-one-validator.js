@@ -489,30 +489,6 @@ const writeCapability = {
     }]
 };
 
-const createCapability = {
-  allOf: [
-    baseCapability,
-    creatorOrVerificationMethod, {
-      properties: {
-        capabilityAction: {
-          enum: ['write'],
-        },
-      }
-    }]
-};
-
-const updateDidCapability = {
-  allOf: [
-    baseCapability,
-    creatorOrVerificationMethod, {
-      properties: {
-        capabilityAction: {
-          enum: ['write'],
-        },
-      }
-    }]
-};
-
 const updateWebLedgerRecord = {
   title: 'Update DID',
   type: 'object',
@@ -536,11 +512,7 @@ const updateWebLedgerRecord = {
     proof: {
       anyOf: [{
         type: 'array',
-        items: [writeCapability, updateDidCapability],
-        additionalItems: false,
-      }, {
-        type: 'array',
-        items: [updateDidCapability, writeCapability],
+        items: [writeCapability, writeCapability],
         additionalItems: false,
       }],
     }
@@ -683,11 +655,7 @@ const createWebLedgerRecord = {
     proof: {
       anyOf: [{
         type: 'array',
-        items: [writeCapability, createCapability],
-        additionalItems: false,
-      }, {
-        type: 'array',
-        items: [createCapability, writeCapability],
+        items: [writeCapability, writeCapability],
         additionalItems: false,
       }],
     },
