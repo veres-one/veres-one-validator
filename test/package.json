@@ -10,6 +10,7 @@
     "coverage-report": "nyc report"
   },
   "dependencies": {
+    "@digitalbazaar/zcapld": "^5.0.0",
     "async": "^2.4.1",
     "bedrock": "^3.0.0",
     "bedrock-https-agent": "^1.0.0",
