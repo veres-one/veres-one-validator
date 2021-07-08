@@ -45,16 +45,14 @@ describe('validate regular DIDs', () => {
       // json-schema validation for testnet v2 *not* a valid signature
       mockOperation.proof = clone(mockData.proof);
       mockOperation.proof.invocationTarget = mockOperation.record.id;
-      const purpose = new CapabilityInvocation({
-        capability: did,
-        capabilityAction,
-        // FIXME this is not making it into the signature
-        invocationTarget: mockDoc.id
-      });
       const s = await jsigs.sign(mockOperation, {
         documentLoader,
         suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
-        purpose
+        purpose: new CapabilityInvocation({
+          capability: did,
+          capabilityAction,
+          invocationTarget: mockDoc.id
+        })
       });
       const result = await voValidator.validate({
         basisBlockHeight: 0,
@@ -75,11 +73,15 @@ describe('validate regular DIDs', () => {
       // FIXME: add a write proof for the accelerator that will pass
       // json-schema validation for testnet v2 *not* a valid signature
       mockOperation.proof = clone(mockData.proof);
+      mockOperation.proof.invocationTarget = mockOperation.record.id;
       const s = await jsigs.sign(mockOperation, {
-
         documentLoader,
         suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
-        purpose: new CapabilityInvocation({capability: did, capabilityAction})
+        purpose: new CapabilityInvocation({
+          capability: did,
+          capabilityAction,
+          invocationTarget: mockDoc.id
+        })
       });
       let err;
       let result;
@@ -109,11 +111,15 @@ describe('validate regular DIDs', () => {
       // FIXME: add a write proof for the accelerator that will pass
       // json-schema validation for testnet v2 *not* a valid signature
       mockOperation.proof = clone(mockData.proof);
+      mockOperation.proof.invocationTarget = mockOperation.record.id;
       const s = await jsigs.sign(mockOperation, {
-
         documentLoader,
         suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
-        purpose: new CapabilityInvocation({capability: did, capabilityAction})
+        purpose: new CapabilityInvocation({
+          capability: did,
+          capabilityAction,
+          invocationTarget: did
+        })
       });
       const result = await voValidator.validate({
         basisBlockHeight: 0,
@@ -140,11 +146,15 @@ describe('validate regular DIDs', () => {
       // FIXME: add a write proof for the accelerator that will pass
       // json-schema validation for testnet v2 *not* a valid signature
       mockOperation.proof = clone(mockData.proof);
+      mockOperation.proof.invocationTarget = mockOperation.record.id;
       const s = await jsigs.sign(mockOperation, {
-
         documentLoader,
         suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
-        purpose: new CapabilityInvocation({capability: did, capabilityAction})
+        purpose: new CapabilityInvocation({
+          capability: did,
+          capabilityAction,
+          invocationTarget: mockDoc.id
+        })
       });
       const result = await voValidator.validate({
         basisBlockHeight: 0,
@@ -170,11 +180,15 @@ describe('validate regular DIDs', () => {
       // FIXME: add a write proof for the accelerator that will pass
       // json-schema validation for testnet v2 *not* a valid signature
       mockOperation.proof = clone(mockData.proof);
+      mockOperation.proof.invocationTarget = mockOperation.record.id;
       const s = await jsigs.sign(mockOperation, {
-
         documentLoader,
         suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
-        purpose: new CapabilityInvocation({capability: did, capabilityAction})
+        purpose: new CapabilityInvocation({
+          capability: did,
+          capabilityAction,
+          invocationTarget: mockDoc.id
+        })
       });
       const result = await voValidator.validate({
         basisBlockHeight: 0,
@@ -204,11 +218,15 @@ describe('validate regular DIDs', () => {
       // FIXME: add a write proof for the accelerator that will pass
       // json-schema validation for testnet v2 *not* a valid signature
       mockOperation.proof = clone(mockData.proof);
+      mockOperation.proof.invocationTarget = mockOperation.record.id;
       const s = await jsigs.sign(mockOperation, {
-
         documentLoader,
         suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
-        purpose: new CapabilityInvocation({capability: did, capabilityAction})
+        purpose: new CapabilityInvocation({
+          capability: did,
+          capabilityAction,
+          invocationTarget: mockDoc.id
+        })
       });
       const result = await voValidator.validate({
         basisBlockHeight: 10,
@@ -258,11 +276,15 @@ describe('validate regular DIDs', () => {
         // validation for
         // testnet v2 *not* a valid signature
         mockOperation.proof = clone(mockData.proof);
+        mockOperation.proof.invocationTarget = mockOperation.record.id;
         const s = await jsigs.sign(mockOperation, {
-
           documentLoader,
           suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
-          purpose: new CapabilityInvocation({capability: did, capabilityAction})
+          purpose: new CapabilityInvocation({
+            capability: did,
+            capabilityAction,
+            invocationTarget: mockOperation.record.id
+          })
         });
         const result = await voValidator.validate({
           basisBlockHeight: 0,
@@ -293,11 +315,15 @@ describe('validate regular DIDs', () => {
         // add a write proof for the accelerator that will pass json-schema
         // validation for testnet v2 *not* a valid signature
         mockOperation.proof = clone(mockData.proof);
+        mockOperation.proof.invocationTarget = mockOperation.record.id;
         const s = await jsigs.sign(mockOperation, {
-
           documentLoader,
           suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
-          purpose: new CapabilityInvocation({capability: did, capabilityAction})
+          purpose: new CapabilityInvocation({
+            capability: did,
+            capabilityAction,
+            invocationTarget: mockOperation.record.id
+          })
         });
         const configMissingValidatorParameterSet = clone(validatorConfig);
         // this DID triggers a TerribleValidatorParameterSetError
@@ -342,11 +368,15 @@ describe('validate regular DIDs', () => {
         // add a write proof for the accelerator that will pass json-schema
         // validation for testnet v2 *not* a valid signature
         mockOperation.proof = clone(mockData.proof);
+        mockOperation.proof.invocationTarget = mockOperation.record.id;
         const s = await jsigs.sign(mockOperation, {
-
           documentLoader,
           suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
-          purpose: new CapabilityInvocation({capability: did, capabilityAction})
+          purpose: new CapabilityInvocation({
+            capability: did,
+            capabilityAction,
+            invocationTarget: mockOperation.record.id
+          })
         });
         const result = await voValidator.validate({
           basisBlockHeight: 0,
@@ -377,11 +407,15 @@ describe('validate regular DIDs', () => {
         // add a write proof for the accelerator that will pass json-schema
         // validation for testnet v2 *not* a valid signature
         mockOperation.proof = clone(mockData.proof);
+        mockOperation.proof.invocationTarget = mockOperation.record.id;
         const s = await jsigs.sign(mockOperation, {
-
           documentLoader,
           suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
-          purpose: new CapabilityInvocation({capability: did, capabilityAction})
+          purpose: new CapabilityInvocation({
+            capability: did,
+            capabilityAction,
+            invocationTarget: mockOperation.record.id
+          })
         });
         const result = await voValidator.validate({
           basisBlockHeight: 0,
@@ -416,11 +450,15 @@ describe('validate regular DIDs', () => {
         // add a write proof for the accelerator that will pass json-schema
         // validation for testnet v2 *not* a valid signature
         mockOperation.proof = clone(mockData.proof);
+        mockOperation.proof.invocationTarget = mockOperation.record.id;
         const s = await jsigs.sign(mockOperation, {
-
           documentLoader,
           suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
-          purpose: new CapabilityInvocation({capability: did, capabilityAction})
+          purpose: new CapabilityInvocation({
+            capability: did,
+            capabilityAction,
+            invocationTarget: mockOperation.record.id
+          })
         });
         const result = await voValidator.validate({
           basisBlockHeight: 0,
@@ -462,11 +500,15 @@ describe('validate regular DIDs', () => {
         // add a write proof for the accelerator that will pass json-schema
         // validation for testnet v2 *not* a valid signature
         mockOperation.proof = clone(mockData.proof);
+        mockOperation.proof.invocationTarget = mockOperation.record.id;
         const s = await jsigs.sign(mockOperation, {
-
           documentLoader,
           suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
-          purpose: new CapabilityInvocation({capability: did, capabilityAction})
+          purpose: new CapabilityInvocation({
+            capability: did,
+            capabilityAction,
+            invocationTarget: mockOperation.record.id
+          })
         });
         const result = await voValidator.validate({
           basisBlockHeight: 0,
@@ -502,11 +544,15 @@ describe('validate regular DIDs', () => {
         // add a write proof for the accelerator that will pass json-schema
         // validation for testnet v2 *not* a valid signature
         mockOperation.proof = clone(mockData.proof);
+        mockOperation.proof.invocationTarget = mockOperation.record.id;
         const s = await jsigs.sign(mockOperation, {
-
           documentLoader,
           suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
-          purpose: new CapabilityInvocation({capability: did, capabilityAction})
+          purpose: new CapabilityInvocation({
+            capability: did,
+            capabilityAction,
+            invocationTarget: mockOperation.record.id
+          })
         });
 
         // this document does not exist on the ledger
@@ -557,11 +603,15 @@ describe('validate regular DIDs', () => {
       // FIXME: add a write proof for the accelerator that will pass
       // json-schema validation for testnet v2 *not* a valid signature
       mockOperation.proof = clone(mockData.proof);
+      mockOperation.proof.invocationTarget = did;
       const s = await jsigs.sign(mockOperation, {
-
         documentLoader,
         suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
-        purpose: new CapabilityInvocation({capability: did, capabilityAction})
+        purpose: new CapabilityInvocation({
+          capability: did,
+          capabilityAction,
+          invocationTarget: did
+        })
       });
       const result = await voValidator.validate({
         basisBlockHeight: 10,
@@ -605,11 +655,15 @@ describe('validate regular DIDs', () => {
       // FIXME: add a write proof for the accelerator that will pass
       // json-schema validation for testnet v2 *not* a valid signature
       mockOperation.proof = clone(mockData.proof);
+      mockOperation.proof.invocationTarget = did;
       const s = await jsigs.sign(mockOperation, {
-
         documentLoader,
         suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
-        purpose: new CapabilityInvocation({capability: did, capabilityAction})
+        purpose: new CapabilityInvocation({
+          capability: did,
+          capabilityAction,
+          invocationTarget: did
+        })
       });
       const result = await voValidator.validate({
         basisBlockHeight: 10,
@@ -649,11 +703,15 @@ describe('validate regular DIDs', () => {
       // add a write proof for the ledger that will pass json-schema
       // validation for testnet v2 *not* a valid signature
       mockOperation.proof = clone(mockData.proof);
+      mockOperation.proof.invocationTarget = did;
       const s = await jsigs.sign(mockOperation, {
-
         documentLoader,
         suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
-        purpose: new CapabilityInvocation({capability: did, capabilityAction})
+        purpose: new CapabilityInvocation({
+          capability: did,
+          capabilityAction,
+          invocationTarget: did
+        })
       });
       const result = await voValidator.validate({
         basisBlockHeight: 10,
@@ -697,17 +755,20 @@ describe('validate regular DIDs', () => {
       });
       mockOperation.recordPatch.patch = jsonpatch.generate(observer);
       mockOperation.recordPatch.target = did;
+      // specify an invalid sequence
+      mockOperation.recordPatch.sequence = 10;
       // FIXME: add a write proof for the accelerator that will pass
       // json-schema validation for testnet v2 *not* a valid signature
       mockOperation.proof = clone(mockData.proof);
-      // specify an invalid sequence
-      mockOperation.recordPatch.sequence = 10;
-
+      mockOperation.proof.invocationTarget = did;
       const s = await jsigs.sign(mockOperation, {
-
         documentLoader,
         suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
-        purpose: new CapabilityInvocation({capability: did, capabilityAction})
+        purpose: new CapabilityInvocation({
+          capability: did,
+          capabilityAction,
+          invocationTarget: did
+        })
       });
       const result = await voValidator.validate({
         basisBlockHeight: 10,
@@ -749,15 +810,17 @@ describe('validate regular DIDs', () => {
       // FIXME: add a write proof for the accelerator that will pass
       // json-schema validation for testnet v2 *not* a valid signature
       mockOperation.proof = clone(mockData.proof);
-
       // specifiy an invalid path to create an invalid JSON patch
       mockOperation.recordPatch.patch[0].path = '/authentication/2';
-
+      mockOperation.proof.invocationTarget = did;
       const s = await jsigs.sign(mockOperation, {
-
         documentLoader,
         suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
-        purpose: new CapabilityInvocation({capability: did, capabilityAction})
+        purpose: new CapabilityInvocation({
+          capability: did,
+          capabilityAction,
+          invocationTarget: did
+        })
       });
       const result = await voValidator.validate({
         basisBlockHeight: 10,
@@ -799,11 +862,15 @@ describe('validate regular DIDs', () => {
       // FIXME: add a write proof for the accelerator that will pass
       // json-schema validation for testnet v2 *not* a valid signature
       mockOperation.proof = clone(mockData.proof);
+      mockOperation.proof.invocationTarget = did;
       const s = await jsigs.sign(mockOperation, {
-
         documentLoader,
         suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
-        purpose: new CapabilityInvocation({capability: did, capabilityAction})
+        purpose: new CapabilityInvocation({
+          capability: did,
+          capabilityAction,
+          invocationTarget: did
+        })
       });
       // after proof, change the patch target
       const {did: did2} = await _generateDid();
@@ -858,13 +925,15 @@ describe('validate regular DIDs', () => {
       // FIXME: add a write proof for the accelerator that will pass
       // json-schema validation for testnet v2 *not* a valid signature
       mockOperation.proof = clone(mockData.proof);
-
-      // signing with a key from another valid DID
+      mockOperation.proof.invocationTarget = did;
       const s = await jsigs.sign(mockOperation, {
-
         documentLoader,
         suite: new Ed25519Signature2020({key: capabilityInvocationKey1}),
-        purpose: new CapabilityInvocation({capability: did, capabilityAction})
+        purpose: new CapabilityInvocation({
+          capability: did,
+          capabilityAction,
+          invocationTarget: did
+        })
       });
       const result = await voValidator.validate({
         basisBlockHeight: 10,
@@ -915,13 +984,15 @@ describe('validate regular DIDs', () => {
       // FIXME: add a write proof for the accelerator that will pass
       // json-schema validation for testnet v2 *not* a valid signature
       mockOperation.proof = clone(mockData.proof);
-
-      // signing with a key from another valid DID
+      mockOperation.proof.invocationTarget = did;
       const s = await jsigs.sign(mockOperation, {
-
         documentLoader,
         suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
-        purpose: new CapabilityInvocation({capability: did, capabilityAction})
+        purpose: new CapabilityInvocation({
+          capability: did,
+          capabilityAction,
+          invocationTarget: did
+        })
       });
       const result = await voValidator.validate({
         basisBlockHeight: 10,
@@ -967,11 +1038,15 @@ describe('validate regular DIDs', () => {
       // update operations require `write` so it should reject `read`
       capabilityAction = 'read';
 
+      mockOperation.proof.invocationTarget = did;
       const s = await jsigs.sign(mockOperation, {
-
         documentLoader,
         suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
-        purpose: new CapabilityInvocation({capability: did, capabilityAction})
+        purpose: new CapabilityInvocation({
+          capability: did,
+          capabilityAction,
+          invocationTarget: did
+        })
       });
       const result = await voValidator.validate({
         basisBlockHeight: 10,
@@ -1014,11 +1089,16 @@ describe('validate regular DIDs', () => {
       capabilityAction = 'write';
 
       // *must* use `capabilityInvocationKey`
+      mockOperation.proof = clone(mockData.proof);
+      mockOperation.proof.invocationTarget = did;
       const s = await jsigs.sign(mockOperation, {
-
         documentLoader,
         suite: new Ed25519Signature2020({key: newKey}),
-        purpose: new CapabilityInvocation({capability: did, capabilityAction})
+        purpose: new CapabilityInvocation({
+          capability: did,
+          capabilityAction,
+          invocationTarget: did
+        })
       });
       const result = await voValidator.validate({
         basisBlockHeight: 10,
@@ -1066,11 +1146,16 @@ describe('validate regular DIDs', () => {
       mockOperation.proof = clone(mockData.proof);
 
       // *must* use `capabilityInvocationKey`
+      mockOperation.proof = clone(mockData.proof);
+      mockOperation.proof.invocationTarget = did;
       const s = await jsigs.sign(mockOperation, {
-
         documentLoader,
         suite: new Ed25519Signature2020({key: newKey}),
-        purpose: new CapabilityInvocation({capability: did, capabilityAction})
+        purpose: new CapabilityInvocation({
+          capability: did,
+          capabilityAction,
+          invocationTarget: did
+        })
       });
       const result = await voValidator.validate({
         basisBlockHeight: 10,
@@ -1112,11 +1197,15 @@ describe('validate regular DIDs', () => {
       // add a write proof for the ledger that will pass json-schema
       // validation for testnet v2 *not* a valid signature
       mockOperation.proof = clone(mockData.proof);
+      mockOperation.proof.invocationTarget = did;
       const s = await jsigs.sign(mockOperation, {
-
         documentLoader,
         suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
-        purpose: new CapabilityInvocation({capability: did, capabilityAction})
+        purpose: new CapabilityInvocation({
+          capability: did,
+          capabilityAction,
+          invocationTarget: did
+        })
       });
       const result = await voValidator.validate({
         basisBlockHeight: 10,
@@ -1161,11 +1250,15 @@ describe('validate regular DIDs', () => {
       // add a write proof that will pass json-schema
       // validation for testnet v2 *not* a valid signature
       mockOperation.proof = clone(mockData.proof);
+      mockOperation.proof.invocationTarget = did;
       const s = await jsigs.sign(mockOperation, {
-
         documentLoader,
         suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
-        purpose: new CapabilityInvocation({capability: did, capabilityAction})
+        purpose: new CapabilityInvocation({
+          capability: did,
+          capabilityAction,
+          invocationTarget: did
+        })
       });
       const result = await voValidator.validate({
         basisBlockHeight: 10,
@@ -1224,11 +1317,15 @@ describe('validate regular DIDs', () => {
         // validation for
         // testnet v2 *not* a valid signature
         mockOperation.proof = clone(mockData.proof);
+        mockOperation.proof.invocationTarget = did;
         const s = await jsigs.sign(mockOperation, {
-
           documentLoader,
           suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
-          purpose: new CapabilityInvocation({capability: did, capabilityAction})
+          purpose: new CapabilityInvocation({
+            capability: did,
+            capabilityAction,
+            invocationTarget: did
+          })
         });
         const result = await voValidator.validate({
           basisBlockHeight: 10,
@@ -1274,11 +1371,15 @@ describe('validate regular DIDs', () => {
         // validation for
         // testnet v2 *not* a valid signature
         mockOperation.proof = clone(mockData.proof);
+        mockOperation.proof.invocationTarget = did;
         const s = await jsigs.sign(mockOperation, {
-
           documentLoader,
           suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
-          purpose: new CapabilityInvocation({capability: did, capabilityAction})
+          purpose: new CapabilityInvocation({
+            capability: did,
+            capabilityAction,
+            invocationTarget: did
+          })
         });
         const result = await voValidator.validate({
           basisBlockHeight: 10,
@@ -1318,11 +1419,15 @@ describe('validate regular DIDs', () => {
         // validation for
         // testnet v2 *not* a valid signature
         mockOperation.proof = clone(mockData.proof);
+        mockOperation.proof.invocationTarget = did;
         const s = await jsigs.sign(mockOperation, {
-
           documentLoader,
           suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
-          purpose: new CapabilityInvocation({capability: did, capabilityAction})
+          purpose: new CapabilityInvocation({
+            capability: did,
+            capabilityAction,
+            invocationTarget: did
+          })
         });
         const result = await voValidator.validate({
           basisBlockHeight: 10,
@@ -1365,11 +1470,15 @@ describe('validate regular DIDs', () => {
         // validation for
         // testnet v2 *not* a valid signature
         mockOperation.proof = clone(mockData.proof);
+        mockOperation.proof.invocationTarget = did;
         const s = await jsigs.sign(mockOperation, {
-
           documentLoader,
           suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
-          purpose: new CapabilityInvocation({capability: did, capabilityAction})
+          purpose: new CapabilityInvocation({
+            capability: did,
+            capabilityAction,
+            invocationTarget: did
+          })
         });
         const result = await voValidator.validate({
           basisBlockHeight: 10,
@@ -1418,11 +1527,15 @@ describe('validate regular DIDs', () => {
         // validation for
         // testnet v2 *not* a valid signature
         mockOperation.proof = clone(mockData.proof);
+        mockOperation.proof.invocationTarget = did;
         const s = await jsigs.sign(mockOperation, {
-
           documentLoader,
           suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
-          purpose: new CapabilityInvocation({capability: did, capabilityAction})
+          purpose: new CapabilityInvocation({
+            capability: did,
+            capabilityAction,
+            invocationTarget: did
+          })
         });
         const result = await voValidator.validate({
           basisBlockHeight: 10,
