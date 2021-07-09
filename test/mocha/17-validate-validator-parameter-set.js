@@ -49,10 +49,12 @@ describe('validate API ValidatorParameterSet', () => {
         // validation for testnet v2 *not* a valid signature
         operation.proof = clone(mockData.proof);
 
-        operation = await attachInvocationProof(operation, {
+        operation = await attachInvocationProof({
+          operation,
           // capability: maintainerDid,
           capability: validatorParameterSetDoc.id,
           capabilityAction: 'write',
+          invocationTarget: operation.record.id,
           key,
         });
 
@@ -96,10 +98,12 @@ describe('validate API ValidatorParameterSet', () => {
         // validation for testnet v2 *not* a valid signature
         operation.proof = clone(mockData.proof);
 
-        operation = await attachInvocationProof(operation, {
+        operation = await attachInvocationProof({
+          operation,
           // capability: maintainerDid,
           capability: validatorParameterSetDoc.id,
           capabilityAction: 'write',
+          invocationTarget: operation.record.id,
           key,
         });
 
@@ -151,10 +155,12 @@ describe('validate API ValidatorParameterSet', () => {
         // validation for testnet v2 *not* a valid signature
         operation.proof = clone(mockData.proof);
 
-        operation = await attachInvocationProof(operation, {
+        operation = await attachInvocationProof({
+          operation,
           // capability: maintainerDid,
           capability: validatorParameterSetDoc.id,
           capabilityAction: 'write',
+          invocationTarget: operation.record.id,
           key,
         });
 
@@ -224,10 +230,12 @@ describe('validate API ValidatorParameterSet', () => {
         // validation for testnet v2 *not* a valid signature
         operation.proof = clone(mockData.proof);
 
-        operation = await attachInvocationProof(operation, {
+        operation = await attachInvocationProof({
+          operation,
           capability: validatorParameterSetDoc.id,
           // capabilityAction: operation.type,
           capabilityAction: 'write',
+          invocationTarget: operation.recordPatch.target,
           key,
         });
         // FIXME: replace mock proof above with legitimate proof
@@ -291,10 +299,12 @@ describe('validate API ValidatorParameterSet', () => {
         // validation for testnet v2 *not* a valid signature
         operation.proof = clone(mockData.proof);
 
-        operation = await attachInvocationProof(operation, {
+        operation = await attachInvocationProof({
+          operation,
           capability: validatorParameterSetDoc.id,
           // capabilityAction: operation.type,
           capabilityAction: 'write',
+          invocationTarget: operation.recordPatch.target,
           key,
         });
         // FIXME: replace mock proof above with legitimate proof
@@ -362,10 +372,12 @@ describe('validate API ValidatorParameterSet', () => {
         // validation for testnet v2 *not* a valid signature
         operation.proof = clone(mockData.proof);
 
-        operation = await attachInvocationProof(operation, {
+        operation = await attachInvocationProof({
+          operation,
           capability: validatorParameterSetDoc.id,
           // capabilityAction: operation.type,
           capabilityAction: 'write',
+          invocationTarget: operation.recordPatch.target,
           key,
         });
         // FIXME: replace mock proof above with legitimate proof
@@ -433,10 +445,12 @@ describe('validate API ValidatorParameterSet', () => {
         // validation for testnet v2 *not* a valid signature
         operation.proof = clone(mockData.proof);
 
-        operation = await attachInvocationProof(operation, {
+        operation = await attachInvocationProof({
+          operation,
           capability: validatorParameterSetDoc.id,
           // capabilityAction: operation.type,
           capabilityAction: 'write',
+          invocationTarget: operation.recordPatch.target,
           key,
         });
         // FIXME: replace mock proof above with legitimate proof
