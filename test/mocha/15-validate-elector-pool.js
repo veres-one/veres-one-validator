@@ -46,10 +46,13 @@ describe('validate API ElectorPool', () => {
         // FIXME: add a write proof for the ledger that will pass json-schema
         // validation for testnet v2 *not* a valid signature
         operation.proof = bedrock.util.clone(mockData.proof);
-        operation = await attachInvocationProof(operation, {
+        operation.proof.invocationTarget = operation.record.id;
+        operation = await attachInvocationProof({
+          operation,
           // capability: maintainerDid,
           capability: electorPoolDoc.id,
           capabilityAction: 'write',
+          invocationTarget: operation.record.id,
           key,
           signer: key.signer()
         });
@@ -100,10 +103,13 @@ describe('validate API ElectorPool', () => {
 
         // FIXME: add a write proof for the ledger that will pass json-schema
         // validation for testnet v2 *not* a valid signature
-        operation.proof = bedrock.util.clone(mockData.proof);
-        operation = await attachInvocationProof(operation, {
+        operation.proof.invocationTarget = operation.record.id;
+        operation = await attachInvocationProof({
+          operation,
+          // capability: maintainerDid,
           capability: electorPoolDoc.id,
           capabilityAction: 'write',
+          invocationTarget: operation.record.id,
           key,
           signer: key.signer()
         });
@@ -145,13 +151,16 @@ describe('validate API ElectorPool', () => {
         let operation = await _wrap(
           {didDocument: electorPoolDoc, operationType: 'create'});
         const key = _getMaintainerKeys();
-
         // no create proof added
-        operation = await attachInvocationProof(operation, {
+        operation = await attachInvocationProof({
+          operation,
           capability: maintainerDid,
           capabilityAction: 'write',
+          invocationTarget: operation.record.id,
           key,
+          signer: key.signer()
         });
+
         const ledgerConfig = bedrock.util.clone(
           mockData.ledgerConfigurations.alpha);
         ledgerConfig.electorSelectionMethod = {
@@ -187,11 +196,15 @@ describe('validate API ElectorPool', () => {
         const key = _getMaintainerKeys();
         // no ledger write proof added
         // this proof is for writing to a single did
-        operation = await attachInvocationProof(operation, {
+        operation = await attachInvocationProof({
+          operation,
           capability: maintainerDid,
           capabilityAction: 'write',
+          invocationTarget: operation.record.id,
           key,
+          signer: key.signer()
         });
+
         const ledgerConfig = bedrock.util.clone(
           mockData.ledgerConfigurations.alpha);
         ledgerConfig.electorSelectionMethod = {
@@ -226,14 +239,18 @@ describe('validate API ElectorPool', () => {
         // no ledger write proof added
         // this operation has 2 write proofs with dids, but no
         // proof for writing to the ledger itself
-        operation = await attachInvocationProof(operation, {
+        operation = await attachInvocationProof({
+          operation,
           capability: electorPoolDoc.id,
           capabilityAction: 'write',
+          invocationTarget: electorPoolDoc.id,
           key,
         });
-        operation = await attachInvocationProof(operation, {
+        operation = await attachInvocationProof({
+          operation,
           capability: electorPoolDoc.id,
           capabilityAction: 'write',
+          invocationTarget: electorPoolDoc.id,
           key,
         });
         const ledgerConfig = bedrock.util.clone(
@@ -271,16 +288,20 @@ describe('validate API ElectorPool', () => {
         // we have 2 ledger write proofs, but no did specific
         // write proof
 
-        operation = await attachInvocationProof(operation, {
+        operation = await attachInvocationProof({
+          operation,
           algorithm: 'Ed25519Signature2018',
           capability: maintainerDid,
           capabilityAction: 'write',
+          invocationTarget: operation.record.id,
           key,
         });
-        operation = await attachInvocationProof(operation, {
+        operation = await attachInvocationProof({
+          operation,
           algorithm: 'Ed25519Signature2018',
           capability: maintainerDid,
           capabilityAction: 'write',
+          invocationTarget: operation.record.id,
           key,
         });
         const ledgerConfig = bedrock.util.clone(
@@ -319,10 +340,12 @@ describe('validate API ElectorPool', () => {
         operation.proof = bedrock.util.clone(mockData.proof);
 
         // replacing electorDid with maintainerDid
-        operation = await attachInvocationProof(operation, {
+        operation = await attachInvocationProof({
+          operation,
           // this DID document does not exist
           capability: 'did:v1:uuid:e798d4cf-f4f5-40cb-9f06-7fa56cf55d95',
           capabilityAction: 'write',
+          invocationTarget: operation.record.id,
           key,
         });
 
@@ -423,10 +446,12 @@ describe('validate API ElectorPool', () => {
         // validation for testnet v2 *not* a valid signature
         operation.proof = bedrock.util.clone(mockData.proof);
 
-        operation = await attachInvocationProof(operation, {
+        operation = await attachInvocationProof({
+          operation,
           capability: electorPoolDoc.id,
           // capabilityAction: operation.type,
           capabilityAction: 'write',
+          invocationTarget: operation.recordPatch.target,
           key,
         });
         // FIXME: replace mock proof above with legitimate proof
@@ -500,10 +525,12 @@ describe('validate API ElectorPool', () => {
         // validation for testnet v2 *not* a valid signature
         operation.proof = bedrock.util.clone(mockData.proof);
 
-        operation = await attachInvocationProof(operation, {
+        operation = await attachInvocationProof({
+          operation,
           capability: electorPoolDoc.id,
           // capabilityAction: operation.type,
           capabilityAction: 'write',
+          invocationTarget: operation.recordPatch.target,
           key,
         });
         // FIXME: replace mock proof above with legitimate proof
