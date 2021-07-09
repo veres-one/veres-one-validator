@@ -100,10 +100,8 @@ describe('validate API ElectorPool', () => {
         let operation = await _wrap(
           {didDocument: electorPoolDoc, operationType: 'create'});
         const key = _getMaintainerKeys();
-
         // FIXME: add a write proof for the ledger that will pass json-schema
         // validation for testnet v2 *not* a valid signature
-        operation.proof.invocationTarget = operation.record.id;
         operation = await attachInvocationProof({
           operation,
           // capability: maintainerDid,
