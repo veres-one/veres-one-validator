@@ -859,21 +859,24 @@ describe('validate regular DIDs', () => {
       });
       mockOperation.recordPatch.patch = jsonpatch.generate(observer);
       mockOperation.recordPatch.target = did;
+      // after proof, change the patch target
+      const {did: did2} = await _generateDid();
       // FIXME: add a write proof for the accelerator that will pass
       // json-schema validation for testnet v2 *not* a valid signature
       mockOperation.proof = clone(mockData.proof);
-      mockOperation.proof.invocationTarget = did;
       const s = await jsigs.sign(mockOperation, {
         documentLoader,
         suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
         purpose: new CapabilityInvocation({
           capability: did,
           capabilityAction,
-          invocationTarget: did
+          // Set the invocation target to did2 here
+          // in order to have the correct expectedTarget in the validator below.
+          // This is purely to test that the validator throws if
+          // the operation has been modified
+          invocationTarget: did2
         })
       });
-      // after proof, change the patch target
-      const {did: did2} = await _generateDid();
       mockOperation.recordPatch.target = did2;
       const result = await voValidator.validate({
         basisBlockHeight: 10,
@@ -984,14 +987,13 @@ describe('validate regular DIDs', () => {
       // FIXME: add a write proof for the accelerator that will pass
       // json-schema validation for testnet v2 *not* a valid signature
       mockOperation.proof = clone(mockData.proof);
-      mockOperation.proof.invocationTarget = did;
       const s = await jsigs.sign(mockOperation, {
         documentLoader,
         suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
         purpose: new CapabilityInvocation({
           capability: did,
           capabilityAction,
-          invocationTarget: did
+          invocationTarget: did1
         })
       });
       const result = await voValidator.validate({
