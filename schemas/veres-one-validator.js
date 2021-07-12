@@ -148,10 +148,6 @@ const didDocumentContext = {
     }, {
       // the remaining 2 contexts can be any of these
       anyOf: [{
-        const: constants.DID_CONTEXT_URL
-      }, {
-        const: constants.VERES_ONE_CONTEXT_V1_URL
-      }, {
         const: constants.WEB_LEDGER_CONTEXT_V1_URL
       }, {
         const: constants.ED25519_2020_CONTEXT_V1_URL
