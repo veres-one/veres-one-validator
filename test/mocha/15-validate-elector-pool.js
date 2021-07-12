@@ -46,7 +46,7 @@ describe('validate API ElectorPool', () => {
         // FIXME: add a write proof for the ledger that will pass json-schema
         // validation for testnet v2 *not* a valid signature
         operation.proof = bedrock.util.clone(mockData.proof);
-        operation.proof.invocationTarget = operation.record.id;
+
         operation = await attachInvocationProof({
           operation,
           // capability: maintainerDid,
@@ -103,7 +103,7 @@ describe('validate API ElectorPool', () => {
         // FIXME: add a write proof for the ledger that will pass json-schema
         // validation for testnet v2 *not* a valid signature
         operation.proof = bedrock.util.clone(mockData.proof);
-        operation.proof.invocationTarget = operation.record.id;
+
         operation = await attachInvocationProof({
           operation,
           // capability: maintainerDid,
