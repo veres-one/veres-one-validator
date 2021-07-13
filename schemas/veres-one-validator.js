@@ -125,8 +125,7 @@ const publicKey = {
   type: 'object',
   properties: {
     id: {
-      type: 'string',
-      maxLength
+      type: 'string'
     },
     type: {
       type: 'string',
@@ -473,7 +472,6 @@ const baseCapability = {
     },
     verificationMethod: {
       type: 'string',
-      maxLength
     },
   }
 };
