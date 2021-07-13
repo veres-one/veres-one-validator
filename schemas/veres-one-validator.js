@@ -21,6 +21,7 @@ const caveat = {
   properties: {
     type: {
       type: 'string',
+      maxLength
       // FIXME: enable when term is finalized
       // enum: ['VeresOneElectorTicketAgent']
     }
@@ -125,7 +126,8 @@ const publicKey = {
   type: 'object',
   properties: {
     id: {
-      type: 'string'
+      type: 'string',
+      maxLength: maxLength * 2
     },
     type: {
       type: 'string',
@@ -133,7 +135,9 @@ const publicKey = {
     },
     controller: did(),
     publicKeyMultibase: {
-      type: 'string'
+      type: 'string',
+      // NOTE: this might cause issues with larger keys
+      maxLength: maxLength * 2
     }
   },
 };
@@ -428,6 +432,7 @@ const validatorParameterSet = {
         // FIXME: how should these be validated beyond string?
         // pattern startswith https:// ?
         type: 'string',
+        maxLength
       }
     }
   },
@@ -455,8 +460,14 @@ const baseCapability = {
       enum: ['write'],
     },
     created: schemas.w3cDateTime(),
-    invocationTarget: {type: 'string'},
-    proofValue: {type: 'string'},
+    invocationTarget: {
+      type: 'string',
+      maxLength
+    },
+    proofValue: {
+      type: 'string',
+      maxLength
+    },
     // FIXME is creator always a did?
     creator: {
       type: 'string',
@@ -472,6 +483,7 @@ const baseCapability = {
     },
     verificationMethod: {
       type: 'string',
+      maxLength: maxLength * 2
     },
   }
 };
@@ -522,7 +534,10 @@ const updateWebLedgerRecord = {
       constants.WEB_LEDGER_CONTEXT_V1_URL,
       constants.ED25519_2020_CONTEXT_V1_URL,
     ]),
-    creator: {type: 'string'},
+    creator: {
+      type: 'string',
+      maxLength: maxLength * 2
+    },
     type: {const: 'UpdateWebLedgerRecord',
     },
     recordPatch: didDocumentPatch,
@@ -671,7 +686,10 @@ const createWebLedgerRecord = {
       constants.WEB_LEDGER_CONTEXT_V1_URL,
       constants.ED25519_2020_CONTEXT_V1_URL
     ]),
-    creator: {type: 'string'},
+    creator: {
+      type: 'string',
+      maxLength: maxLength * 2
+    },
     type: {const: 'CreateWebLedgerRecord'},
     proof: {
       anyOf: [{
