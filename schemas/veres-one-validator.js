@@ -12,6 +12,12 @@ const didUuid = require('./did-uuid');
 const {serviceDescriptor, serviceId} = require('./service');
 const urnUuid = require('./urn-uuid');
 
+const creator = {
+  type: 'string',
+  // FIXME this is a DID
+  maxLength: maxLength * 2
+};
+
 const caveat = {
   additionalProperties: false,
   required: [
@@ -466,13 +472,11 @@ const baseCapability = {
     },
     proofValue: {
       type: 'string',
-      maxLength
+      // this should be the base58 representation of a 512 bit hash.
+      // this is less than 89 characters
+      maxLength: 89
     },
-    // FIXME is creator always a did?
-    creator: {
-      type: 'string',
-      maxLength
-    },
+    creator,
     proofPurpose: {
       type: 'string',
       enum: ['capabilityInvocation'],
@@ -483,7 +487,8 @@ const baseCapability = {
     },
     verificationMethod: {
       type: 'string',
-      maxLength: maxLength * 2
+      // a verification method is a did with 2 base58 encoding of 34 bytes.
+      maxLength: 108
     },
   }
 };
@@ -534,10 +539,7 @@ const updateWebLedgerRecord = {
       constants.WEB_LEDGER_CONTEXT_V1_URL,
       constants.ED25519_2020_CONTEXT_V1_URL,
     ]),
-    creator: {
-      type: 'string',
-      maxLength: maxLength * 2
-    },
+    creator,
     type: {const: 'UpdateWebLedgerRecord',
     },
     recordPatch: didDocumentPatch,
@@ -572,10 +574,7 @@ const ledgerConfiguration = {
       constants.ED25519_2020_CONTEXT_V1_URL
     ]),
     consensusMethod: {const: 'Continuity2017'},
-    creator: {
-      type: 'string',
-      maxLength
-    },
+    creator,
     electorSelectionMethod: {
       additionalProperties: false,
       required: [
@@ -686,10 +685,7 @@ const createWebLedgerRecord = {
       constants.WEB_LEDGER_CONTEXT_V1_URL,
       constants.ED25519_2020_CONTEXT_V1_URL
     ]),
-    creator: {
-      type: 'string',
-      maxLength: maxLength * 2
-    },
+    creator,
     type: {const: 'CreateWebLedgerRecord'},
     proof: {
       anyOf: [{
