@@ -34,6 +34,11 @@ const caveat = {
   }
 };
 
+const invocationTarget = {
+  // FIXME this will allow any string with minLength 1 or more
+  anyOf: [schemas.url(), did(), didReference(), didUuid()]
+};
+
 const capability = {
   additionalProperties: false,
   type: 'object',
@@ -49,12 +54,8 @@ const capability = {
       items: caveat,
     },
     id: did(),
-    invocationTarget: {
-      // FIXME: more specific pattern?
-      type: 'string',
-      maxLength
-    }
-  },
+    invocationTarget
+  }
 };
 
 const operationValidator = {
@@ -177,15 +178,8 @@ const didDocument = {
     '@context': didDocumentContext,
     id: did(),
     // FIXME: be more specific with restrictions for all properties below
-    invocationTarget: {
-      type: 'string',
-      maxLength
-    },
-    invoker: {
-      type: 'string',
-      // prefix + multibaseKeyMaterial
-      maxLength: 59
-    },
+    invocationTarget,
+    invoker: did(),
     assertionMethod: {
       type: 'array',
       minItems: 1,
@@ -465,10 +459,7 @@ const baseCapability = {
       enum: ['write'],
     },
     created: schemas.w3cDateTime(),
-    invocationTarget: {
-      type: 'string',
-      maxLength
-    },
+    invocationTarget,
     proofValue: {
       type: 'string',
       // this should be the base58 representation of a 512 bit hash.
