@@ -4,7 +4,6 @@
 'use strict';
 
 const bedrock = require('bedrock');
-const {maxLength} = require('../lib/constants');
 
 const {config} = bedrock;
 require('../lib/config');
@@ -20,7 +19,9 @@ const schema = {
   description: 'A decentralized identifier.',
   type: 'string',
   pattern,
-  maxLength: maxLength * 2,
+  // prefix max length is 16 + 2x publicKeyMultibase (48 each) and
+  // a # in the middle for 113 characters
+  maxLength: 113,
   errors: {
     invalid: 'The decentralized identifier reference is invalid.',
     missing: 'Please provide a decentralized identifier reference.'
