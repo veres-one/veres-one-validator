@@ -131,10 +131,7 @@ const publicKey = {
   ],
   type: 'object',
   properties: {
-    id: {
-      type: 'string',
-      maxLength: maxLength * 2
-    },
+    id: didReference(),
     type: {
       type: 'string',
       enum: ['Ed25519VerificationKey2020', 'X25519KeyAgreementKey2020'],
@@ -142,8 +139,8 @@ const publicKey = {
     controller: did(),
     publicKeyMultibase: {
       type: 'string',
-      // NOTE: this might cause issues with larger keys
-      maxLength: maxLength * 2
+      // base58 encoding of 32 byte seed material
+      maxLength: 48
     }
   },
 };
@@ -186,7 +183,8 @@ const didDocument = {
     },
     invoker: {
       type: 'string',
-      maxLength
+      // prefix + multibaseKeyMaterial
+      maxLength: 59
     },
     assertionMethod: {
       type: 'array',
@@ -457,6 +455,7 @@ const baseCapability = {
     'type'
   ],
   properties: {
+    // FIXME add a deterministic length for capability
     capability: {
       type: 'string',
       maxLength
@@ -473,7 +472,7 @@ const baseCapability = {
     proofValue: {
       type: 'string',
       // this should be the base58 representation of a 512 bit hash.
-      // this is less than 89 characters
+      // this is max 89 characters
       maxLength: 89
     },
     creator,
@@ -485,11 +484,7 @@ const baseCapability = {
       type: 'string',
       enum: ['Ed25519Signature2020']
     },
-    verificationMethod: {
-      type: 'string',
-      // a verification method is a did with 2 base58 encoding of 34 bytes.
-      maxLength: 108
-    },
+    verificationMethod: didReference()
   }
 };
 
