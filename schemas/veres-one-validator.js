@@ -12,10 +12,10 @@ const didUuid = require('./did-uuid');
 const {serviceDescriptor, serviceId} = require('./service');
 const urnUuid = require('./urn-uuid');
 
+// can be a did or a url
 const creator = {
-  type: 'string',
-  // FIXME this is a DID
-  maxLength: maxLength * 2
+  // FIXME this will allow any string with minLength 1 or more
+  anyOf: [schemas.url(), did(), didReference(), didUuid()]
 };
 
 const caveat = {

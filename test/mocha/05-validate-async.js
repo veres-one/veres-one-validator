@@ -4,7 +4,6 @@
 'use strict';
 
 const bedrock = require('bedrock');
-const {util: {clone}} = bedrock;
 const {documentLoader} = require('bedrock-jsonld-document-loader');
 const {Ed25519Signature2020} =
   require('@digitalbazaar/ed25519-signature-2020');
@@ -13,11 +12,13 @@ const {Ed25519VerificationKey2020} =
 const jsigs = require('jsonld-signatures');
 const jsonld = require('jsonld');
 const jsonpatch = require('fast-json-patch');
-const mockData = require('./mock.data');
 const voValidator = require('veres-one-validator');
 const {CapabilityInvocation} = require('@digitalbazaar/zcapld');
-const v1 = require('did-veres-one').driver();
+const mockData = require('./mock.data');
 const {VeresOneDidDoc} = require('did-veres-one');
+const v1 = require('did-veres-one').driver();
+
+const {util: {clone}} = bedrock;
 
 describe('validate regular DIDs', () => {
   describe('validate API', () => {
