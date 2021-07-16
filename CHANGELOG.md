@@ -4,6 +4,7 @@
 
 ### Changed
 - **BREAKING**: Validators no longer accept `capabilitionAction` `create` or `update` just `write`.
+- **BREAKING**: Validators for proofs require `invocationTarget` is set.
 
 ## 7.0.0 - 2020-09-30
 
