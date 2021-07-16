@@ -932,8 +932,6 @@ describe('validate regular DIDs', () => {
           invocationTarget: did
         })
       });
-      // remove that proof before validating
-      s.proof = [s.proof[1]];
       const result = await voValidator.validate({
         basisBlockHeight: 10,
         ledgerNode: mockData.ledgerNode,
@@ -993,8 +991,6 @@ describe('validate regular DIDs', () => {
           invocationTarget: did1
         })
       });
-      // remove that proof before validating
-      s.proof = [s.proof[1]];
       const result = await voValidator.validate({
         basisBlockHeight: 10,
         ledgerNode: mockData.ledgerNode,
@@ -1100,8 +1096,6 @@ describe('validate regular DIDs', () => {
           invocationTarget: did
         })
       });
-      // remove that proof before validating
-      s.proof = [s.proof[1]];
       const result = await voValidator.validate({
         basisBlockHeight: 10,
         ledgerNode: mockData.ledgerNode,
@@ -1159,8 +1153,6 @@ describe('validate regular DIDs', () => {
           invocationTarget: did
         })
       });
-      // remove that proof before validating
-      s.proof = [s.proof[1]];
       const result = await voValidator.validate({
         basisBlockHeight: 10,
         ledgerNode: mockData.ledgerNode,
