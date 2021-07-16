@@ -45,21 +45,23 @@ describe('validate API ValidatorParameterSet', () => {
           {didDocument: validatorParameterSetDoc, operationType: 'create'});
         const key = _getMaintainerKeys();
 
-        // FIXME: add an AuthorizeRequest proof that will pass json-schema
+        // FIXME: add a write proof for the ledger that will pass json-schema
         // validation for testnet v2 *not* a valid signature
         operation.proof = clone(mockData.proof);
 
-        operation = await attachInvocationProof(operation, {
+        operation = await attachInvocationProof({
+          operation,
           // capability: maintainerDid,
           capability: validatorParameterSetDoc.id,
-          capabilityAction: 'create',
+          capabilityAction: 'write',
+          invocationTarget: operation.record.id,
           key,
         });
 
         // FIXME: attach proof instead of mock proof above
         // operation = await attachInvocationProof(operation, {
         //   capability: maintainerDid,
-        //   capabilityAction: 'AuthorizeRequest',
+        //   capabilityAction: 'write',
         //   key,
         // });
         const ledgerConfig = clone(mockData.ledgerConfigurations.alpha);
@@ -92,21 +94,23 @@ describe('validate API ValidatorParameterSet', () => {
           {didDocument: validatorParameterSetDoc, operationType: 'create'});
         const key = _getMaintainerKeys();
 
-        // FIXME: add an AuthorizeRequest proof that will pass json-schema
+        // FIXME: add a write proof for the ledger that will pass json-schema
         // validation for testnet v2 *not* a valid signature
         operation.proof = clone(mockData.proof);
 
-        operation = await attachInvocationProof(operation, {
+        operation = await attachInvocationProof({
+          operation,
           // capability: maintainerDid,
           capability: validatorParameterSetDoc.id,
-          capabilityAction: 'create',
+          capabilityAction: 'write',
+          invocationTarget: operation.record.id,
           key,
         });
 
         // FIXME: attach proof instead of mock proof above
         // operation = await attachInvocationProof(operation, {
         //   capability: maintainerDid,
-        //   capabilityAction: 'AuthorizeRequest',
+        //   capabilityAction: 'write',
         //   key,
         // });
         const ledgerConfig = clone(mockData.ledgerConfigurations.alpha);
@@ -147,21 +151,23 @@ describe('validate API ValidatorParameterSet', () => {
           {didDocument: validatorParameterSetDoc, operationType: 'create'});
         const key = _getMaintainerKeys();
 
-        // FIXME: add an AuthorizeRequest proof that will pass json-schema
+        // FIXME: add a write proof for the ledger that will pass json-schema
         // validation for testnet v2 *not* a valid signature
         operation.proof = clone(mockData.proof);
 
-        operation = await attachInvocationProof(operation, {
+        operation = await attachInvocationProof({
+          operation,
           // capability: maintainerDid,
           capability: validatorParameterSetDoc.id,
-          capabilityAction: 'create',
+          capabilityAction: 'write',
+          invocationTarget: operation.record.id,
           key,
         });
 
         // FIXME: attach proof instead of mock proof above
         // operation = await attachInvocationProof(operation, {
         //   capability: maintainerDid,
-        //   capabilityAction: 'AuthorizeRequest',
+        //   capabilityAction: 'write',
         //   key,
         // });
         const ledgerConfig = clone(mockData.ledgerConfigurations.alpha);
@@ -220,21 +226,23 @@ describe('validate API ValidatorParameterSet', () => {
 
         // FIXME: what are proper proofs for an update operation?
 
-        // FIXME: add an AuthorizeRequest proof that will pass json-schema
+        // FIXME: add a write proof for the ledger that will pass json-schema
         // validation for testnet v2 *not* a valid signature
         operation.proof = clone(mockData.proof);
 
-        operation = await attachInvocationProof(operation, {
+        operation = await attachInvocationProof({
+          operation,
           capability: validatorParameterSetDoc.id,
           // capabilityAction: operation.type,
-          capabilityAction: 'update',
+          capabilityAction: 'write',
+          invocationTarget: operation.recordPatch.target,
           key,
         });
         // FIXME: replace mock proof above with legitimate proof
         // operation = await attachInvocationProof(operation, {
         //   capability: maintainerDid,
         //   // capabilityAction: operation.type,
-        //   capabilityAction: 'AuthorizeRequest',
+        //   capabilityAction: 'write',
         //   key,
         // });
         const ledgerConfig = clone(mockData.ledgerConfigurations.alpha);
@@ -287,21 +295,23 @@ describe('validate API ValidatorParameterSet', () => {
 
         // FIXME: what are proper proofs for an update operation?
 
-        // FIXME: add an AuthorizeRequest proof that will pass json-schema
+        // FIXME: add a write proof for the ledger that will pass json-schema
         // validation for testnet v2 *not* a valid signature
         operation.proof = clone(mockData.proof);
 
-        operation = await attachInvocationProof(operation, {
+        operation = await attachInvocationProof({
+          operation,
           capability: validatorParameterSetDoc.id,
           // capabilityAction: operation.type,
-          capabilityAction: 'update',
+          capabilityAction: 'write',
+          invocationTarget: operation.recordPatch.target,
           key,
         });
         // FIXME: replace mock proof above with legitimate proof
         // operation = await attachInvocationProof(operation, {
         //   capability: maintainerDid,
         //   // capabilityAction: operation.type,
-        //   capabilityAction: 'AuthorizeRequest',
+        //   capabilityAction: 'write',
         //   key,
         // });
         const ledgerConfig = clone(mockData.ledgerConfigurations.alpha);
@@ -358,21 +368,23 @@ describe('validate API ValidatorParameterSet', () => {
 
         // FIXME: what are proper proofs for an update operation?
 
-        // FIXME: add an AuthorizeRequest proof that will pass json-schema
+        // FIXME: add a write proof for the ledger that will pass json-schema
         // validation for testnet v2 *not* a valid signature
         operation.proof = clone(mockData.proof);
 
-        operation = await attachInvocationProof(operation, {
+        operation = await attachInvocationProof({
+          operation,
           capability: validatorParameterSetDoc.id,
           // capabilityAction: operation.type,
-          capabilityAction: 'update',
+          capabilityAction: 'write',
+          invocationTarget: operation.recordPatch.target,
           key,
         });
         // FIXME: replace mock proof above with legitimate proof
         // operation = await attachInvocationProof(operation, {
         //   capability: maintainerDid,
         //   // capabilityAction: operation.type,
-        //   capabilityAction: 'AuthorizeRequest',
+        //   capabilityAction: 'write',
         //   key,
         // });
         const ledgerConfig = clone(mockData.ledgerConfigurations.alpha);
@@ -429,21 +441,22 @@ describe('validate API ValidatorParameterSet', () => {
 
         // FIXME: what are proper proofs for an update operation?
 
-        // FIXME: add an AuthorizeRequest proof that will pass json-schema
+        // FIXME: add a write proof for the ledger that will pass json-schema
         // validation for testnet v2 *not* a valid signature
         operation.proof = clone(mockData.proof);
-
-        operation = await attachInvocationProof(operation, {
+        operation = await attachInvocationProof({
+          operation,
           capability: validatorParameterSetDoc.id,
           // capabilityAction: operation.type,
-          capabilityAction: 'update',
+          capabilityAction: 'write',
+          invocationTarget: operation.recordPatch.target,
           key,
         });
         // FIXME: replace mock proof above with legitimate proof
         // operation = await attachInvocationProof(operation, {
         //   capability: maintainerDid,
         //   // capabilityAction: operation.type,
-        //   capabilityAction: 'AuthorizeRequest',
+        //   capabilityAction: 'write',
         //   key,
         // });
         const ledgerConfig = clone(mockData.ledgerConfigurations.alpha);
