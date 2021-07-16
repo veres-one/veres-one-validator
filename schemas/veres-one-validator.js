@@ -138,7 +138,7 @@ const publicKey = {
     controller: did(),
     publicKeyMultibase: {
       type: 'string',
-      // base58 encoding of 32 byte seed material
+      // multibase base58 encoding of multicodec public key
       maxLength: 48
     }
   },
