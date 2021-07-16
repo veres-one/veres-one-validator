@@ -43,13 +43,16 @@ describe('validate API ElectorPool', () => {
           {didDocument: electorPoolDoc, operationType: 'create'});
         const key = _getMaintainerKeys();
 
-        // FIXME: add an AuthorizeRequest proof that will pass json-schema
+        // FIXME: add a write proof for the ledger that will pass json-schema
         // validation for testnet v2 *not* a valid signature
         operation.proof = bedrock.util.clone(mockData.proof);
-        operation = await attachInvocationProof(operation, {
+
+        operation = await attachInvocationProof({
+          operation,
           // capability: maintainerDid,
           capability: electorPoolDoc.id,
-          capabilityAction: 'create',
+          capabilityAction: 'write',
+          invocationTarget: operation.record.id,
           key,
           signer: key.signer()
         });
@@ -57,7 +60,7 @@ describe('validate API ElectorPool', () => {
         // FIXME: attach proof instead of mock proof above
         // operation = await attachInvocationProof(operation, {
         //   capability: maintainerDid,
-        //   capabilityAction: 'AuthorizeRequest',
+        //   capabilityAction: 'write',
         //   key,
         // });
         const ledgerConfig = bedrock.util.clone(
@@ -97,21 +100,23 @@ describe('validate API ElectorPool', () => {
         let operation = await _wrap(
           {didDocument: electorPoolDoc, operationType: 'create'});
         const key = _getMaintainerKeys();
-
-        // FIXME: add an AuthorizeRequest proof that will pass json-schema
+        // FIXME: add a write proof for the ledger that will pass json-schema
         // validation for testnet v2 *not* a valid signature
         operation.proof = bedrock.util.clone(mockData.proof);
-        operation = await attachInvocationProof(operation, {
+
+        operation = await attachInvocationProof({
+          operation,
+          // capability: maintainerDid,
           capability: electorPoolDoc.id,
-          capabilityAction: 'create',
+          capabilityAction: 'write',
+          invocationTarget: operation.record.id,
           key,
           signer: key.signer()
         });
-
         // FIXME: attach proof instead of mock proof above
         // operation = await attachInvocationProof(operation, {
         //   capability: maintainerDid,
-        //   capabilityAction: 'AuthorizeRequest',
+        //   capabilityAction: 'write',
         //   key,
         // });
         const ledgerConfig = bedrock.util.clone(
@@ -139,20 +144,22 @@ describe('validate API ElectorPool', () => {
         result.valid.should.be.false;
         result.error.name.should.equal('NotFoundError');
       });
-      it('fails on op w/missing create capability', async () => {
+      it('fails on op if proof is not an array', async () => {
         const {id: maintainerDid} = maintainerDidDocumentFull.didDocument;
         const electorPoolDoc = _generateElectorPoolDoc();
         let operation = await _wrap(
           {didDocument: electorPoolDoc, operationType: 'create'});
         const key = _getMaintainerKeys();
-
         // no create proof added
-
-        operation = await attachInvocationProof(operation, {
+        operation = await attachInvocationProof({
+          operation,
           capability: maintainerDid,
-          capabilityAction: 'AuthorizeRequest',
+          capabilityAction: 'write',
+          invocationTarget: operation.record.id,
           key,
+          signer: key.signer()
         });
+
         const ledgerConfig = bedrock.util.clone(
           mockData.ledgerConfigurations.alpha);
         ledgerConfig.electorSelectionMethod = {
@@ -180,107 +187,122 @@ describe('validate API ElectorPool', () => {
         result.error.name.should.equal('ValidationError');
       });
 
-      it('fails on op w/missing AuthorizeRequest capability', async () => {
+      it('fails on op w/only one write capability', async () => {
+        const {id: maintainerDid} = maintainerDidDocumentFull.didDocument;
+        const electorPoolDoc = _generateElectorPoolDoc();
+        let operation = await _wrap(
+          {didDocument: electorPoolDoc, operationType: 'create'});
+        const key = _getMaintainerKeys();
+        // no ledger write proof added
+        // this proof is for writing to a single did
+        operation = await attachInvocationProof({
+          operation,
+          capability: maintainerDid,
+          capabilityAction: 'write',
+          invocationTarget: operation.record.id,
+          key,
+          signer: key.signer()
+        });
+
+        const ledgerConfig = bedrock.util.clone(
+          mockData.ledgerConfigurations.alpha);
+        ledgerConfig.electorSelectionMethod = {
+          type: 'VeresOne',
+          // corresponds to electorPoolDocument.alpha
+          electorPool: electorPoolDoc.id,
+        };
+        let err;
+        let result;
+        try {
+          result = await voValidator.validate({
+            basisBlockHeight: 0,
+            ledgerConfig,
+            ledgerNode,
+            validatorInput: operation,
+            validatorConfig: mockData.ledgerConfigurations.alpha
+              .operationValidator[0]
+          });
+        } catch(e) {
+          err = e;
+        }
+        assertNoError(err);
+        result.valid.should.be.false;
+        result.error.name.should.equal('ValidationError');
+      });
+      // FIXME add validation to ensure one of the proof's invocationTarget
+      // is the ledger itself.
+      it.skip('fails on op w/ two write capability proofs', async () => {
+        const electorPoolDoc = _generateElectorPoolDoc();
+        let operation = await _wrap(
+          {didDocument: electorPoolDoc, operationType: 'create'});
+        const key = _getMaintainerKeys();
+
+        // no ledger write proof added
+        // this operation has 2 write proofs with dids, but no
+        // proof for writing to the ledger itself
+        operation = await attachInvocationProof({
+          operation,
+          capability: electorPoolDoc.id,
+          capabilityAction: 'write',
+          invocationTarget: electorPoolDoc.id,
+          key,
+        });
+        operation = await attachInvocationProof({
+          operation,
+          capability: electorPoolDoc.id,
+          capabilityAction: 'write',
+          invocationTarget: electorPoolDoc.id,
+          key,
+        });
+        const ledgerConfig = bedrock.util.clone(
+          mockData.ledgerConfigurations.alpha);
+        ledgerConfig.electorSelectionMethod = {
+          type: 'VeresOne',
+          // corresponds to electorPoolDocument.alpha
+          electorPool: electorPoolDoc.id,
+        };
+        let err;
+        let result;
+        try {
+          result = await voValidator.validate({
+            basisBlockHeight: 0,
+            ledgerConfig,
+            ledgerNode,
+            validatorInput: operation,
+            validatorConfig: mockData.ledgerConfigurations.alpha
+              .operationValidator[0]
+          });
+        } catch(e) {
+          err = e;
+        }
+        assertNoError(err);
+        result.valid.should.be.false;
+        result.error.name.should.equal('ValidationError');
+      });
+      // FIXME false negative here
+      it('fails on op w/two ledger write capability proofs', async () => {
         const {id: maintainerDid} = maintainerDidDocumentFull.didDocument;
         const electorPoolDoc = _generateElectorPoolDoc();
         let operation = await _wrap(
           {didDocument: electorPoolDoc, operationType: 'create'});
         const key = _getMaintainerKeys();
 
-        // no AuthorizeRequest proof added
-
-        operation = await attachInvocationProof(operation, {
-          capability: maintainerDid,
-          capabilityAction: 'create',
-          key,
-        });
-        const ledgerConfig = bedrock.util.clone(
-          mockData.ledgerConfigurations.alpha);
-        ledgerConfig.electorSelectionMethod = {
-          type: 'VeresOne',
-          // corresponds to electorPoolDocument.alpha
-          electorPool: electorPoolDoc.id,
-        };
-        let err;
-        let result;
-        try {
-          result = await voValidator.validate({
-            basisBlockHeight: 0,
-            ledgerConfig,
-            ledgerNode,
-            validatorInput: operation,
-            validatorConfig: mockData.ledgerConfigurations.alpha
-              .operationValidator[0]
-          });
-        } catch(e) {
-          err = e;
-        }
-        assertNoError(err);
-        result.valid.should.be.false;
-        result.error.name.should.equal('ValidationError');
-      });
-      it('fails on op w/two create capability proofs', async () => {
-        const electorPoolDoc = _generateElectorPoolDoc();
-        let operation = await _wrap(
-          {didDocument: electorPoolDoc, operationType: 'create'});
-        const key = _getMaintainerKeys();
-
-        // no AuthorizeRequest proof added
-
-        operation = await attachInvocationProof(operation, {
-          capability: electorPoolDoc.id,
-          capabilityAction: 'create',
-          key,
-        });
-        operation = await attachInvocationProof(operation, {
-          capability: electorPoolDoc.id,
-          capabilityAction: 'create',
-          key,
-        });
-        const ledgerConfig = bedrock.util.clone(
-          mockData.ledgerConfigurations.alpha);
-        ledgerConfig.electorSelectionMethod = {
-          type: 'VeresOne',
-          // corresponds to electorPoolDocument.alpha
-          electorPool: electorPoolDoc.id,
-        };
-        let err;
-        let result;
-        try {
-          result = await voValidator.validate({
-            basisBlockHeight: 0,
-            ledgerConfig,
-            ledgerNode,
-            validatorInput: operation,
-            validatorConfig: mockData.ledgerConfigurations.alpha
-              .operationValidator[0]
-          });
-        } catch(e) {
-          err = e;
-        }
-        assertNoError(err);
-        result.valid.should.be.false;
-        result.error.name.should.equal('ValidationError');
-      });
-      it('fails on op w/two AuthorizeRequest capability proofs', async () => {
-        const {id: maintainerDid} = maintainerDidDocumentFull.didDocument;
-        const electorPoolDoc = _generateElectorPoolDoc();
-        let operation = await _wrap(
-          {didDocument: electorPoolDoc, operationType: 'create'});
-        const key = _getMaintainerKeys();
-
-        // no create proof added
-
-        operation = await attachInvocationProof(operation, {
+        // we have 2 ledger write proofs, but no did specific
+        // write proof
+        operation = await attachInvocationProof({
+          operation,
           algorithm: 'Ed25519Signature2018',
           capability: maintainerDid,
-          capabilityAction: 'AuthorizeRequest',
+          capabilityAction: 'write',
+          invocationTarget: maintainerDid,
           key,
         });
-        operation = await attachInvocationProof(operation, {
+        operation = await attachInvocationProof({
+          operation,
           algorithm: 'Ed25519Signature2018',
           capability: maintainerDid,
-          capabilityAction: 'AuthorizeRequest',
+          capabilityAction: 'write',
+          invocationTarget: operation.record.id,
           key,
         });
         const ledgerConfig = bedrock.util.clone(
@@ -308,28 +330,30 @@ describe('validate API ElectorPool', () => {
         result.valid.should.be.false;
         result.error.name.should.equal('ValidationError');
       });
-      it('fails on op w/incorrect capability DID', async () => {
+      it('fails on op w/ incorrect capability DID', async () => {
         const electorPoolDoc = _generateElectorPoolDoc();
         let operation = await _wrap(
           {didDocument: electorPoolDoc, operationType: 'create'});
         const key = _getMaintainerKeys();
 
-        // FIXME: add an AuthorizeRequest proof that will pass json-schema
+        // FIXME: add a write proof for the ledger that will pass json-schema
         // validation for testnet v2 *not* a valid signature
         operation.proof = bedrock.util.clone(mockData.proof);
 
         // replacing electorDid with maintainerDid
-        operation = await attachInvocationProof(operation, {
+        operation = await attachInvocationProof({
+          operation,
           // this DID document does not exist
           capability: 'did:v1:uuid:e798d4cf-f4f5-40cb-9f06-7fa56cf55d95',
-          capabilityAction: 'create',
+          capabilityAction: 'write',
+          invocationTarget: operation.record.id,
           key,
         });
 
         // FIXME: attach proof instead of mock proof above
         // operation = await attachInvocationProof(operation, {
         //   capability: maintainerDid,
-        //   capabilityAction: 'AuthorizeRequest',
+        //   capabilityAction: 'write',
         //   key,
         // });
         const ledgerConfig = bedrock.util.clone(
@@ -419,21 +443,23 @@ describe('validate API ElectorPool', () => {
 
         // FIXME: what are proper proofs for an update operation?
 
-        // FIXME: add an AuthorizeRequest proof that will pass json-schema
+        // FIXME: add a write proof for the ledger that will pass json-schema
         // validation for testnet v2 *not* a valid signature
         operation.proof = bedrock.util.clone(mockData.proof);
 
-        operation = await attachInvocationProof(operation, {
+        operation = await attachInvocationProof({
+          operation,
           capability: electorPoolDoc.id,
           // capabilityAction: operation.type,
-          capabilityAction: 'update',
+          capabilityAction: 'write',
+          invocationTarget: operation.recordPatch.target,
           key,
         });
         // FIXME: replace mock proof above with legitimate proof
         // operation = await attachInvocationProof(operation, {
         //   capability: maintainerDid,
         //   // capabilityAction: operation.type,
-        //   capabilityAction: 'AuthorizeRequest',
+        //   capabilityAction: 'write',
         //   key,
         // });
         const ledgerConfig = bedrock.util.clone(
@@ -496,21 +522,23 @@ describe('validate API ElectorPool', () => {
 
         // FIXME: what are proper proofs for an update operation?
 
-        // FIXME: add an AuthorizeRequest proof that will pass json-schema
+        // FIXME: add a write proof for the ledger that will pass json-schema
         // validation for testnet v2 *not* a valid signature
         operation.proof = bedrock.util.clone(mockData.proof);
 
-        operation = await attachInvocationProof(operation, {
+        operation = await attachInvocationProof({
+          operation,
           capability: electorPoolDoc.id,
           // capabilityAction: operation.type,
-          capabilityAction: 'update',
+          capabilityAction: 'write',
+          invocationTarget: operation.recordPatch.target,
           key,
         });
         // FIXME: replace mock proof above with legitimate proof
         // operation = await attachInvocationProof(operation, {
         //   capability: maintainerDid,
         //   // capabilityAction: operation.type,
-        //   capabilityAction: 'AuthorizeRequest',
+        //   capabilityAction: 'write',
         //   key,
         // });
         const ledgerConfig = bedrock.util.clone(

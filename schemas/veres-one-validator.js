@@ -138,20 +138,23 @@ const publicKey = {
 
 const didDocumentContext = {
   type: 'array',
-  items: {
-    // FIXME: Force first two items to be DID and V1 context?
-    anyOf: [{
+  items: [
+    {
+      // the first context should be the DID Context
       const: constants.DID_CONTEXT_URL
     }, {
+      // the second context should be the V1 Context
       const: constants.VERES_ONE_CONTEXT_V1_URL
     }, {
-      const: constants.WEB_LEDGER_CONTEXT_V1_URL
-    }, {
-      const: constants.ED25519_2020_CONTEXT_V1_URL
-    }, {
-      const: constants.X25519_2020_CONTEXT_V1_URL
-    }]
-  },
+      // the remaining 2 contexts can be any of these
+      anyOf: [{
+        const: constants.WEB_LEDGER_CONTEXT_V1_URL
+      }, {
+        const: constants.ED25519_2020_CONTEXT_V1_URL
+      }, {
+        const: constants.X25519_2020_CONTEXT_V1_URL
+      }]}
+  ],
   maxItems: 4,
   minItems: 2,
 };
@@ -431,6 +434,7 @@ const baseCapability = {
     'capability',
     'capabilityAction',
     'created',
+    'invocationTarget',
     'proofValue',
     'proofPurpose',
     'type'
@@ -439,10 +443,11 @@ const baseCapability = {
     capability: {type: 'string'},
     capabilityAction: {
       type: 'string',
-      enum: ['write', 'create', 'update'],
+      enum: ['write'],
     },
     created: schemas.w3cDateTime(),
     creator: {type: 'string'},
+    invocationTarget: {type: 'string'},
     proofValue: {type: 'string'},
     proofPurpose: {
       type: 'string',
@@ -482,30 +487,6 @@ const writeCapability = {
     }]
 };
 
-const createCapability = {
-  allOf: [
-    baseCapability,
-    creatorOrVerificationMethod, {
-      properties: {
-        capabilityAction: {
-          enum: ['create'],
-        },
-      }
-    }]
-};
-
-const updateDidCapability = {
-  allOf: [
-    baseCapability,
-    creatorOrVerificationMethod, {
-      properties: {
-        capabilityAction: {
-          enum: ['update'],
-        },
-      }
-    }]
-};
-
 const updateWebLedgerRecord = {
   title: 'Update DID',
   type: 'object',
@@ -529,11 +510,7 @@ const updateWebLedgerRecord = {
     proof: {
       anyOf: [{
         type: 'array',
-        items: [writeCapability, updateDidCapability],
-        additionalItems: false,
-      }, {
-        type: 'array',
-        items: [updateDidCapability, writeCapability],
+        items: [writeCapability, writeCapability],
         additionalItems: false,
       }],
     }
@@ -676,11 +653,7 @@ const createWebLedgerRecord = {
     proof: {
       anyOf: [{
         type: 'array',
-        items: [writeCapability, createCapability],
-        additionalItems: false,
-      }, {
-        type: 'array',
-        items: [createCapability, writeCapability],
+        items: [writeCapability, writeCapability],
         additionalItems: false,
       }],
     },
