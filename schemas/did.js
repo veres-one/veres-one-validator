@@ -19,7 +19,7 @@ const schema = {
   type: 'string',
   pattern,
   minLength,
-  // prefix plus a single base58 encoded 32 byte buffer
+  // prefix plus a single multibase base58 encoded multicodec public key
   maxLength: minLength + 48,
   errors: {
     invalid: 'The decentralized identifier is invalid.',
