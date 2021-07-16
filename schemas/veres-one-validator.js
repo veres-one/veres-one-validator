@@ -460,8 +460,8 @@ const baseCapability = {
     invocationTarget,
     proofValue: {
       type: 'string',
-      // this should be the base58 representation of a 512 bit hash.
-      // this is max 89 characters
+      // this should be the multibase base58 representation of a 64-byte
+      // ed25519 signature value; this is max 89 characters
       maxLength: 89
     },
     creator,
