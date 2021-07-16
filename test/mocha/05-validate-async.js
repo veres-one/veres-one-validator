@@ -62,7 +62,6 @@ describe('validate regular DIDs', () => {
           .operationValidator[0],
       });
       should.exist(result);
-console.log(JSON.stringify(result, null, 2));
       result.valid.should.be.a('boolean');
       result.valid.should.be.true;
     });
