@@ -14,7 +14,6 @@ const urnUuid = require('./urn-uuid');
 
 // can be a did or a url
 const creator = {
-  // FIXME this will allow any string with minLength 1 or more
   anyOf: [schemas.url(), did(), didReference(), didUuid()]
 };
 
@@ -35,8 +34,7 @@ const caveat = {
 };
 
 const invocationTarget = {
-  // FIXME this will allow any string with minLength 1 or more
-  anyOf: [schemas.url(), did(), didReference(), didUuid()]
+  anyOf: [did(), didUuid(), urnUuid()]
 };
 
 const capability = {
