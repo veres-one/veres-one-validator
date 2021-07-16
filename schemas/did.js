@@ -18,7 +18,7 @@ const schema = {
   description: 'A decentralized identifier.',
   type: 'string',
   pattern,
-  minLength: prefix.length + 6,
+  minLength: cfg.environment === 'test' ? 17 : 12,
   // prefix plus a single base58 encoded 32 byte buffer
   maxLength: 64,
   errors: {
