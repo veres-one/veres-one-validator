@@ -19,7 +19,7 @@
     "bedrock-jsonld-document-loader": "^1.0.0",
     "bedrock-ledger-context": "^18.1.0",
     "bedrock-ledger-node": "^12.0.0",
-    "bedrock-ledger-storage-mongodb": "digitalbazaar/bedrock-ledger-storage-mongodb#update-idx",
+    "bedrock-ledger-storage-mongodb": "^5.1.0",
     "bedrock-ledger-utils": "^1.0.0",
     "bedrock-mongodb": "^8.1.0",
     "bedrock-permission": "^3.0.0",

@@ -46,7 +46,8 @@ mock.proof = {
   created: '2021-01-10T23:10:25Z',
   capability: 'did:v1:test:uuid:c37e914a-1e2a-4d59-9668-ee93458fd19a',
   capabilityAction: 'write',
-  invocationTarget: 'did:v1:test:nym:z6MkgUj',
+  invocationTarget:
+    'did:v1:nym:z6Mkogv718iDZqyoTmPKagKcG2VBXXz6w4xau8fL5jjB948r',
   proofPurpose: 'capabilityInvocation',
   proofValue: 'z3t9it5yhFHkqWnHKMQ2DWVj7aHDN37f95UzhQYQGYd9LyTSGzufCiTwDWN' +
     'fCdxQA9ZHcTTVAhHwoAji2AJnk2E6',
