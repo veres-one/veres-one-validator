@@ -16,7 +16,7 @@ const voValidator = require('veres-one-validator');
 const {CapabilityInvocation} = require('@digitalbazaar/zcapld');
 const mockData = require('./mock.data');
 const {VeresOneDidDoc} = require('did-veres-one');
-const v1 = require('did-veres-one').driver();
+const v1 = require('did-veres-one').driver({mode: 'test'});
 
 const {util: {clone}} = bedrock;
 
