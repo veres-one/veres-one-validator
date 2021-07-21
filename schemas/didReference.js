@@ -3,27 +3,23 @@
  */
 'use strict';
 
-const bedrock = require('bedrock');
-
-const {config} = bedrock;
 require('../lib/config');
 
-const cfg = config['veres-one-validator'];
-
 // a did reference contains an anchor tag `#`
-const pattern = cfg.environment === 'test' ?
-  '^(did\:v1\:test\:nym\:)(z[-_A-Za-z0-9.]+)#(z[-_A-Za-z0-9.]+)$' :
-  '^(did\:v1\:nym\:)(z[-_A-Za-z0-9.]+)#(z[-_A-Za-z0-9.]+)$';
+const pattern =
+ '^did:v1(:[a-z][a-z0-9]+)*:nym:(z[A-Za-z1-9]+)#(z[A-Za-z1-9]+)$';
+// did:v1:nym:[48 base58 characters]#[48 base58 characters]
+const minLength = 108;
+// did:v1[:[16 character network ID]:nym:z[32 bytes of base58 + 2 byte header]
+const maxLength = 126;
 
 const schema = {
   title: 'Decentralized Identifier',
   description: 'A decentralized identifier.',
   type: 'string',
   pattern,
-  minLength: cfg.environment === 'test' ? 17 : 12,
-  // prefix max length is 16 + 2x publicKeyMultibase (48 each) and
-  // a # in the middle for 113 characters
-  maxLength: 113,
+  minLength,
+  maxLength,
   errors: {
     invalid: 'The decentralized identifier reference is invalid.',
     missing: 'Please provide a decentralized identifier reference.'
