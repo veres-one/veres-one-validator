@@ -19,7 +19,7 @@ const didContexts = [
 mock.existingDids = {};
 const capabilities = mock.capabilities = {};
 const didDocuments = mock.didDocuments = {};
-const electorPoolDocument = mock.electorPoolDocument = {};
+const witnessPoolDocument = mock.witnessPoolDocument = {};
 // eslint-disable-next-line no-unused-vars
 const ldDocuments = mock.ldDocuments = {};
 const ledgerConfigurations = mock.ledgerConfigurations = {};
@@ -93,41 +93,28 @@ mock.ledgerNode = {
   }
 };
 
-const electorEndpoint = mock.electorEndpoint = [];
+const witnessEndpoint = mock.witnessEndpoint = [];
 
 // NOTE: actual endpoints terminate with a base58 encoded public key
 for(let i = 0; i < 10; ++i) {
-  electorEndpoint.push('https://example.com/consensus/continuity2017/voters/' +
+  witnessEndpoint.push('https://example.com/consensus/continuity2017/voters/' +
     uuid());
 }
 
-electorPoolDocument.alpha = {
+witnessPoolDocument.alpha = {
   '@context': [
     constants.DID_CONTEXT_URL,
     constants.VERES_ONE_CONTEXT_V1_URL,
     constants.WEB_LEDGER_CONTEXT_V1_URL,
-    constants.ED25519_2020_CONTEXT_V1_URL,
+    constants.ED25519_2020_CONTEXT_V1_URL
   ],
-  id: 'did:v1:test:uuid:b3275fed-daf4-4c07-b63a-747fa8857609',
-  type: 'ElectorPool',
-  // FIXME: this has to be in the v1 context before we can sign documents
-  // veresOneTicketRate: 10, /* TBD */
-  controller: '', // replaced with maintainer's DID in test
-  electorPool: [{
-    id: 'urn:uuid:89a62413-0ada-461b-b672-1b28afefaca8',
-    elector: 'did:v1:test:nym:50f28192-8f52-4bf2-a9b1-d203f6611456',
-    service: 'urn:uuid:50f28192-8f52-4bf2-a9b1-d203f6611456',
-    type: ['Continuity2017GuarantorElector', 'Continuity2017Elector'],
-    // other restrictions/capabilities like guarantor, recovery,
-    // or ocap w/ticket caveat
-    capability: [{
-      id: '', // replaced with DID in test
-      caveat: [{
-        type: 'VeresOneElectorTicketAgent' /* TBD */
-      }]
-    }]
-  }],
-  maximumElectorCount: 10,
+  id: 'did:v1:uuid:2f3c9466-ddc9-11eb-92f2-f31707920b3b',
+  type: 'WitnessPool',
+  // the rest of these fields are test-run specific and set at runtime
+  controller: '',
+  maximumWitnessCount: 0,
+  primaryWitnessCandidate: [],
+  secondaryWitnessCandidate: []
 };
 
 /* eslint-disable quotes, quote-props, max-len */
@@ -237,9 +224,9 @@ ledgerConfigurations.alpha = {
   type: 'WebLedgerConfiguration',
   ledger: 'did:v1:c02915fc-672d-4568-8e6e-b12a0b35cbb3',
   consensusMethod: 'Continuity2017',
-  electorSelectionMethod: {
-    type: 'ElectorPoolElectorSelection',
-    electorPool: 'did:v1:test:uuid:acc4c5af-7445-4046-a39c-10653a0c7ac0'
+  witnessSelectionMethod: {
+    type: 'WitnessPoolWitnessSelection',
+    witnessPool: 'did:v1:uuid:2f3c9466-ddc9-11eb-92f2-f31707920b3b'
   },
   operationValidator: [{
     type: 'VeresOneValidator2017',
@@ -251,24 +238,15 @@ ledgerConfigurations.alpha = {
   }],
   ledgerConfigurationValidator: [{
     type: 'VeresOneValidator2017',
-  }, /*{
-    // FIXME: enable signature validation on configuration as well.  How
-    // are keys dereferenced?
-    type: 'SignatureValidator2017',
-    validatorFilter: [{
-      type: 'ValidatorFilterByType',
-      validatorFilterByType: ['WebLedgerConfiguration']
-    }],
-    approvedSigner: [
-      'did:v1:53ebca61-5687-4558-b90a-03167e4c2838'
-    ],
-    minimumSignaturesRequired: 1
-  }*/],
+  }],
   sequence: 0,
 };
 
 operations.create = {
-  '@context': constants.WEB_LEDGER_CONTEXT_V1_URL,
+  '@context': [
+    constants.WEB_LEDGER_CONTEXT_V1_URL,
+    constants.ZCAP_CONTEXT_V1_URL
+  ],
   type: 'CreateWebLedgerRecord',
   record: didDocuments.alpha,
   // this is the `targetNode` of the ledgerAgent
@@ -276,14 +254,20 @@ operations.create = {
     'continuity2017/voters/z6MkhoJ1djxR53kw5fQqRTZ34cGwAdSPvksZR2Xm7u1Y4TfE'
 };
 
-operations.createElectorPool = {
-  '@context': constants.WEB_LEDGER_CONTEXT_V1_URL,
+operations.createWitnessPool = {
+  '@context': [
+    constants.WEB_LEDGER_CONTEXT_V1_URL,
+    constants.ZCAP_CONTEXT_V1_URL
+  ],
   type: 'CreateWebLedgerRecord',
   record: didDocuments.alpha
 };
 
 operations.update = {
-  '@context': constants.WEB_LEDGER_CONTEXT_V1_URL,
+  '@context': [
+    constants.WEB_LEDGER_CONTEXT_V1_URL,
+    constants.ZCAP_CONTEXT_V1_URL
+  ],
   type: 'UpdateWebLedgerRecord',
   recordPatch: {
     '@context': [
@@ -304,7 +288,10 @@ operations.update = {
 };
 
 operations.updateInvalidPatch = {
-  '@context': constants.WEB_LEDGER_CONTEXT_V1_URL,
+  '@context': [
+    constants.WEB_LEDGER_CONTEXT_V1_URL,
+    constants.ZCAP_CONTEXT_V1_URL
+  ],
   type: 'UpdateWebLedgerRecord',
   recordPatch: {
     // FIXME: use constant and cached version when available
@@ -319,7 +306,10 @@ operations.updateInvalidPatch = {
 };
 
 operations.updateInvalidChange = {
-  '@context': constants.WEB_LEDGER_CONTEXT_V1_URL,
+  '@context': [
+    constants.WEB_LEDGER_CONTEXT_V1_URL,
+    constants.ZCAP_CONTEXT_V1_URL
+  ],
   type: 'UpdateWebLedgerRecord',
   recordPatch: {
     // FIXME: use constant and cached version when available

@@ -20,23 +20,18 @@ const ledgerNode = helpers.createMockLedgerNode({ldDocuments});
 const mockData = require('./mock.data');
 
 let maintainerDidDocumentFull;
-let electorDidDocumentFull;
-let electorServiceId;
+let witnessDidDocumentFull;
+let witnessServiceId;
 describe('validate API ValidatorParameterSet', () => {
   describe('operationValidator', () => {
     beforeEach(async () => {
       maintainerDidDocumentFull = await v1.generate();
       const {didDocument: maintainerDidDocument} = maintainerDidDocumentFull;
       ldDocuments.set(maintainerDidDocument.id, maintainerDidDocument);
-      electorDidDocumentFull = await v1.generate();
-      const {didDocument: electorDidDocument} = electorDidDocumentFull;
-      electorServiceId = `${electorDidDocument.id}#MyServiceName`;
-      electorDidDocument.service = [{
-        id: electorServiceId,
-        type: continuityServiceType,
-        serviceEndpoint: mockData.electorEndpoint[0],
-      }];
-      ldDocuments.set(electorDidDocument.id, electorDidDocument);
+      witnessDidDocumentFull = await v1.generate();
+      const {didDocument: witnessDidDocument} = witnessDidDocumentFull;
+      witnessServiceId = `${witnessDidDocument.id}#MyServiceName`;
+      ldDocuments.set(witnessDidDocument.id, witnessDidDocument);
     });
     describe('create ValidatorParameterSet operation', () => {
       it('validates op with proper proof', async () => {
@@ -196,13 +191,13 @@ describe('validate API ValidatorParameterSet', () => {
         should.exist(result.error.details.baseUrl);
         should.exist(result.error.details.allowedServiceBaseUrl);
       });
-    }); // end create electorPool operation
+    }); // end create witnessPool operation
 
     describe('update ValidatorParameterSet operation', () => {
       it('validates an operation with proper proof', async () => {
         const validatorParameterSetDoc = _generateValidatorParameterSetDoc();
         // the invocationTarget is the ledger ID
-        // electorPoolDoc.electorPool[0].capability[0].invocationTarget =
+        // witnessPoolDoc.witnessPool[0].capability[0].invocationTarget =
         //   'urn:uuid:e9e63a07-15b1-4e8f-b725-a71a362cfd99';
         ldDocuments.set(
           validatorParameterSetDoc.id, clone(validatorParameterSetDoc));
@@ -212,7 +207,10 @@ describe('validate API ValidatorParameterSet', () => {
         const patch = jsonpatch.generate(observer);
 
         let operation = {
-          '@context': constants.WEB_LEDGER_CONTEXT_V1_URL,
+          '@context': [
+            constants.WEB_LEDGER_CONTEXT_V1_URL,
+            constants.ZCAP_CONTEXT_V1_URL
+          ],
           creator: 'https://example.com/some/ledger/node',
           recordPatch: {
             '@context': mockData.patchContext,
@@ -246,7 +244,7 @@ describe('validate API ValidatorParameterSet', () => {
         //   key,
         // });
         const ledgerConfig = clone(mockData.ledgerConfigurations.alpha);
-        ledgerConfig.electorSelectionMethod = {
+        ledgerConfig.witnessSelectionMethod = {
           type: 'VeresOne',
         };
         let err;
@@ -270,7 +268,7 @@ describe('validate API ValidatorParameterSet', () => {
       it('rejects an operation removing allowedServiceBaseUrl', async () => {
         const validatorParameterSetDoc = _generateValidatorParameterSetDoc();
         // the invocationTarget is the ledger ID
-        // electorPoolDoc.electorPool[0].capability[0].invocationTarget =
+        // witnessPoolDoc.witnessPool[0].capability[0].invocationTarget =
         //   'urn:uuid:e9e63a07-15b1-4e8f-b725-a71a362cfd99';
         ldDocuments.set(
           validatorParameterSetDoc.id, clone(validatorParameterSetDoc));
@@ -281,7 +279,10 @@ describe('validate API ValidatorParameterSet', () => {
         const patch = jsonpatch.generate(observer);
 
         let operation = {
-          '@context': constants.WEB_LEDGER_CONTEXT_V1_URL,
+          '@context': [
+            constants.WEB_LEDGER_CONTEXT_V1_URL,
+            constants.ZCAP_CONTEXT_V1_URL
+          ],
           creator: 'https://example.com/some/ledger/node',
           recordPatch: {
             '@context': mockData.patchContext,
@@ -315,7 +316,7 @@ describe('validate API ValidatorParameterSet', () => {
         //   key,
         // });
         const ledgerConfig = clone(mockData.ledgerConfigurations.alpha);
-        ledgerConfig.electorSelectionMethod = {
+        ledgerConfig.witnessSelectionMethod = {
           type: 'VeresOne',
         };
         let err;
@@ -342,7 +343,7 @@ describe('validate API ValidatorParameterSet', () => {
       it('rejects an operation that attempts to change doc type', async () => {
         const validatorParameterSetDoc = _generateValidatorParameterSetDoc();
         // the invocationTarget is the ledger ID
-        // electorPoolDoc.electorPool[0].capability[0].invocationTarget =
+        // witnessPoolDoc.witnessPool[0].capability[0].invocationTarget =
         //   'urn:uuid:e9e63a07-15b1-4e8f-b725-a71a362cfd99';
         ldDocuments.set(
           validatorParameterSetDoc.id, clone(validatorParameterSetDoc));
@@ -354,7 +355,10 @@ describe('validate API ValidatorParameterSet', () => {
         const patch = jsonpatch.generate(observer);
 
         let operation = {
-          '@context': constants.WEB_LEDGER_CONTEXT_V1_URL,
+          '@context': [
+            constants.WEB_LEDGER_CONTEXT_V1_URL,
+            constants.ZCAP_CONTEXT_V1_URL
+          ],
           creator: 'https://example.com/some/ledger/node',
           recordPatch: {
             '@context': mockData.patchContext,
@@ -388,7 +392,7 @@ describe('validate API ValidatorParameterSet', () => {
         //   key,
         // });
         const ledgerConfig = clone(mockData.ledgerConfigurations.alpha);
-        ledgerConfig.electorSelectionMethod = {
+        ledgerConfig.witnessSelectionMethod = {
           type: 'VeresOne',
         };
         let err;
@@ -414,7 +418,7 @@ describe('validate API ValidatorParameterSet', () => {
       it('rejects an operation that attempts to change doc ID', async () => {
         const validatorParameterSetDoc = _generateValidatorParameterSetDoc();
         // the invocationTarget is the ledger ID
-        // electorPoolDoc.electorPool[0].capability[0].invocationTarget =
+        // witnessPoolDoc.witnessPool[0].capability[0].invocationTarget =
         //   'urn:uuid:e9e63a07-15b1-4e8f-b725-a71a362cfd99';
         ldDocuments.set(
           validatorParameterSetDoc.id, clone(validatorParameterSetDoc));
@@ -427,7 +431,10 @@ describe('validate API ValidatorParameterSet', () => {
         const patch = jsonpatch.generate(observer);
 
         let operation = {
-          '@context': constants.WEB_LEDGER_CONTEXT_V1_URL,
+          '@context': [
+            constants.WEB_LEDGER_CONTEXT_V1_URL,
+            constants.ZCAP_CONTEXT_V1_URL
+          ],
           creator: 'https://example.com/some/ledger/node',
           recordPatch: {
             '@context': mockData.patchContext,
@@ -460,7 +467,7 @@ describe('validate API ValidatorParameterSet', () => {
         //   key,
         // });
         const ledgerConfig = clone(mockData.ledgerConfigurations.alpha);
-        ledgerConfig.electorSelectionMethod = {
+        ledgerConfig.witnessSelectionMethod = {
           type: 'VeresOne',
         };
         let err;
@@ -483,7 +490,7 @@ describe('validate API ValidatorParameterSet', () => {
         result.error.name.should.equal('ValidationError');
         result.error.message.should.contain('immutable');
       });
-    }); // end update electorPool operation
+    }); // end update witnessPool operation
   });
 });
 
@@ -504,7 +511,12 @@ function _getMaintainerKeys() {
 // this is a modified version of the wrap API found in did-veres-one and
 // web-ledger-client
 async function _wrap({didDocument, operationType = 'create'}) {
-  const operation = {'@context': constants.WEB_LEDGER_CONTEXT_V1_URL};
+  const operation = {
+    '@context': [
+      constants.WEB_LEDGER_CONTEXT_V1_URL,
+      constants.ZCAP_CONTEXT_V1_URL
+    ]
+  };
 
   // normally this is set basted on the targetNode value provided by the
   // ledger-agent HTTP API

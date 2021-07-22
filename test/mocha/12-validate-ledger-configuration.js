@@ -8,7 +8,7 @@ const {util: {clone}} = require('bedrock');
 const jsigs = require('jsonld-signatures');
 const mockData = require('./mock.data');
 const voValidator = require('veres-one-validator');
-const v1 = require('did-veres-one').driver();
+const v1 = require('did-veres-one').driver({mode: 'test'});
 const {Ed25519Signature2020} =
   require('@digitalbazaar/ed25519-signature-2020');
 const {purposes: {AssertionProofPurpose}} = jsigs;
@@ -38,10 +38,10 @@ describe('validate API WebLedgerConfiguration', () => {
     result.valid.should.be.a('boolean');
     result.valid.should.be.true;
   });
-  it('rejects a configuration w/missing electorSelectionMethod', async () => {
+  it('rejects a configuration w/missing witnessSelectionMethod', async () => {
     const ledgerConfiguration = clone(mockData.ledgerConfigurations.alpha);
 
-    delete ledgerConfiguration.electorSelectionMethod;
+    delete ledgerConfiguration.witnessSelectionMethod;
 
     // The public key material is derived from the nym DID because the
     // maintainers DID does not yet exist on the ledger
