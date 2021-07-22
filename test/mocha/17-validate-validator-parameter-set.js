@@ -12,8 +12,6 @@ const v1 = require('did-veres-one').driver({httpsAgent});
 const voValidator = require('veres-one-validator');
 const jsonpatch = require('fast-json-patch');
 
-const continuityServiceType = 'Continuity2017Peer';
-
 const ldDocuments = new Map();
 const ledgerNode = helpers.createMockLedgerNode({ldDocuments});
 
@@ -21,7 +19,6 @@ const mockData = require('./mock.data');
 
 let maintainerDidDocumentFull;
 let witnessDidDocumentFull;
-let witnessServiceId;
 describe('validate API ValidatorParameterSet', () => {
   describe('operationValidator', () => {
     beforeEach(async () => {
@@ -30,7 +27,6 @@ describe('validate API ValidatorParameterSet', () => {
       ldDocuments.set(maintainerDidDocument.id, maintainerDidDocument);
       witnessDidDocumentFull = await v1.generate();
       const {didDocument: witnessDidDocument} = witnessDidDocumentFull;
-      witnessServiceId = `${witnessDidDocument.id}#MyServiceName`;
       ldDocuments.set(witnessDidDocument.id, witnessDidDocument);
     });
     describe('create ValidatorParameterSet operation', () => {

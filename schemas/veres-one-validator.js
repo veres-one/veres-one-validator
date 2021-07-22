@@ -9,7 +9,7 @@ const {maxLength} = require('../lib/constants');
 const did = require('./did');
 const didReference = require('./didReference');
 const didUuid = require('./did-uuid');
-const {serviceDescriptor, serviceId} = require('./service');
+const {serviceDescriptor} = require('./service');
 const urnUuid = require('./urn-uuid');
 
 // can be a did or a url
@@ -17,43 +17,8 @@ const creator = {
   anyOf: [schemas.url(), did(), didReference(), didUuid()]
 };
 
-const caveat = {
-  additionalProperties: false,
-  required: [
-    'type'
-  ],
-  type: 'object',
-  properties: {
-    type: {
-      type: 'string',
-      maxLength
-      // FIXME: enable when term is finalized
-      // enum: ['VeresOneWitnessTicketAgent']
-    }
-  }
-};
-
 const invocationTarget = {
   anyOf: [did(), didUuid(), urnUuid()]
-};
-
-const capability = {
-  additionalProperties: false,
-  type: 'object',
-  required: [
-    'caveat',
-    'id',
-    'invocationTarget',
-  ],
-  properties: {
-    caveat: {
-      type: 'array',
-      minItems: 1,
-      items: caveat,
-    },
-    id: did(),
-    invocationTarget
-  }
 };
 
 const operationValidator = {
@@ -327,19 +292,6 @@ const didDocumentPatch = {
       maximum: Number.MAX_SAFE_INTEGER
     }
   },
-};
-
-const ContinuityWitnessTypes = {
-  type: 'string',
-  enum: [
-    'Continuity2017Witness',
-    'Continuity2017GuarantorWitness',
-  ],
-};
-
-const Continuity2017Witness = {
-  type: 'string',
-  enum: ['Continuity2017Witness'],
 };
 
 const witnessPoolDocument = {
