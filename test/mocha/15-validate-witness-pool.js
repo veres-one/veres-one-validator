@@ -4,14 +4,12 @@
 'use strict';
 const {attachInvocationProof} = require('did-veres-one');
 const bedrock = require('bedrock');
-const {config: {constants}, util: {uuid, BedrockError}} = bedrock;
+const {config: {constants}, util: {BedrockError}} = bedrock;
 const helpers = require('./helpers');
 const {httpsAgent} = require('bedrock-https-agent');
 const v1 = require('did-veres-one').driver({httpsAgent});
 const voValidator = require('veres-one-validator');
 const jsonpatch = require('fast-json-patch');
-
-const continuityServiceType = 'Continuity2017Peer';
 
 const ldDocuments = new Map();
 const ledgerNode = helpers.createMockLedgerNode({ldDocuments});
@@ -19,7 +17,6 @@ const mockData = require('./mock.data');
 
 let maintainerDidDocumentFull;
 let witnessDidDocumentFull;
-let witnessServiceId;
 describe('validate API WitnessPool', () => {
   describe('operationValidator', () => {
     beforeEach(async () => {
@@ -28,7 +25,6 @@ describe('validate API WitnessPool', () => {
       ldDocuments.set(maintainerDidDocument.id, maintainerDidDocument);
       witnessDidDocumentFull = await v1.generate();
       const {didDocument: witnessDidDocument} = witnessDidDocumentFull;
-      witnessServiceId = `${witnessDidDocument.id}#MyServiceName`;
       ldDocuments.set(witnessDidDocument.id, witnessDidDocument);
     });
     describe('create witnessPool operation', () => {
@@ -564,10 +560,6 @@ function _generateWitnessPoolDoc() {
   witnessPoolDoc.maximumWitnessCount = 1;
   witnessPoolDoc.primaryWitnessCandidate = [witnessDid];
   return witnessPoolDoc;
-}
-
-function _generateUrnUuid() {
-  return `urn:uuid:${uuid()}`;
 }
 
 function _getMaintainerKeys() {
