@@ -3,20 +3,20 @@
  */
 'use strict';
 
-const bedrock = require('bedrock');
-const {config} = bedrock;
 require('../lib/config');
 
-const cfg = config['veres-one-validator'];
-
-const prefix = cfg.environment === 'test' ? 'did:v1:test' : 'did:v1';
 /* eslint-disable-next-line max-len */
-const pattern = `^${prefix}:uuid:([a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[89abAB][a-fA-F0-9]{3}-[a-fA-F0-9]{12})$`;
+const pattern = '^did:v1(:[a-z][a-z0-9]+)*:uuid:' +
+  '([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$';
+const minLength = 48; // did:v1:uuid:<UUID_VALUE>
+const maxLength = 66; // minLength + :<16_CHARACTER_NETWORK_ID>
 
 const schema = {
   title: 'DID UUID',
   type: 'string',
   pattern,
+  minLength,
+  maxLength
 };
 
 module.exports = () => schema;

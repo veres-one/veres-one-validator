@@ -5,46 +5,20 @@
 
 const {config: {constants}} = require('bedrock');
 const {schemas} = require('bedrock-validation');
+const {maxLength} = require('../lib/constants');
 const did = require('./did');
+const didReference = require('./didReference');
 const didUuid = require('./did-uuid');
-const {serviceDescriptor, serviceId} = require('./service');
+const {serviceDescriptor} = require('./service');
 const urnUuid = require('./urn-uuid');
 
-const caveat = {
-  additionalProperties: false,
-  required: [
-    'type'
-  ],
-  type: 'object',
-  properties: {
-    type: {
-      type: 'string',
-      // FIXME: enable when term is finalized
-      // enum: ['VeresOneElectorTicketAgent']
-    }
-  }
+// can be a did or a url
+const creator = {
+  anyOf: [schemas.url(), did(), didReference(), didUuid()]
 };
 
-const capability = {
-  additionalProperties: false,
-  type: 'object',
-  required: [
-    'caveat',
-    'id',
-    'invocationTarget',
-  ],
-  properties: {
-    caveat: {
-      type: 'array',
-      minItems: 1,
-      items: caveat,
-    },
-    id: did(),
-    invocationTarget: {
-      // FIXME: more specific pattern?
-      type: 'string',
-    }
-  },
+const invocationTarget = {
+  anyOf: [did(), didUuid(), urnUuid()]
 };
 
 const operationValidator = {
@@ -117,35 +91,45 @@ const publicKey = {
     'controller',
     'id',
     'type',
+    'publicKeyMultibase'
   ],
   type: 'object',
   properties: {
-    id: {
-      type: 'string',
-    },
+    id: didReference(),
     type: {
       type: 'string',
-      enum: ['RsaVerificationKey2018', 'Ed25519VerificationKey2018'],
+      enum: ['Ed25519VerificationKey2020', 'X25519KeyAgreementKey2020'],
     },
     controller: did(),
-    // FIXME: make schema require this for RsaVerificationKey2018
-    publicKeyPem: schemas.publicKeyPem(),
-    // FIXME: make schema require this for Ed25519VerificationKey2018
-    publicKeyBase58: {
+    publicKeyMultibase: {
       type: 'string',
+      // multibase base58 encoding of multicodec public key
+      maxLength: 48
     }
   },
 };
 
 const didDocumentContext = {
   type: 'array',
-  items: [{
-    const: constants.DID_CONTEXT_URL
-  }, {
-    const: constants.VERES_ONE_CONTEXT_V1_URL
-  }],
-  maxItems: 2,
-  minItems: 2,
+  items: [
+    {
+      // the first context should be the DID Context
+      const: constants.DID_CONTEXT_URL
+    }, {
+      // the second context should be the V1 Context
+      const: constants.VERES_ONE_CONTEXT_V1_URL
+    }, {
+      // the remaining 2 contexts can be any of these
+      anyOf: [{
+        const: constants.WEB_LEDGER_CONTEXT_V1_URL
+      }, {
+        const: constants.ED25519_2020_CONTEXT_V1_URL
+      }, {
+        const: constants.X25519_2020_CONTEXT_V1_URL
+      }]}
+  ],
+  maxItems: 4,
+  minItems: 2
 };
 
 const didDocument = {
@@ -157,31 +141,42 @@ const didDocument = {
     '@context': didDocumentContext,
     id: did(),
     // FIXME: be more specific with restrictions for all properties below
-    invocationTarget: {
-      type: 'string',
-    },
-    invoker: {
-      type: 'string',
-    },
+    invocationTarget,
+    invoker: did(),
     assertionMethod: {
       type: 'array',
       minItems: 1,
-      items: publicKey,
+      items: {
+        anyOf: [didReference(), publicKey]
+      }
     },
     authentication: {
       type: 'array',
       minItems: 1,
-      items: publicKey,
+      items: {
+        anyOf: [didReference(), publicKey]
+      }
     },
     capabilityDelegation: {
       type: 'array',
       minItems: 1,
-      items: publicKey,
+      items: {
+        anyOf: [didReference(), publicKey]
+      }
     },
     capabilityInvocation: {
       type: 'array',
       minItems: 1,
-      items: publicKey,
+      items: {
+        anyOf: [didReference(), publicKey]
+      }
+    },
+    keyAgreement: {
+      type: 'array',
+      minItems: 1,
+      items: {
+        anyOf: [didReference(), publicKey]
+      }
     },
     service: {
       type: 'array',
@@ -279,9 +274,11 @@ const didDocumentPatch = {
           },
           from: {
             type: 'string',
+            maxLength
           },
           path: {
             type: 'string',
+            maxLength
           },
           value: {
             //type: ['number', 'string', 'boolean', 'object', 'array'],
@@ -297,78 +294,45 @@ const didDocumentPatch = {
   },
 };
 
-const ContinuityElectorTypes = {
-  type: 'string',
-  enum: [
-    'Continuity2017Elector',
-    'Continuity2017GuarantorElector',
-  ],
-};
-
-const Continuity2017Elector = {
-  type: 'string',
-  enum: ['Continuity2017Elector'],
-};
-
-const electorPoolDocument = {
-  title: 'ElectorPool Document',
+const witnessPoolDocument = {
+  title: 'WitnessPool Document',
   type: 'object',
   additionalProperties: false,
   required: [
     '@context',
     'id',
-    'electorPool',
     'controller',
-    // FIXME: DOES THIS BELONG HERE? IT'S ALSO IN THE LEDGER CONFIG IN THE
-    // ELECTOR SELECTION
-    // 'maximumElectorCount',
+    'maximumWitnessCount',
+    'primaryWitnessCandidate',
     'type'
   ],
   properties: {
     '@context': didDocumentContext,
     id: didUuid(),
     controller: did(),
-    type: {const: 'ElectorPool'},
-    electorPool: {
+    type: {const: 'WitnessPool'},
+    primaryWitnessCandidate: {
       type: 'array',
+      minItems: 1,
       items: {
-        type: 'object',
-        required: [
-          'id',
-          'service',
-          'type',
-        ],
-        properties: {
-          id: urnUuid(),
-          service: {
-            anyOf: [serviceDescriptor(), serviceId()]
-          },
-          type: {
-            anyOf: [
-              Continuity2017Elector, {
-                type: 'array',
-                maxItems: 1,
-                minItems: 1,
-                items: Continuity2017Elector
-              }, {
-                type: 'array',
-                maxItems: 2,
-                minItems: 2,
-                uniqueItems: true,
-                items: ContinuityElectorTypes
-              }]
-          },
-          capability: {
-            type: 'array',
-            minItems: 1,
-            items: capability
-          }
-        }
+        // FIXME: This should be limited to did:key
+        type: 'string',
+        maxLength
       }
     },
-    maximumElectorCount: {
+    secondaryWitnessCandidate: {
+      type: 'array',
+      minItems: 0,
+      items: {
+        // FIXME: This should be limited to did:key
+        type: 'string',
+        maxLength
+      }
+    },
+    maximumWitnessCount: {
       type: 'integer',
       minimum: 1,
+      maximum: 13
     }
   },
 };
@@ -396,6 +360,7 @@ const validatorParameterSet = {
         // FIXME: how should these be validated beyond string?
         // pattern startswith https:// ?
         type: 'string',
+        maxLength
       }
     }
   },
@@ -408,28 +373,39 @@ const baseCapability = {
     'capability',
     'capabilityAction',
     'created',
-    'jws',
+    'invocationTarget',
+    'proofValue',
     'proofPurpose',
     'type'
   ],
   properties: {
-    capability: {type: 'string'},
+    // FIXME add a deterministic length for capability
+    capability: {
+      type: 'string',
+      maxLength
+    },
     capabilityAction: {
       type: 'string',
-      enum: ['write', 'create', 'update'],
+      enum: ['write'],
     },
     created: schemas.w3cDateTime(),
-    creator: {type: 'string'},
-    jws: {type: 'string'},
+    invocationTarget,
+    proofValue: {
+      type: 'string',
+      // this should be the multibase base58 representation of a 64-byte
+      // ed25519 signature value; this is max 89 characters
+      maxLength: 89
+    },
+    creator,
     proofPurpose: {
       type: 'string',
       enum: ['capabilityInvocation'],
     },
     type: {
       type: 'string',
-      enum: ['RsaSignature2018', 'Ed25519Signature2018']
+      enum: ['Ed25519Signature2020']
     },
-    verificationMethod: {type: 'string'},
+    verificationMethod: didReference()
   }
 };
 
@@ -463,30 +439,6 @@ const writeCapability = {
     }]
 };
 
-const createCapability = {
-  allOf: [
-    baseCapability,
-    creatorOrVerificationMethod, {
-      properties: {
-        capabilityAction: {
-          enum: ['create'],
-        },
-      }
-    }]
-};
-
-const updateDidCapability = {
-  allOf: [
-    baseCapability,
-    creatorOrVerificationMethod, {
-      properties: {
-        capabilityAction: {
-          enum: ['update'],
-        },
-      }
-    }]
-};
-
 const updateWebLedgerRecord = {
   title: 'Update DID',
   type: 'object',
@@ -499,19 +451,19 @@ const updateWebLedgerRecord = {
   ],
   additionalProperties: false,
   properties: {
-    '@context': schemas.jsonldContext(constants.WEB_LEDGER_CONTEXT_V1_URL),
-    creator: {type: 'string'},
+    '@context': schemas.jsonldContext([
+      constants.WEB_LEDGER_CONTEXT_V1_URL,
+      constants.ZCAP_CONTEXT_V1_URL,
+      constants.ED25519_2020_CONTEXT_V1_URL
+    ]),
+    creator,
     type: {const: 'UpdateWebLedgerRecord',
     },
     recordPatch: didDocumentPatch,
     proof: {
       anyOf: [{
         type: 'array',
-        items: [writeCapability, updateDidCapability],
-        additionalItems: false,
-      }, {
-        type: 'array',
-        items: [updateDidCapability, writeCapability],
+        items: [writeCapability, writeCapability],
         additionalItems: false,
       }],
     }
@@ -524,7 +476,7 @@ const ledgerConfiguration = {
   required: [
     '@context',
     'consensusMethod',
-    'electorSelectionMethod',
+    'witnessSelectionMethod',
     'ledger',
     'ledgerConfigurationValidator',
     'operationValidator',
@@ -534,33 +486,30 @@ const ledgerConfiguration = {
   ],
   type: 'object',
   properties: {
-    '@context': schemas.jsonldContext(constants.WEB_LEDGER_CONTEXT_V1_URL),
+    '@context': schemas.jsonldContext([
+      constants.WEB_LEDGER_CONTEXT_V1_URL,
+      constants.ED25519_2020_CONTEXT_V1_URL
+    ]),
     consensusMethod: {const: 'Continuity2017'},
-    creator: {type: 'string'},
-    electorSelectionMethod: {
+    creator,
+    witnessSelectionMethod: {
       additionalProperties: false,
       required: [
-        // maximumElectorCount is *not* required in the configuration
-        'electorPool',
         'type',
+        'witnessPool'
       ],
       type: 'object',
       properties: {
-        maximumElectorCount: {
-          type: 'integer',
-          minimum: 1,
-        },
-        electorPool: didUuid(),
         type: {
-          // FIXME: using ElectorPoolElectorSelection for now
-          // this should be a VeresOne specific method
-          const: 'ElectorPoolElectorSelection'
-        }
+          const: 'WitnessPoolWitnessSelection'
+        },
+        witnessPool: didUuid()
       }
     },
     ledger: {
       // FIXME: enforce? did:v1:eb8c22dc-bde6-4315-92e2-59bd3f3c7d59
       type: 'string',
+      maxLength
     },
     ledgerConfigurationValidator: {
       type: 'array',
@@ -581,7 +530,7 @@ const ledgerConfiguration = {
     },
     proof: {
       allOf: [
-        schemas.linkedDataSignature2018(), {
+        schemas.linkedDataSignature2020(), {
           // FIXME: this is only for testnet_v2
           type: 'object',
           required: ['proofPurpose'],
@@ -616,14 +565,14 @@ const uuidDidRecord = {
   properties: {
     type: {
       enum: [
-        'ElectorPool',
+        'WitnessPool',
         'ValidatorParameterSet',
       ]
     }
   },
   allOf: [{
-    if: {properties: {type: {const: 'ElectorPool'}}},
-    then: electorPoolDocument
+    if: {properties: {type: {const: 'WitnessPool'}}},
+    then: witnessPoolDocument
   }, {
     if: {properties: {type: {const: 'ValidatorParameterSet'}}},
     then: validatorParameterSet
@@ -642,17 +591,17 @@ const createWebLedgerRecord = {
   ],
   additionalProperties: false,
   properties: {
-    '@context': schemas.jsonldContext(constants.WEB_LEDGER_CONTEXT_V1_URL),
-    creator: {type: 'string'},
+    '@context': schemas.jsonldContext([
+      constants.WEB_LEDGER_CONTEXT_V1_URL,
+      constants.ZCAP_CONTEXT_V1_URL,
+      constants.ED25519_2020_CONTEXT_V1_URL
+    ]),
+    creator,
     type: {const: 'CreateWebLedgerRecord'},
     proof: {
       anyOf: [{
         type: 'array',
-        items: [writeCapability, createCapability],
-        additionalItems: false,
-      }, {
-        type: 'array',
-        items: [createCapability, writeCapability],
+        items: [writeCapability, writeCapability],
         additionalItems: false,
       }],
     },
@@ -684,7 +633,7 @@ const createWebLedgerRecord = {
 module.exports.operationValidator = () => operationValidator;
 module.exports.updateDidDocument = () => updateDidDocument;
 module.exports.didDocumentPatch = () => didDocumentPatch;
-module.exports.electorPoolDocument = () => electorPoolDocument;
+module.exports.witnessPoolDocument = () => witnessPoolDocument;
 module.exports.ledgerConfiguration = () => ledgerConfiguration;
 module.exports.operation = () => ({
   title: 'Veres One WebLedgerOperation',

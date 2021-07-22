@@ -3,15 +3,14 @@
  */
 'use strict';
 
+const {attachInvocationProof} = require('did-veres-one');
 const bedrock = require('bedrock');
 const {config: {constants}, util: {clone}} = bedrock;
 const helpers = require('./helpers');
 const {httpsAgent} = require('bedrock-https-agent');
-const didv1 = new (require('did-veres-one')).VeresOne({httpsAgent});
+const v1 = require('did-veres-one').driver({httpsAgent});
 const voValidator = require('veres-one-validator');
 const jsonpatch = require('fast-json-patch');
-
-const continuityServiceType = 'Continuity2017Peer';
 
 const ldDocuments = new Map();
 const ledgerNode = helpers.createMockLedgerNode({ldDocuments});
@@ -19,23 +18,16 @@ const ledgerNode = helpers.createMockLedgerNode({ldDocuments});
 const mockData = require('./mock.data');
 
 let maintainerDidDocumentFull;
-let electorDidDocumentFull;
-let electorServiceId;
+let witnessDidDocumentFull;
 describe('validate API ValidatorParameterSet', () => {
   describe('operationValidator', () => {
     beforeEach(async () => {
-      maintainerDidDocumentFull = await didv1.generate();
-      const {doc: maintainerDidDocument} = maintainerDidDocumentFull;
+      maintainerDidDocumentFull = await v1.generate();
+      const {didDocument: maintainerDidDocument} = maintainerDidDocumentFull;
       ldDocuments.set(maintainerDidDocument.id, maintainerDidDocument);
-      electorDidDocumentFull = await didv1.generate();
-      const {doc: electorDidDocument} = electorDidDocumentFull;
-      electorServiceId = `${electorDidDocument.id};service=MyServiceName`;
-      electorDidDocument.service = [{
-        id: electorServiceId,
-        type: continuityServiceType,
-        serviceEndpoint: mockData.electorEndpoint[0],
-      }];
-      ldDocuments.set(electorDidDocument.id, electorDidDocument);
+      witnessDidDocumentFull = await v1.generate();
+      const {didDocument: witnessDidDocument} = witnessDidDocumentFull;
+      ldDocuments.set(witnessDidDocument.id, witnessDidDocument);
     });
     describe('create ValidatorParameterSet operation', () => {
       it('validates op with proper proof', async () => {
@@ -44,23 +36,23 @@ describe('validate API ValidatorParameterSet', () => {
           {didDocument: validatorParameterSetDoc, operationType: 'create'});
         const key = _getMaintainerKeys();
 
-        // FIXME: add an AuthorizeRequest proof that will pass json-schema
+        // FIXME: add a write proof for the ledger that will pass json-schema
         // validation for testnet v2 *not* a valid signature
         operation.proof = clone(mockData.proof);
 
-        operation = await didv1.attachInvocationProof({
+        operation = await attachInvocationProof({
           operation,
           // capability: maintainerDid,
           capability: validatorParameterSetDoc.id,
-          capabilityAction: 'create',
+          capabilityAction: 'write',
+          invocationTarget: operation.record.id,
           key,
         });
 
         // FIXME: attach proof instead of mock proof above
-        // operation = await didv1.attachInvocationProof({
-        //   operation,
+        // operation = await attachInvocationProof(operation, {
         //   capability: maintainerDid,
-        //   capabilityAction: 'AuthorizeRequest',
+        //   capabilityAction: 'write',
         //   key,
         // });
         const ledgerConfig = clone(mockData.ledgerConfigurations.alpha);
@@ -88,28 +80,28 @@ describe('validate API ValidatorParameterSet', () => {
       it('rejects op with doc ID that does not match the config', async () => {
         const validatorParameterSetDoc = _generateValidatorParameterSetDoc();
         validatorParameterSetDoc.id =
-          'did:v1:uuid:4da302e3-0fe0-49c6-a7c3-55ff4e1ef5fa';
+          'did:v1:test:uuid:4da302e3-0fe0-49c6-a7c3-55ff4e1ef5fa';
         let operation = await _wrap(
           {didDocument: validatorParameterSetDoc, operationType: 'create'});
         const key = _getMaintainerKeys();
 
-        // FIXME: add an AuthorizeRequest proof that will pass json-schema
+        // FIXME: add a write proof for the ledger that will pass json-schema
         // validation for testnet v2 *not* a valid signature
         operation.proof = clone(mockData.proof);
 
-        operation = await didv1.attachInvocationProof({
+        operation = await attachInvocationProof({
           operation,
           // capability: maintainerDid,
           capability: validatorParameterSetDoc.id,
-          capabilityAction: 'create',
+          capabilityAction: 'write',
+          invocationTarget: operation.record.id,
           key,
         });
 
         // FIXME: attach proof instead of mock proof above
-        // operation = await didv1.attachInvocationProof({
-        //   operation,
+        // operation = await attachInvocationProof(operation, {
         //   capability: maintainerDid,
-        //   capabilityAction: 'AuthorizeRequest',
+        //   capabilityAction: 'write',
         //   key,
         // });
         const ledgerConfig = clone(mockData.ledgerConfigurations.alpha);
@@ -150,23 +142,23 @@ describe('validate API ValidatorParameterSet', () => {
           {didDocument: validatorParameterSetDoc, operationType: 'create'});
         const key = _getMaintainerKeys();
 
-        // FIXME: add an AuthorizeRequest proof that will pass json-schema
+        // FIXME: add a write proof for the ledger that will pass json-schema
         // validation for testnet v2 *not* a valid signature
         operation.proof = clone(mockData.proof);
 
-        operation = await didv1.attachInvocationProof({
+        operation = await attachInvocationProof({
           operation,
           // capability: maintainerDid,
           capability: validatorParameterSetDoc.id,
-          capabilityAction: 'create',
+          capabilityAction: 'write',
+          invocationTarget: operation.record.id,
           key,
         });
 
         // FIXME: attach proof instead of mock proof above
-        // operation = await didv1.attachInvocationProof({
-        //   operation,
+        // operation = await attachInvocationProof(operation, {
         //   capability: maintainerDid,
-        //   capabilityAction: 'AuthorizeRequest',
+        //   capabilityAction: 'write',
         //   key,
         // });
         const ledgerConfig = clone(mockData.ledgerConfigurations.alpha);
@@ -195,13 +187,13 @@ describe('validate API ValidatorParameterSet', () => {
         should.exist(result.error.details.baseUrl);
         should.exist(result.error.details.allowedServiceBaseUrl);
       });
-    }); // end create electorPool operation
+    }); // end create witnessPool operation
 
     describe('update ValidatorParameterSet operation', () => {
       it('validates an operation with proper proof', async () => {
         const validatorParameterSetDoc = _generateValidatorParameterSetDoc();
         // the invocationTarget is the ledger ID
-        // electorPoolDoc.electorPool[0].capability[0].invocationTarget =
+        // witnessPoolDoc.witnessPool[0].capability[0].invocationTarget =
         //   'urn:uuid:e9e63a07-15b1-4e8f-b725-a71a362cfd99';
         ldDocuments.set(
           validatorParameterSetDoc.id, clone(validatorParameterSetDoc));
@@ -211,7 +203,10 @@ describe('validate API ValidatorParameterSet', () => {
         const patch = jsonpatch.generate(observer);
 
         let operation = {
-          '@context': constants.WEB_LEDGER_CONTEXT_V1_URL,
+          '@context': [
+            constants.WEB_LEDGER_CONTEXT_V1_URL,
+            constants.ZCAP_CONTEXT_V1_URL
+          ],
           creator: 'https://example.com/some/ledger/node',
           recordPatch: {
             '@context': mockData.patchContext,
@@ -225,27 +220,27 @@ describe('validate API ValidatorParameterSet', () => {
 
         // FIXME: what are proper proofs for an update operation?
 
-        // FIXME: add an AuthorizeRequest proof that will pass json-schema
+        // FIXME: add a write proof for the ledger that will pass json-schema
         // validation for testnet v2 *not* a valid signature
         operation.proof = clone(mockData.proof);
 
-        operation = await didv1.attachInvocationProof({
+        operation = await attachInvocationProof({
           operation,
           capability: validatorParameterSetDoc.id,
           // capabilityAction: operation.type,
-          capabilityAction: 'update',
+          capabilityAction: 'write',
+          invocationTarget: operation.recordPatch.target,
           key,
         });
         // FIXME: replace mock proof above with legitimate proof
-        // operation = await didv1.attachInvocationProof({
-        //   operation,
+        // operation = await attachInvocationProof(operation, {
         //   capability: maintainerDid,
         //   // capabilityAction: operation.type,
-        //   capabilityAction: 'AuthorizeRequest',
+        //   capabilityAction: 'write',
         //   key,
         // });
         const ledgerConfig = clone(mockData.ledgerConfigurations.alpha);
-        ledgerConfig.electorSelectionMethod = {
+        ledgerConfig.witnessSelectionMethod = {
           type: 'VeresOne',
         };
         let err;
@@ -269,7 +264,7 @@ describe('validate API ValidatorParameterSet', () => {
       it('rejects an operation removing allowedServiceBaseUrl', async () => {
         const validatorParameterSetDoc = _generateValidatorParameterSetDoc();
         // the invocationTarget is the ledger ID
-        // electorPoolDoc.electorPool[0].capability[0].invocationTarget =
+        // witnessPoolDoc.witnessPool[0].capability[0].invocationTarget =
         //   'urn:uuid:e9e63a07-15b1-4e8f-b725-a71a362cfd99';
         ldDocuments.set(
           validatorParameterSetDoc.id, clone(validatorParameterSetDoc));
@@ -280,7 +275,10 @@ describe('validate API ValidatorParameterSet', () => {
         const patch = jsonpatch.generate(observer);
 
         let operation = {
-          '@context': constants.WEB_LEDGER_CONTEXT_V1_URL,
+          '@context': [
+            constants.WEB_LEDGER_CONTEXT_V1_URL,
+            constants.ZCAP_CONTEXT_V1_URL
+          ],
           creator: 'https://example.com/some/ledger/node',
           recordPatch: {
             '@context': mockData.patchContext,
@@ -294,27 +292,27 @@ describe('validate API ValidatorParameterSet', () => {
 
         // FIXME: what are proper proofs for an update operation?
 
-        // FIXME: add an AuthorizeRequest proof that will pass json-schema
+        // FIXME: add a write proof for the ledger that will pass json-schema
         // validation for testnet v2 *not* a valid signature
         operation.proof = clone(mockData.proof);
 
-        operation = await didv1.attachInvocationProof({
+        operation = await attachInvocationProof({
           operation,
           capability: validatorParameterSetDoc.id,
           // capabilityAction: operation.type,
-          capabilityAction: 'update',
+          capabilityAction: 'write',
+          invocationTarget: operation.recordPatch.target,
           key,
         });
         // FIXME: replace mock proof above with legitimate proof
-        // operation = await didv1.attachInvocationProof({
-        //   operation,
+        // operation = await attachInvocationProof(operation, {
         //   capability: maintainerDid,
         //   // capabilityAction: operation.type,
-        //   capabilityAction: 'AuthorizeRequest',
+        //   capabilityAction: 'write',
         //   key,
         // });
         const ledgerConfig = clone(mockData.ledgerConfigurations.alpha);
-        ledgerConfig.electorSelectionMethod = {
+        ledgerConfig.witnessSelectionMethod = {
           type: 'VeresOne',
         };
         let err;
@@ -341,7 +339,7 @@ describe('validate API ValidatorParameterSet', () => {
       it('rejects an operation that attempts to change doc type', async () => {
         const validatorParameterSetDoc = _generateValidatorParameterSetDoc();
         // the invocationTarget is the ledger ID
-        // electorPoolDoc.electorPool[0].capability[0].invocationTarget =
+        // witnessPoolDoc.witnessPool[0].capability[0].invocationTarget =
         //   'urn:uuid:e9e63a07-15b1-4e8f-b725-a71a362cfd99';
         ldDocuments.set(
           validatorParameterSetDoc.id, clone(validatorParameterSetDoc));
@@ -353,7 +351,10 @@ describe('validate API ValidatorParameterSet', () => {
         const patch = jsonpatch.generate(observer);
 
         let operation = {
-          '@context': constants.WEB_LEDGER_CONTEXT_V1_URL,
+          '@context': [
+            constants.WEB_LEDGER_CONTEXT_V1_URL,
+            constants.ZCAP_CONTEXT_V1_URL
+          ],
           creator: 'https://example.com/some/ledger/node',
           recordPatch: {
             '@context': mockData.patchContext,
@@ -367,27 +368,27 @@ describe('validate API ValidatorParameterSet', () => {
 
         // FIXME: what are proper proofs for an update operation?
 
-        // FIXME: add an AuthorizeRequest proof that will pass json-schema
+        // FIXME: add a write proof for the ledger that will pass json-schema
         // validation for testnet v2 *not* a valid signature
         operation.proof = clone(mockData.proof);
 
-        operation = await didv1.attachInvocationProof({
+        operation = await attachInvocationProof({
           operation,
           capability: validatorParameterSetDoc.id,
           // capabilityAction: operation.type,
-          capabilityAction: 'update',
+          capabilityAction: 'write',
+          invocationTarget: operation.recordPatch.target,
           key,
         });
         // FIXME: replace mock proof above with legitimate proof
-        // operation = await didv1.attachInvocationProof({
-        //   operation,
+        // operation = await attachInvocationProof(operation, {
         //   capability: maintainerDid,
         //   // capabilityAction: operation.type,
-        //   capabilityAction: 'AuthorizeRequest',
+        //   capabilityAction: 'write',
         //   key,
         // });
         const ledgerConfig = clone(mockData.ledgerConfigurations.alpha);
-        ledgerConfig.electorSelectionMethod = {
+        ledgerConfig.witnessSelectionMethod = {
           type: 'VeresOne',
         };
         let err;
@@ -413,7 +414,7 @@ describe('validate API ValidatorParameterSet', () => {
       it('rejects an operation that attempts to change doc ID', async () => {
         const validatorParameterSetDoc = _generateValidatorParameterSetDoc();
         // the invocationTarget is the ledger ID
-        // electorPoolDoc.electorPool[0].capability[0].invocationTarget =
+        // witnessPoolDoc.witnessPool[0].capability[0].invocationTarget =
         //   'urn:uuid:e9e63a07-15b1-4e8f-b725-a71a362cfd99';
         ldDocuments.set(
           validatorParameterSetDoc.id, clone(validatorParameterSetDoc));
@@ -421,12 +422,15 @@ describe('validate API ValidatorParameterSet', () => {
 
         // attempt to change document id
         validatorParameterSetDoc.type =
-          'did:v1:uuid:f6648d4e-6e4c-4c35-b7b4-2e045f207c2d';
+          'did:v1:test:uuid:f6648d4e-6e4c-4c35-b7b4-2e045f207c2d';
 
         const patch = jsonpatch.generate(observer);
 
         let operation = {
-          '@context': constants.WEB_LEDGER_CONTEXT_V1_URL,
+          '@context': [
+            constants.WEB_LEDGER_CONTEXT_V1_URL,
+            constants.ZCAP_CONTEXT_V1_URL
+          ],
           creator: 'https://example.com/some/ledger/node',
           recordPatch: {
             '@context': mockData.patchContext,
@@ -440,27 +444,26 @@ describe('validate API ValidatorParameterSet', () => {
 
         // FIXME: what are proper proofs for an update operation?
 
-        // FIXME: add an AuthorizeRequest proof that will pass json-schema
+        // FIXME: add a write proof for the ledger that will pass json-schema
         // validation for testnet v2 *not* a valid signature
         operation.proof = clone(mockData.proof);
-
-        operation = await didv1.attachInvocationProof({
+        operation = await attachInvocationProof({
           operation,
           capability: validatorParameterSetDoc.id,
           // capabilityAction: operation.type,
-          capabilityAction: 'update',
+          capabilityAction: 'write',
+          invocationTarget: operation.recordPatch.target,
           key,
         });
         // FIXME: replace mock proof above with legitimate proof
-        // operation = await didv1.attachInvocationProof({
-        //   operation,
+        // operation = await attachInvocationProof(operation, {
         //   capability: maintainerDid,
         //   // capabilityAction: operation.type,
-        //   capabilityAction: 'AuthorizeRequest',
+        //   capabilityAction: 'write',
         //   key,
         // });
         const ledgerConfig = clone(mockData.ledgerConfigurations.alpha);
-        ledgerConfig.electorSelectionMethod = {
+        ledgerConfig.witnessSelectionMethod = {
           type: 'VeresOne',
         };
         let err;
@@ -483,12 +486,12 @@ describe('validate API ValidatorParameterSet', () => {
         result.error.name.should.equal('ValidationError');
         result.error.message.should.contain('immutable');
       });
-    }); // end update electorPool operation
+    }); // end update witnessPool operation
   });
 });
 
 function _generateValidatorParameterSetDoc() {
-  const {id: maintainerDid} = maintainerDidDocumentFull.doc;
+  const {id: maintainerDid} = maintainerDidDocumentFull.didDocument;
   const validatorParameterSetDoc = clone(
     mockData.validatorParameterSet.alpha);
   validatorParameterSetDoc.controller = maintainerDid;
@@ -496,15 +499,20 @@ function _generateValidatorParameterSetDoc() {
 }
 
 function _getMaintainerKeys() {
-  const invokePublicKey = maintainerDidDocumentFull.doc
-    .capabilityInvocation[0];
-  return maintainerDidDocumentFull.keys[invokePublicKey.id];
+  const invokePublicKey =
+    maintainerDidDocumentFull.didDocument.capabilityInvocation[0];
+  return maintainerDidDocumentFull.keyPairs.get(invokePublicKey.id);
 }
 
 // this is a modified version of the wrap API found in did-veres-one and
 // web-ledger-client
 async function _wrap({didDocument, operationType = 'create'}) {
-  const operation = {'@context': constants.WEB_LEDGER_CONTEXT_V1_URL};
+  const operation = {
+    '@context': [
+      constants.WEB_LEDGER_CONTEXT_V1_URL,
+      constants.ZCAP_CONTEXT_V1_URL
+    ]
+  };
 
   // normally this is set basted on the targetNode value provided by the
   // ledger-agent HTTP API
