@@ -28,7 +28,7 @@ const caveat = {
       type: 'string',
       maxLength
       // FIXME: enable when term is finalized
-      // enum: ['VeresOneElectorTicketAgent']
+      // enum: ['VeresOneWitnessTicketAgent']
     }
   }
 };
@@ -164,7 +164,7 @@ const didDocumentContext = {
       }]}
   ],
   maxItems: 4,
-  minItems: 2,
+  minItems: 2
 };
 
 const didDocument = {
@@ -329,78 +329,58 @@ const didDocumentPatch = {
   },
 };
 
-const ContinuityElectorTypes = {
+const ContinuityWitnessTypes = {
   type: 'string',
   enum: [
-    'Continuity2017Elector',
-    'Continuity2017GuarantorElector',
+    'Continuity2017Witness',
+    'Continuity2017GuarantorWitness',
   ],
 };
 
-const Continuity2017Elector = {
+const Continuity2017Witness = {
   type: 'string',
-  enum: ['Continuity2017Elector'],
+  enum: ['Continuity2017Witness'],
 };
 
-const electorPoolDocument = {
-  title: 'ElectorPool Document',
+const witnessPoolDocument = {
+  title: 'WitnessPool Document',
   type: 'object',
   additionalProperties: false,
   required: [
     '@context',
     'id',
-    'electorPool',
     'controller',
-    // FIXME: DOES THIS BELONG HERE? IT'S ALSO IN THE LEDGER CONFIG IN THE
-    // ELECTOR SELECTION
-    // 'maximumElectorCount',
+    'maximumWitnessCount',
+    'primaryWitnessCandidate',
     'type'
   ],
   properties: {
     '@context': didDocumentContext,
     id: didUuid(),
     controller: did(),
-    type: {const: 'ElectorPool'},
-    electorPool: {
+    type: {const: 'WitnessPool'},
+    primaryWitnessCandidate: {
       type: 'array',
+      minItems: 1,
       items: {
-        type: 'object',
-        required: [
-          'id',
-          'service',
-          'type',
-        ],
-        properties: {
-          id: urnUuid(),
-          service: {
-            anyOf: [serviceDescriptor(), serviceId()]
-          },
-          type: {
-            anyOf: [
-              Continuity2017Elector, {
-                type: 'array',
-                maxItems: 1,
-                minItems: 1,
-                items: Continuity2017Elector
-              }, {
-                type: 'array',
-                maxItems: 2,
-                minItems: 2,
-                uniqueItems: true,
-                items: ContinuityElectorTypes
-              }]
-          },
-          capability: {
-            type: 'array',
-            minItems: 1,
-            items: capability
-          }
-        }
+        // FIXME: This should be limited to did:key
+        type: 'string',
+        maxLength
       }
     },
-    maximumElectorCount: {
+    secondaryWitnessCandidate: {
+      type: 'array',
+      minItems: 0,
+      items: {
+        // FIXME: This should be limited to did:key
+        type: 'string',
+        maxLength
+      }
+    },
+    maximumWitnessCount: {
       type: 'integer',
       minimum: 1,
+      maximum: 13
     }
   },
 };
@@ -521,7 +501,8 @@ const updateWebLedgerRecord = {
   properties: {
     '@context': schemas.jsonldContext([
       constants.WEB_LEDGER_CONTEXT_V1_URL,
-      constants.ED25519_2020_CONTEXT_V1_URL,
+      constants.ZCAP_CONTEXT_V1_URL,
+      constants.ED25519_2020_CONTEXT_V1_URL
     ]),
     creator,
     type: {const: 'UpdateWebLedgerRecord',
@@ -562,22 +543,15 @@ const ledgerConfiguration = {
     witnessSelectionMethod: {
       additionalProperties: false,
       required: [
-        // maximumElectorCount is *not* required in the configuration
-        'electorPool',
         'type',
+        'witnessPool'
       ],
       type: 'object',
       properties: {
-        maximumElectorCount: {
-          type: 'integer',
-          minimum: 1,
-        },
-        electorPool: didUuid(),
         type: {
-          // FIXME: using ElectorPoolElectorSelection for now
-          // this should be a VeresOne specific method
-          const: 'ElectorPoolElectorSelection'
-        }
+          const: 'WitnessPoolWitnessSelection'
+        },
+        witnessPool: didUuid()
       }
     },
     ledger: {
@@ -639,14 +613,14 @@ const uuidDidRecord = {
   properties: {
     type: {
       enum: [
-        'ElectorPool',
+        'WitnessPool',
         'ValidatorParameterSet',
       ]
     }
   },
   allOf: [{
-    if: {properties: {type: {const: 'ElectorPool'}}},
-    then: electorPoolDocument
+    if: {properties: {type: {const: 'WitnessPool'}}},
+    then: witnessPoolDocument
   }, {
     if: {properties: {type: {const: 'ValidatorParameterSet'}}},
     then: validatorParameterSet
@@ -667,6 +641,7 @@ const createWebLedgerRecord = {
   properties: {
     '@context': schemas.jsonldContext([
       constants.WEB_LEDGER_CONTEXT_V1_URL,
+      constants.ZCAP_CONTEXT_V1_URL,
       constants.ED25519_2020_CONTEXT_V1_URL
     ]),
     creator,
@@ -706,7 +681,7 @@ const createWebLedgerRecord = {
 module.exports.operationValidator = () => operationValidator;
 module.exports.updateDidDocument = () => updateDidDocument;
 module.exports.didDocumentPatch = () => didDocumentPatch;
-module.exports.electorPoolDocument = () => electorPoolDocument;
+module.exports.witnessPoolDocument = () => witnessPoolDocument;
 module.exports.ledgerConfiguration = () => ledgerConfiguration;
 module.exports.operation = () => ({
   title: 'Veres One WebLedgerOperation',
