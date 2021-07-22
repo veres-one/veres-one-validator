@@ -18,29 +18,24 @@ const ledgerNode = helpers.createMockLedgerNode({ldDocuments});
 const mockData = require('./mock.data');
 
 let maintainerDidDocumentFull;
-let electorDidDocumentFull;
-let electorServiceId;
-describe('validate API ElectorPool', () => {
+let witnessDidDocumentFull;
+let witnessServiceId;
+describe('validate API WitnessPool', () => {
   describe('operationValidator', () => {
     beforeEach(async () => {
       maintainerDidDocumentFull = await v1.generate();
       const {didDocument: maintainerDidDocument} = maintainerDidDocumentFull;
       ldDocuments.set(maintainerDidDocument.id, maintainerDidDocument);
-      electorDidDocumentFull = await v1.generate();
-      const {didDocument: electorDidDocument} = electorDidDocumentFull;
-      electorServiceId = `${electorDidDocument.id}#MyServiceName`;
-      electorDidDocument.service = [{
-        id: electorServiceId,
-        type: continuityServiceType,
-        serviceEndpoint: mockData.electorEndpoint[0],
-      }];
-      ldDocuments.set(electorDidDocument.id, electorDidDocument);
+      witnessDidDocumentFull = await v1.generate();
+      const {didDocument: witnessDidDocument} = witnessDidDocumentFull;
+      witnessServiceId = `${witnessDidDocument.id}#MyServiceName`;
+      ldDocuments.set(witnessDidDocument.id, witnessDidDocument);
     });
-    describe('create electorPool operation', () => {
+    describe('create witnessPool operation', () => {
       it('validates op with proper proof', async () => {
-        const electorPoolDoc = _generateElectorPoolDoc();
+        const witnessPoolDoc = _generateWitnessPoolDoc();
         let operation = await _wrap(
-          {didDocument: electorPoolDoc, operationType: 'create'});
+          {didDocument: witnessPoolDoc, operationType: 'create'});
         const key = _getMaintainerKeys();
 
         // FIXME: add a write proof for the ledger that will pass json-schema
@@ -50,7 +45,7 @@ describe('validate API ElectorPool', () => {
         operation = await attachInvocationProof({
           operation,
           // capability: maintainerDid,
-          capability: electorPoolDoc.id,
+          capability: witnessPoolDoc.id,
           capabilityAction: 'write',
           invocationTarget: operation.record.id,
           key,
@@ -65,10 +60,10 @@ describe('validate API ElectorPool', () => {
         // });
         const ledgerConfig = bedrock.util.clone(
           mockData.ledgerConfigurations.alpha);
-        ledgerConfig.electorSelectionMethod = {
+        ledgerConfig.witnessSelectionMethod = {
           type: 'VeresOne',
-          // corresponds to electorPoolDocument.alpha
-          electorPool: electorPoolDoc.id,
+          // corresponds to witnessPoolDocument.alpha
+          witnessPool: witnessPoolDoc.id,
         };
         let err;
         let result;
@@ -90,15 +85,13 @@ describe('validate API ElectorPool', () => {
         should.exist(result.valid);
         result.valid.should.be.true;
       });
-      it('fails on op with serviceId mismatch', async () => {
-        const {id: maintainerDid} = maintainerDidDocumentFull.didDocument;
-        const electorPoolDoc = _generateElectorPoolDoc();
+      it('fails on empty primary witness array', async () => {
+        const witnessPoolDoc = _generateWitnessPoolDoc();
 
-        const incorrectServiceId = `${maintainerDid};service=Unknown`;
-        electorPoolDoc.electorPool[0].service = incorrectServiceId;
+        witnessPoolDoc.primaryWitnessCandidate = [];
 
         let operation = await _wrap(
-          {didDocument: electorPoolDoc, operationType: 'create'});
+          {didDocument: witnessPoolDoc, operationType: 'create'});
         const key = _getMaintainerKeys();
         // FIXME: add a write proof for the ledger that will pass json-schema
         // validation for testnet v2 *not* a valid signature
@@ -107,7 +100,7 @@ describe('validate API ElectorPool', () => {
         operation = await attachInvocationProof({
           operation,
           // capability: maintainerDid,
-          capability: electorPoolDoc.id,
+          capability: witnessPoolDoc.id,
           capabilityAction: 'write',
           invocationTarget: operation.record.id,
           key,
@@ -121,10 +114,10 @@ describe('validate API ElectorPool', () => {
         // });
         const ledgerConfig = bedrock.util.clone(
           mockData.ledgerConfigurations.alpha);
-        ledgerConfig.electorSelectionMethod = {
+        ledgerConfig.witnessSelectionMethod = {
           type: 'VeresOne',
-          // corresponds to electorPoolDocument.alpha
-          electorPool: electorPoolDoc.id,
+          // corresponds to witnessPoolDocument.alpha
+          witnessPool: witnessPoolDoc.id,
         };
         let err;
         let result;
@@ -142,13 +135,13 @@ describe('validate API ElectorPool', () => {
         }
         assertNoError(err);
         result.valid.should.be.false;
-        result.error.name.should.equal('NotFoundError');
+        result.error.name.should.equal('ValidationError');
       });
       it('fails on op if proof is not an array', async () => {
         const {id: maintainerDid} = maintainerDidDocumentFull.didDocument;
-        const electorPoolDoc = _generateElectorPoolDoc();
+        const witnessPoolDoc = _generateWitnessPoolDoc();
         let operation = await _wrap(
-          {didDocument: electorPoolDoc, operationType: 'create'});
+          {didDocument: witnessPoolDoc, operationType: 'create'});
         const key = _getMaintainerKeys();
         // no create proof added
         operation = await attachInvocationProof({
@@ -162,10 +155,10 @@ describe('validate API ElectorPool', () => {
 
         const ledgerConfig = bedrock.util.clone(
           mockData.ledgerConfigurations.alpha);
-        ledgerConfig.electorSelectionMethod = {
+        ledgerConfig.witnessSelectionMethod = {
           type: 'VeresOne',
-          // corresponds to electorPoolDocument.alpha
-          electorPool: electorPoolDoc.id,
+          // corresponds to witnessPoolDocument.alpha
+          witnessPool: witnessPoolDoc.id,
         };
         let err;
         let result;
@@ -189,9 +182,9 @@ describe('validate API ElectorPool', () => {
 
       it('fails on op w/only one write capability', async () => {
         const {id: maintainerDid} = maintainerDidDocumentFull.didDocument;
-        const electorPoolDoc = _generateElectorPoolDoc();
+        const witnessPoolDoc = _generateWitnessPoolDoc();
         let operation = await _wrap(
-          {didDocument: electorPoolDoc, operationType: 'create'});
+          {didDocument: witnessPoolDoc, operationType: 'create'});
         const key = _getMaintainerKeys();
         // no ledger write proof added
         // this proof is for writing to a single did
@@ -206,10 +199,10 @@ describe('validate API ElectorPool', () => {
 
         const ledgerConfig = bedrock.util.clone(
           mockData.ledgerConfigurations.alpha);
-        ledgerConfig.electorSelectionMethod = {
+        ledgerConfig.witnessSelectionMethod = {
           type: 'VeresOne',
-          // corresponds to electorPoolDocument.alpha
-          electorPool: electorPoolDoc.id,
+          // corresponds to witnessPoolDocument.alpha
+          witnessPool: witnessPoolDoc.id,
         };
         let err;
         let result;
@@ -232,9 +225,9 @@ describe('validate API ElectorPool', () => {
       // FIXME add validation to ensure one of the proof's invocationTarget
       // is the ledger itself.
       it.skip('fails on op w/ two write capability proofs', async () => {
-        const electorPoolDoc = _generateElectorPoolDoc();
+        const witnessPoolDoc = _generateWitnessPoolDoc();
         let operation = await _wrap(
-          {didDocument: electorPoolDoc, operationType: 'create'});
+          {didDocument: witnessPoolDoc, operationType: 'create'});
         const key = _getMaintainerKeys();
 
         // no ledger write proof added
@@ -242,24 +235,24 @@ describe('validate API ElectorPool', () => {
         // proof for writing to the ledger itself
         operation = await attachInvocationProof({
           operation,
-          capability: electorPoolDoc.id,
+          capability: witnessPoolDoc.id,
           capabilityAction: 'write',
-          invocationTarget: electorPoolDoc.id,
+          invocationTarget: witnessPoolDoc.id,
           key,
         });
         operation = await attachInvocationProof({
           operation,
-          capability: electorPoolDoc.id,
+          capability: witnessPoolDoc.id,
           capabilityAction: 'write',
-          invocationTarget: electorPoolDoc.id,
+          invocationTarget: witnessPoolDoc.id,
           key,
         });
         const ledgerConfig = bedrock.util.clone(
           mockData.ledgerConfigurations.alpha);
-        ledgerConfig.electorSelectionMethod = {
+        ledgerConfig.witnessSelectionMethod = {
           type: 'VeresOne',
-          // corresponds to electorPoolDocument.alpha
-          electorPool: electorPoolDoc.id,
+          // corresponds to witnessPoolDocument.alpha
+          witnessPool: witnessPoolDoc.id,
         };
         let err;
         let result;
@@ -282,9 +275,9 @@ describe('validate API ElectorPool', () => {
       // FIXME false negative here
       it('fails on op w/two ledger write capability proofs', async () => {
         const {id: maintainerDid} = maintainerDidDocumentFull.didDocument;
-        const electorPoolDoc = _generateElectorPoolDoc();
+        const witnessPoolDoc = _generateWitnessPoolDoc();
         let operation = await _wrap(
-          {didDocument: electorPoolDoc, operationType: 'create'});
+          {didDocument: witnessPoolDoc, operationType: 'create'});
         const key = _getMaintainerKeys();
 
         // we have 2 ledger write proofs, but no did specific
@@ -307,10 +300,10 @@ describe('validate API ElectorPool', () => {
         });
         const ledgerConfig = bedrock.util.clone(
           mockData.ledgerConfigurations.alpha);
-        ledgerConfig.electorSelectionMethod = {
+        ledgerConfig.witnessSelectionMethod = {
           type: 'VeresOne',
-          // corresponds to electorPoolDocument.alpha
-          electorPool: electorPoolDoc.id,
+          // corresponds to witnessPoolDocument.alpha
+          witnessPool: witnessPoolDoc.id,
         };
         let err;
         let result;
@@ -331,16 +324,16 @@ describe('validate API ElectorPool', () => {
         result.error.name.should.equal('ValidationError');
       });
       it('fails on op w/ incorrect capability DID', async () => {
-        const electorPoolDoc = _generateElectorPoolDoc();
+        const witnessPoolDoc = _generateWitnessPoolDoc();
         let operation = await _wrap(
-          {didDocument: electorPoolDoc, operationType: 'create'});
+          {didDocument: witnessPoolDoc, operationType: 'create'});
         const key = _getMaintainerKeys();
 
         // FIXME: add a write proof for the ledger that will pass json-schema
         // validation for testnet v2 *not* a valid signature
         operation.proof = bedrock.util.clone(mockData.proof);
 
-        // replacing electorDid with maintainerDid
+        // replacing witnessDid with maintainerDid
         operation = await attachInvocationProof({
           operation,
           // this DID document does not exist
@@ -358,10 +351,10 @@ describe('validate API ElectorPool', () => {
         // });
         const ledgerConfig = bedrock.util.clone(
           mockData.ledgerConfigurations.alpha);
-        ledgerConfig.electorSelectionMethod = {
+        ledgerConfig.witnessSelectionMethod = {
           type: 'VeresOne',
-          // corresponds to electorPoolDocument.alpha
-          electorPool: electorPoolDoc.id,
+          // corresponds to witnessPoolDocument.alpha
+          witnessPool: witnessPoolDoc.id,
         };
         let err;
         let result;
@@ -387,54 +380,44 @@ describe('validate API ElectorPool', () => {
           .should.equal('NotFoundError');
         result.error.name.should.equal('ValidationError');
       });
-    }); // end create electorPool operation
+    }); // end create witnessPool operation
 
-    describe('update electorPool operation', () => {
+    describe('update witness pool operation', () => {
       it('validates an operation with proper proof', async () => {
-        const {id: electorDid} = electorDidDocumentFull.didDocument;
+        const {id: witnessDid} = witnessDidDocumentFull.didDocument;
         const {id: maintainerDid} = maintainerDidDocumentFull.didDocument;
-        const electorPoolDoc = bedrock.util.clone(
-          mockData.electorPoolDocument.alpha);
-        electorPoolDoc.electorPool[0].elector = electorDid;
-        electorPoolDoc.electorPool[0].service = electorServiceId;
-        electorPoolDoc.electorPool[0].capability[0].id = maintainerDid;
+        const witnessPoolDoc = bedrock.util.clone(
+          mockData.witnessPoolDocument.alpha);
+
         // the invocationTarget is the ledger ID
-        electorPoolDoc.electorPool[0].capability[0].invocationTarget =
-          'urn:uuid:e9e63a07-15b1-4e8f-b725-a71a362cfd99';
-        electorPoolDoc.controller = maintainerDid;
-        ldDocuments.set(electorPoolDoc.id, bedrock.util.clone(electorPoolDoc));
-        const observer = jsonpatch.observe(electorPoolDoc);
-        const elector =
-          'did:v1:test:nym:z279squ73dJ3q21jAEk3FRrr37UdX5xo8FXWA74anmPnvzfx';
+        witnessPoolDoc.controller = maintainerDid;
+        ldDocuments.set(witnessPoolDoc.id, bedrock.util.clone(witnessPoolDoc));
+        const observer = jsonpatch.observe(witnessPoolDoc);
 
-        // FIXME: should inline serviceIds be did: URI's?
-        const newServiceId = `${elector};service=TheServiceId`;
+        // upgrade the witness pool to 4 witnesses
+        witnessPoolDoc.primaryWitnessCandidate.push(witnessDid);
+        witnessPoolDoc.primaryWitnessCandidate.push(
+          (await v1.generate()).didDocument.id);
+        witnessPoolDoc.primaryWitnessCandidate.push(
+          (await v1.generate()).didDocument.id);
+        witnessPoolDoc.secondaryWitnessCandidate = [
+          (await v1.generate()).didDocument.id];
+        witnessPoolDoc.maximumWitnessCount = 4;
 
-        const newServiceEndpoint = mockData.electorEndpoint[1];
-        const {capability} = electorPoolDoc.electorPool[0];
-        // using an inline service descriptor
-        electorPoolDoc.electorPool.push({
-          // elector DID is not dereferenced in this case
-          elector,
-          capability,
-          id: _generateUrnUuid(),
-          type: ['Continuity2017GuarantorElector', 'Continuity2017Elector'],
-          service: {
-            id: newServiceId,
-            serviceEndpoint: newServiceEndpoint,
-            type: continuityServiceType,
-          },
-        });
         const patch = jsonpatch.generate(observer);
 
         let operation = {
-          '@context': constants.WEB_LEDGER_CONTEXT_V1_URL,
+          '@context': [
+            constants.WEB_LEDGER_CONTEXT_V1_URL,
+            constants.ZCAP_CONTEXT_V1_URL,
+            constants.ED25519_2020_CONTEXT_V1_URL
+          ],
           creator: 'https://example.com/some/ledger/node',
           recordPatch: {
             '@context': mockData.patchContext,
             patch,
             sequence: 0,
-            target: electorPoolDoc.id,
+            target: witnessPoolDoc.id,
           },
           type: 'UpdateWebLedgerRecord',
         };
@@ -449,12 +432,13 @@ describe('validate API ElectorPool', () => {
 
         operation = await attachInvocationProof({
           operation,
-          capability: electorPoolDoc.id,
+          capability: witnessPoolDoc.id,
           // capabilityAction: operation.type,
           capabilityAction: 'write',
           invocationTarget: operation.recordPatch.target,
           key,
         });
+
         // FIXME: replace mock proof above with legitimate proof
         // operation = await attachInvocationProof(operation, {
         //   capability: maintainerDid,
@@ -464,10 +448,10 @@ describe('validate API ElectorPool', () => {
         // });
         const ledgerConfig = bedrock.util.clone(
           mockData.ledgerConfigurations.alpha);
-        ledgerConfig.electorSelectionMethod = {
+        ledgerConfig.witnessSelectionMethod = {
           type: 'VeresOne',
-          // corresponds to electorPoolDocument.alpha
-          electorPool: electorPoolDoc.id,
+          // corresponds to witnessPoolDocument.alpha
+          witnessPool: witnessPoolDoc.id,
         };
         let err;
         let result;
@@ -487,33 +471,32 @@ describe('validate API ElectorPool', () => {
         assertNoError(result.error);
         result.valid.should.be.true;
       });
-      it('rejects an operation removing electorPool', async () => {
-        const {id: electorDid} = electorDidDocumentFull.didDocument;
+      it('rejects an operation removing witnessPool', async () => {
         const {id: maintainerDid} = maintainerDidDocumentFull.didDocument;
-        const electorPoolDoc = bedrock.util.clone(
-          mockData.electorPoolDocument.alpha);
-        electorPoolDoc.electorPool[0].elector = electorDid;
-        electorPoolDoc.electorPool[0].service = electorServiceId;
-        electorPoolDoc.electorPool[0].capability[0].id = maintainerDid;
-        // the invocationTarget is the ledger ID
-        electorPoolDoc.electorPool[0].capability[0].invocationTarget =
-          'urn:uuid:e9e63a07-15b1-4e8f-b725-a71a362cfd99';
-        electorPoolDoc.controller = maintainerDid;
-        ldDocuments.set(electorPoolDoc.id, bedrock.util.clone(electorPoolDoc));
-        const observer = jsonpatch.observe(electorPoolDoc);
+        const witnessPoolDoc = bedrock.util.clone(
+          mockData.witnessPoolDocument.alpha);
 
-        delete electorPoolDoc.electorPool;
+        // the invocationTarget is the ledger ID
+        witnessPoolDoc.controller = maintainerDid;
+        ldDocuments.set(witnessPoolDoc.id, bedrock.util.clone(witnessPoolDoc));
+        const observer = jsonpatch.observe(witnessPoolDoc);
+
+        delete witnessPoolDoc.primaryWitnessCandidate;
 
         const patch = jsonpatch.generate(observer);
 
         let operation = {
-          '@context': constants.WEB_LEDGER_CONTEXT_V1_URL,
+          '@context': [
+            constants.WEB_LEDGER_CONTEXT_V1_URL,
+            constants.ZCAP_CONTEXT_V1_URL,
+            constants.ED25519_2020_CONTEXT_V1_URL
+          ],
           creator: 'https://example.com/some/ledger/node',
           recordPatch: {
             '@context': mockData.patchContext,
             patch,
             sequence: 0,
-            target: electorPoolDoc.id,
+            target: witnessPoolDoc.id,
           },
           type: 'UpdateWebLedgerRecord',
         };
@@ -528,7 +511,7 @@ describe('validate API ElectorPool', () => {
 
         operation = await attachInvocationProof({
           operation,
-          capability: electorPoolDoc.id,
+          capability: witnessPoolDoc.id,
           // capabilityAction: operation.type,
           capabilityAction: 'write',
           invocationTarget: operation.recordPatch.target,
@@ -543,10 +526,10 @@ describe('validate API ElectorPool', () => {
         // });
         const ledgerConfig = bedrock.util.clone(
           mockData.ledgerConfigurations.alpha);
-        ledgerConfig.electorSelectionMethod = {
+        ledgerConfig.witnessSelectionMethod = {
           type: 'VeresOne',
-          // corresponds to electorPoolDocument.alpha
-          electorPool: electorPoolDoc.id,
+          // corresponds to witnessPoolDocument.alpha
+          witnessPool: witnessPoolDoc.id,
         };
         let err;
         let result;
@@ -566,25 +549,21 @@ describe('validate API ElectorPool', () => {
         result.valid.should.be.false;
         should.exist(result.error);
         result.error.name.should.equal('ValidationError');
-        result.error.message.should.contain('ElectorPool Document');
+        result.error.message.should.contain('WitnessPool Document');
       });
-    }); // end update electorPool operation
+    }); // end update witnessPool operation
   });
 });
 
-function _generateElectorPoolDoc() {
-  const {id: electorDid} = electorDidDocumentFull.didDocument;
+function _generateWitnessPoolDoc() {
+  const {id: witnessDid} = witnessDidDocumentFull.didDocument;
   const {id: maintainerDid} = maintainerDidDocumentFull.didDocument;
-  const electorPoolDoc = bedrock.util.clone(
-    mockData.electorPoolDocument.alpha);
-  electorPoolDoc.electorPool[0].elector = electorDid;
-  electorPoolDoc.electorPool[0].service = electorServiceId;
-  electorPoolDoc.electorPool[0].capability[0].id = maintainerDid;
-  // the invocationTarget is the ledger ID
-  electorPoolDoc.electorPool[0].capability[0].invocationTarget =
-    'urn:uuid:e9e63a07-15b1-4e8f-b725-a71a362cfd99';
-  electorPoolDoc.controller = maintainerDid;
-  return electorPoolDoc;
+  const witnessPoolDoc = bedrock.util.clone(
+    mockData.witnessPoolDocument.alpha);
+  witnessPoolDoc.controller = maintainerDid;
+  witnessPoolDoc.maximumWitnessCount = 1;
+  witnessPoolDoc.primaryWitnessCandidate = [witnessDid];
+  return witnessPoolDoc;
 }
 
 function _generateUrnUuid() {
@@ -600,7 +579,12 @@ function _getMaintainerKeys() {
 // this is a modified version of the wrap API found in did-veres-one and
 // web-ledger-client
 async function _wrap({didDocument, operationType = 'create'}) {
-  const operation = {'@context': constants.WEB_LEDGER_CONTEXT_V1_URL};
+  const operation = {
+    '@context': [
+      constants.WEB_LEDGER_CONTEXT_V1_URL,
+      constants.ZCAP_CONTEXT_V1_URL
+    ]
+  };
 
   // normally this is set basted on the targetNode value provided by the
   // ledger-agent HTTP API
