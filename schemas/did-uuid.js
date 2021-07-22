@@ -6,8 +6,9 @@
 require('../lib/config');
 
 /* eslint-disable-next-line max-len */
-const pattern = `^did:v1(:[a-z][a-z0-9]+)*:uuid:([a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12})$`;
-const minLength = 49; // did:v1:uuid:<UUID_VALUE>
+const pattern = '^did:v1(:[a-z][a-z0-9]+)*:uuid:' +
+  '([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$';
+const minLength = 48; // did:v1:uuid:<UUID_VALUE>
 const maxLength = 66; // minLength + :<16_CHARACTER_NETWORK_ID>
 
 const schema = {
