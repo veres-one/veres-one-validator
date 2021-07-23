@@ -1,10 +1,17 @@
 # veres-one-validator ChangeLog
 
-### 8.0.0 - TBD
+### 8.0.0 - 2021-07-xx
 
 ### Changed
 - **BREAKING**: Validators no longer accept `capabilitionAction` `create` or `update` just `write`.
 - **BREAKING**: Validators for proofs require `invocationTarget` is set.
+- **BREAKING**: Update to 2020 cryptosuites.
+- **BREAKING**: Upgrade and finalize zcap validators.
+- **BREAKING**: Add string length validators to all schemas.
+- **BREAKING**: Change electorSelectionMethod to witnessSelectionMethod. Migrate
+  from electors to witness pools.
+- Remove dead code and fix linting errors.
+- Drop support for node 10.
 
 ## 7.0.0 - 2020-09-30
 
