@@ -1,6 +1,6 @@
 # veres-one-validator ChangeLog
 
-### 8.0.0 - 2021-07-xx
+### 8.0.0 - 2021-07-23
 
 ### Changed
 - **BREAKING**: Validators no longer accept `capabilitionAction` `create` or `update` just `write`.
