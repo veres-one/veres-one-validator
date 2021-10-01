@@ -5,6 +5,7 @@
 
 const bedrock = require('bedrock');
 const {util: {clone, BedrockError}} = bedrock;
+const {documentLoader} = require('bedrock-jsonld-document-loader');
 
 exports.createMockLedgerNode = ({ldDocuments}) => {
   return {
@@ -30,4 +31,17 @@ exports.createMockLedgerNode = ({ldDocuments}) => {
       }
     }
   };
+};
+
+/**
+ * Takes in an id and generates a urn for the root zcap dynamically.
+ *
+ * @param {object} options - Options to use.
+ * @param {string} options.id - Either a UUID or a DiD.
+ *
+ * @returns {string} The resulting zcap id.
+ */
+exports.generatateRootZcapId = ({id}) => {
+  const zcapId = `urn:zcap:root:${encodeURIComponent(id)}`;
+  return zcapId;
 };

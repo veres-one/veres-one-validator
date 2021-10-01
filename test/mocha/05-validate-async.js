@@ -16,11 +16,12 @@ const voValidator = require('veres-one-validator');
 const {CapabilityInvocation} = require('@digitalbazaar/zcapld');
 const mockData = require('./mock.data');
 const {VeresOneDidDoc} = require('did-veres-one');
+const helpers = require('./helpers');
 const v1 = require('did-veres-one').driver({mode: 'test'});
 
 const {util: {clone}} = bedrock;
 
-describe('validate regular DIDs', () => {
+describe.only('validate regular DIDs', () => {
   describe('validate API', () => {
     it('throws on missing ledgerNode parameter', async () => {
       let result;
@@ -49,7 +50,7 @@ describe('validate regular DIDs', () => {
         documentLoader,
         suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
         purpose: new CapabilityInvocation({
-          capability: did,
+          capability: helpers.generatateRootZcapId({id: did}),
           capabilityAction,
           invocationTarget: mockDoc.id
         })
