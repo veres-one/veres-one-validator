@@ -5,7 +5,8 @@
 
 const bedrock = require('bedrock');
 const {util: {clone, BedrockError}} = bedrock;
-const {documentLoader} = require('bedrock-jsonld-document-loader');
+const {CONTEXT_URL: ZCAP_CONTEXT_URL} = require('zcap-context');
+const {jsonLdDocumentLoader} = require('bedrock-jsonld-document-loader');
 
 exports.createMockLedgerNode = ({ldDocuments}) => {
   return {
@@ -43,5 +44,12 @@ exports.createMockLedgerNode = ({ldDocuments}) => {
  */
 exports.generatateRootZcapId = ({id}) => {
   const zcapId = `urn:zcap:root:${encodeURIComponent(id)}`;
+  const zcap = {
+    '@context': ZCAP_CONTEXT_URL,
+    id: zcapId,
+    controller: id,
+    invocationTarget: id
+  };
+  jsonLdDocumentLoader.addStatic(zcapId, zcap);
   return zcapId;
 };

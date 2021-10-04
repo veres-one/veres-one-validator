@@ -39,7 +39,7 @@ describe.only('validate regular DIDs', () => {
   });
   describe('Create Operations', () => {
     it('validates a proper CreateWebLedgerRecord operation', async () => {
-      const {did, mockDoc, capabilityInvocationKey} = await _generateDid();
+      const {mockDoc, capabilityInvocationKey} = await _generateDid();
       const mockOperation = clone(mockData.operations.create);
       const capabilityAction = 'write';
       mockOperation.record = mockDoc;
@@ -50,7 +50,7 @@ describe.only('validate regular DIDs', () => {
         documentLoader,
         suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
         purpose: new CapabilityInvocation({
-          capability: helpers.generatateRootZcapId({id: did}),
+          capability: helpers.generatateRootZcapId({id: mockDoc.id}),
           capabilityAction,
           invocationTarget: mockDoc.id
         })

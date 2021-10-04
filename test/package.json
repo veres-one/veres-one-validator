@@ -34,7 +34,8 @@
     "jsonld-signatures": "^9.0.2",
     "nyc": "^15.1.0",
     "veres-one-validator": "file:..",
-    "x25519-key-agreement-2020-context": "^1.0.0"
+    "x25519-key-agreement-2020-context": "^1.0.0",
+    "zcap-context": "^1.2.1"
   },
   "devDependencies": {
     "@digitalbazaar/ed25519-signature-2020": "^3.0.0",
