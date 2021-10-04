@@ -11,9 +11,10 @@ const voValidator = require('veres-one-validator');
 const v1 = require('did-veres-one').driver({mode: 'test'});
 const {Ed25519Signature2020} =
   require('@digitalbazaar/ed25519-signature-2020');
-const {purposes: {AssertionProofPurpose}} = jsigs;
+const {CapabilityInvocation} = require('@digitalbazaar/zcapld');
+const helpers = require('./helpers');
 
-describe('validate API WebLedgerConfiguration', () => {
+describe.only('validate API WebLedgerConfiguration', () => {
   it('should validate a ledgerConfiguration', async () => {
     const ledgerConfiguration = clone(mockData.ledgerConfigurations.alpha);
 
@@ -24,10 +25,14 @@ describe('validate API WebLedgerConfiguration', () => {
       maintainerDoc.methodFor({purpose: 'capabilityInvocation'});
 
     const s = await jsigs.sign(ledgerConfiguration, {
-      compactProof: false,
       documentLoader,
       suite: new Ed25519Signature2020({key: signingKey}),
-      purpose: new AssertionProofPurpose()
+      purpose: new CapabilityInvocation({
+        capability: helpers.generatateRootZcapId(
+          {id: ledgerConfiguration.ledger}),
+        capabilityAction: 'write',
+        invocationTarget: `${ledgerConfiguration.ledger}/config`
+      })
     });
 
     const result = await voValidator.validate({
@@ -52,7 +57,12 @@ describe('validate API WebLedgerConfiguration', () => {
       compactProof: false,
       documentLoader,
       suite: new Ed25519Signature2020({key: signingKey}),
-      purpose: new AssertionProofPurpose()
+      purpose: new CapabilityInvocation({
+        capability: helpers.generatateRootZcapId(
+          {id: ledgerConfiguration.ledger}),
+        capabilityAction: 'write',
+        invocationTarget: `${ledgerConfiguration.ledger}/config`
+      })
     });
 
     const result = await voValidator.validate({
@@ -79,7 +89,12 @@ describe('validate API WebLedgerConfiguration', () => {
       compactProof: false,
       documentLoader,
       suite: new Ed25519Signature2020({key: signingKey}),
-      purpose: new AssertionProofPurpose()
+      purpose: new CapabilityInvocation({
+        capability: helpers.generatateRootZcapId(
+          {id: ledgerConfiguration.ledger}),
+        capabilityAction: 'write',
+        invocationTarget: `${ledgerConfiguration.ledger}/config`
+      })
     });
 
     const result = await voValidator.validate({
@@ -104,7 +119,12 @@ describe('validate API WebLedgerConfiguration', () => {
       compactProof: false,
       documentLoader,
       suite: new Ed25519Signature2020({key: signingKey}),
-      purpose: new AssertionProofPurpose()
+      purpose: new CapabilityInvocation({
+        capability: helpers.generatateRootZcapId(
+          {id: ledgerConfiguration.ledger}),
+        capabilityAction: 'write',
+        invocationTarget: `${ledgerConfiguration.ledger}/config`
+      })
     });
     // replace the proof with a bad one
     s.proof.proofValue = 'z2p7cVPKsvUHzSfMQxziNPmzE7xx5nVHDZG1ZWYCk41gQJxxYr' +
@@ -131,7 +151,12 @@ describe('validate API WebLedgerConfiguration', () => {
       compactProof: false,
       documentLoader,
       suite: new Ed25519Signature2020({key: signingKey}),
-      purpose: new AssertionProofPurpose()
+      purpose: new CapabilityInvocation({
+        capability: helpers.generatateRootZcapId(
+          {id: ledgerConfiguration.ledger}),
+        capabilityAction: 'write',
+        invocationTarget: `${ledgerConfiguration.ledger}/config`
+      })
     });
     s.proof.verificationMethod =
       'did:v1:test:nym:z6MknbD3kDazNR5K5Aj9HtxsaqS1s2NUcTxescFdvZryECFx#' +
@@ -162,7 +187,12 @@ describe('validate API WebLedgerConfiguration', () => {
       compactProof: false,
       documentLoader,
       suite: new Ed25519Signature2020({key: signingKey}),
-      purpose: new AssertionProofPurpose()
+      purpose: new CapabilityInvocation({
+        capability: helpers.generatateRootZcapId(
+          {id: ledgerConfiguration.ledger}),
+        capabilityAction: 'write',
+        invocationTarget: `${ledgerConfiguration.ledger}/config`
+      })
     });
 
     s.proof.verificationMethod =
