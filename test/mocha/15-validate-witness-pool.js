@@ -41,13 +41,11 @@ describe('validate API WitnessPool', () => {
         operation = await attachInvocationProof({
           operation,
           // capability: maintainerDid,
-          capability: witnessPoolDoc.id,
+          capability: helpers.generatateRootZcapId({id: witnessPoolDoc.id}),
           capabilityAction: 'write',
-          invocationTarget: operation.record.id,
+          invocationTarget: witnessPoolDoc.id,
           key,
-          signer: key.signer()
         });
-
         // FIXME: attach proof instead of mock proof above
         // operation = await attachInvocationProof(operation, {
         //   capability: maintainerDid,
