@@ -22,7 +22,6 @@ describe.only('validate API WebLedgerConfiguration', () => {
     // maintainers DID does not yet exist on the ledger
     const {methodFor, didDocument} = await v1.generate();
     const signingKey = methodFor({purpose: 'capabilityInvocation'});
-
     const s = await jsigs.sign(ledgerConfiguration, {
       documentLoader,
       suite: new Ed25519Signature2020({key: signingKey}),
