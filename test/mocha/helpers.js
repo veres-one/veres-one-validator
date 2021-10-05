@@ -41,12 +41,12 @@ exports.createMockLedgerNode = ({ldDocuments}) => {
  *
  * @returns {string} The resulting zcap id.
  */
-exports.generatateRootZcapId = ({id}) => {
+exports.generatateRootZcapId = ({id, controller}) => {
   const zcapId = `urn:zcap:root:${encodeURIComponent(id)}`;
   const zcap = {
     '@context': constants.ZCAP_CONTEXT_V1_URL,
     id: zcapId,
-    controller: id,
+    controller: controller || id,
     invocationTarget: id
   };
   jsonLdDocumentLoader.addStatic(zcapId, zcap);

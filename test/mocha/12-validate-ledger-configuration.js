@@ -15,21 +15,20 @@ const {CapabilityInvocation} = require('@digitalbazaar/zcapld');
 const helpers = require('./helpers');
 
 describe.only('validate API WebLedgerConfiguration', () => {
-  it('should validate a ledgerConfiguration', async () => {
+  it.only('should validate a ledgerConfiguration', async () => {
     const ledgerConfiguration = clone(mockData.ledgerConfigurations.alpha);
 
     // The public key material is derived from the nym DID because the
     // maintainers DID does not yet exist on the ledger
-    const maintainerDoc = await v1.generate();
-    const signingKey =
-      maintainerDoc.methodFor({purpose: 'capabilityInvocation'});
+    const {methodFor, didDocument} = await v1.generate();
+    const signingKey = methodFor({purpose: 'capabilityInvocation'});
 
     const s = await jsigs.sign(ledgerConfiguration, {
       documentLoader,
       suite: new Ed25519Signature2020({key: signingKey}),
       purpose: new CapabilityInvocation({
         capability: helpers.generatateRootZcapId(
-          {id: ledgerConfiguration.ledger}),
+          {id: ledgerConfiguration.ledger, controller: didDocument.id}),
         capabilityAction: 'write',
         invocationTarget: `${ledgerConfiguration.ledger}`
       })
