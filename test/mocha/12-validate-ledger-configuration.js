@@ -14,8 +14,8 @@ const {Ed25519Signature2020} =
 const {CapabilityInvocation} = require('@digitalbazaar/zcapld');
 const helpers = require('./helpers');
 
-describe.only('validate API WebLedgerConfiguration', () => {
-  it.only('should validate a ledgerConfiguration', async () => {
+describe('validate API WebLedgerConfiguration', () => {
+  it('should validate a ledgerConfiguration', async () => {
     const ledgerConfiguration = clone(mockData.ledgerConfigurations.alpha);
 
     // The public key material is derived from the nym DID because the
