@@ -31,10 +31,9 @@ describe.only('validate API WebLedgerConfiguration', () => {
         capability: helpers.generatateRootZcapId(
           {id: ledgerConfiguration.ledger}),
         capabilityAction: 'write',
-        invocationTarget: `${ledgerConfiguration.ledger}/config`
+        invocationTarget: `${ledgerConfiguration.ledger}`
       })
     });
-
     const result = await voValidator.validate({
       ledgerNode: mockData.ledgerNode,
       validatorInput: s,
