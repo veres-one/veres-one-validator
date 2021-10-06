@@ -45,7 +45,7 @@ describe('validate regular DIDs', () => {
       mockOperation.record = mockDoc;
       // FIXME: add a write proof for the ledger that will pass
       // json-schema validation for testnet v2 *not* a valid signature
-      mockOperation.proof = clone(mockData.proof);
+      mockOperation.proof = mockData.proof();
       const s = await jsigs.sign(mockOperation, {
         documentLoader,
         suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
@@ -73,7 +73,7 @@ describe('validate regular DIDs', () => {
       mockOperation.record = mockDoc;
       // FIXME: add a write proof for the accelerator that will pass
       // json-schema validation for testnet v2 *not* a valid signature
-      mockOperation.proof = clone(mockData.proof);
+      mockOperation.proof = mockData.proof();
 
       const s = await jsigs.sign(mockOperation, {
         documentLoader,
@@ -111,7 +111,7 @@ describe('validate regular DIDs', () => {
       mockOperation.record = mockDoc.didDocument;
       // FIXME: add a write proof for the accelerator that will pass
       // json-schema validation for testnet v2 *not* a valid signature
-      mockOperation.proof = clone(mockData.proof);
+      mockOperation.proof = mockData.proof();
 
       const s = await jsigs.sign(mockOperation, {
         documentLoader,
@@ -146,7 +146,7 @@ describe('validate regular DIDs', () => {
       mockOperation.record = mockDoc;
       // FIXME: add a write proof for the accelerator that will pass
       // json-schema validation for testnet v2 *not* a valid signature
-      mockOperation.proof = clone(mockData.proof);
+      mockOperation.proof = mockData.proof();
 
       const s = await jsigs.sign(mockOperation, {
         documentLoader,
@@ -180,7 +180,7 @@ describe('validate regular DIDs', () => {
       mockOperation.record = mockDoc;
       // FIXME: add a write proof for the accelerator that will pass
       // json-schema validation for testnet v2 *not* a valid signature
-      mockOperation.proof = clone(mockData.proof);
+      mockOperation.proof = mockData.proof();
 
       const s = await jsigs.sign(mockOperation, {
         documentLoader,
@@ -218,7 +218,7 @@ describe('validate regular DIDs', () => {
       mockOperation.record = mockDoc;
       // FIXME: add a write proof for the accelerator that will pass
       // json-schema validation for testnet v2 *not* a valid signature
-      mockOperation.proof = clone(mockData.proof);
+      mockOperation.proof = mockData.proof();
 
       const s = await jsigs.sign(mockOperation, {
         documentLoader,
@@ -276,7 +276,7 @@ describe('validate regular DIDs', () => {
         // add a write proof for the accelerator that will pass json-schema
         // validation for
         // testnet v2 *not* a valid signature
-        mockOperation.proof = clone(mockData.proof);
+        mockOperation.proof = mockData.proof();
 
         const s = await jsigs.sign(mockOperation, {
           documentLoader,
@@ -315,7 +315,7 @@ describe('validate regular DIDs', () => {
         mockOperation.record = mockDoc.didDocument;
         // add a write proof for the accelerator that will pass json-schema
         // validation for testnet v2 *not* a valid signature
-        mockOperation.proof = clone(mockData.proof);
+        mockOperation.proof = mockData.proof();
 
         const s = await jsigs.sign(mockOperation, {
           documentLoader,
@@ -368,7 +368,7 @@ describe('validate regular DIDs', () => {
         mockOperation.record = mockDoc.didDocument;
         // add a write proof for the accelerator that will pass json-schema
         // validation for testnet v2 *not* a valid signature
-        mockOperation.proof = clone(mockData.proof);
+        mockOperation.proof = mockData.proof();
 
         const s = await jsigs.sign(mockOperation, {
           documentLoader,
@@ -407,7 +407,7 @@ describe('validate regular DIDs', () => {
         mockOperation.record = mockDoc.didDocument;
         // add a write proof for the accelerator that will pass json-schema
         // validation for testnet v2 *not* a valid signature
-        mockOperation.proof = clone(mockData.proof);
+        mockOperation.proof = mockData.proof();
 
         const s = await jsigs.sign(mockOperation, {
           documentLoader,
@@ -450,7 +450,7 @@ describe('validate regular DIDs', () => {
         mockOperation.record = mockDoc.didDocument;
         // add a write proof for the accelerator that will pass json-schema
         // validation for testnet v2 *not* a valid signature
-        mockOperation.proof = clone(mockData.proof);
+        mockOperation.proof = mockData.proof();
 
         const s = await jsigs.sign(mockOperation, {
           documentLoader,
@@ -500,7 +500,7 @@ describe('validate regular DIDs', () => {
         mockOperation.record = mockDoc.didDocument;
         // add a write proof for the accelerator that will pass json-schema
         // validation for testnet v2 *not* a valid signature
-        mockOperation.proof = clone(mockData.proof);
+        mockOperation.proof = mockData.proof();
 
         const s = await jsigs.sign(mockOperation, {
           documentLoader,
@@ -544,7 +544,7 @@ describe('validate regular DIDs', () => {
         mockOperation.record = mockDoc.didDocument;
         // add a write proof for the accelerator that will pass json-schema
         // validation for testnet v2 *not* a valid signature
-        mockOperation.proof = clone(mockData.proof);
+        mockOperation.proof = mockData.proof();
         const s = await jsigs.sign(mockOperation, {
           documentLoader,
           suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
@@ -602,7 +602,7 @@ describe('validate regular DIDs', () => {
       mockOperation.recordPatch.target = did;
       // FIXME: add a write proof for the accelerator that will pass
       // json-schema validation for testnet v2 *not* a valid signature
-      mockOperation.proof = clone(mockData.proof);
+      mockOperation.proof = mockData.proof();
 
       const s = await jsigs.sign(mockOperation, {
         documentLoader,
@@ -654,7 +654,7 @@ describe('validate regular DIDs', () => {
       mockOperation.recordPatch.target = did;
       // FIXME: add a write proof for the accelerator that will pass
       // json-schema validation for testnet v2 *not* a valid signature
-      mockOperation.proof = clone(mockData.proof);
+      mockOperation.proof = mockData.proof();
 
       const s = await jsigs.sign(mockOperation, {
         documentLoader,
@@ -702,7 +702,7 @@ describe('validate regular DIDs', () => {
       mockOperation.recordPatch.target = did;
       // add a write proof for the ledger that will pass json-schema
       // validation for testnet v2 *not* a valid signature
-      mockOperation.proof = clone(mockData.proof);
+      mockOperation.proof = mockData.proof();
 
       const s = await jsigs.sign(mockOperation, {
         documentLoader,
@@ -759,7 +759,7 @@ describe('validate regular DIDs', () => {
       mockOperation.recordPatch.sequence = 10;
       // FIXME: add a write proof for the accelerator that will pass
       // json-schema validation for testnet v2 *not* a valid signature
-      mockOperation.proof = clone(mockData.proof);
+      mockOperation.proof = mockData.proof();
 
       const s = await jsigs.sign(mockOperation, {
         documentLoader,
@@ -809,7 +809,7 @@ describe('validate regular DIDs', () => {
       mockOperation.recordPatch.target = did;
       // FIXME: add a write proof for the accelerator that will pass
       // json-schema validation for testnet v2 *not* a valid signature
-      mockOperation.proof = clone(mockData.proof);
+      mockOperation.proof = mockData.proof();
       // specifiy an invalid path to create an invalid JSON patch
       mockOperation.recordPatch.patch[0].path = '/authentication/2';
 
@@ -863,7 +863,7 @@ describe('validate regular DIDs', () => {
       const {did: did2} = await _generateDid();
       // FIXME: add a write proof for the accelerator that will pass
       // json-schema validation for testnet v2 *not* a valid signature
-      mockOperation.proof = clone(mockData.proof);
+      mockOperation.proof = mockData.proof();
       const s = await jsigs.sign(mockOperation, {
         documentLoader,
         suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
@@ -927,7 +927,7 @@ describe('validate regular DIDs', () => {
 
       // FIXME: add a write proof for the accelerator that will pass
       // json-schema validation for testnet v2 *not* a valid signature
-      mockOperation.proof = clone(mockData.proof);
+      mockOperation.proof = mockData.proof();
 
       const s = await jsigs.sign(mockOperation, {
         documentLoader,
@@ -986,7 +986,7 @@ describe('validate regular DIDs', () => {
 
       // FIXME: add a write proof for the accelerator that will pass
       // json-schema validation for testnet v2 *not* a valid signature
-      mockOperation.proof = clone(mockData.proof);
+      mockOperation.proof = mockData.proof();
       // signing with a key from another valid DID
       const s = await jsigs.sign(mockOperation, {
         documentLoader,
@@ -1036,7 +1036,7 @@ describe('validate regular DIDs', () => {
       mockOperation.recordPatch.target = did;
       // FIXME: add a write proof for the accelerator that will pass
       // json-schema validation for testnet v2 *not* a valid signature
-      mockOperation.proof = clone(mockData.proof);
+      mockOperation.proof = mockData.proof();
 
       // update operations require `write` so it should reject `read`
       capabilityAction = 'read';
@@ -1087,11 +1087,11 @@ describe('validate regular DIDs', () => {
       mockOperation.recordPatch.target = did;
       // FIXME: add a write proof for the accelerator that will pass
       // json-schema validation for testnet v2 *not* a valid signature
-      mockOperation.proof = clone(mockData.proof);
+      mockOperation.proof = mockData.proof();
       capabilityAction = 'write';
 
       // *must* use `capabilityInvocationKey`
-      mockOperation.proof = clone(mockData.proof);
+      mockOperation.proof = mockData.proof();
 
       const s = await jsigs.sign(mockOperation, {
         documentLoader,
@@ -1145,10 +1145,10 @@ describe('validate regular DIDs', () => {
       mockOperation.recordPatch.target = did;
       // FIXME: add a write proof for the accelerator that will pass
       // json-schema validation for testnet v2 *not* a valid signature
-      mockOperation.proof = clone(mockData.proof);
+      mockOperation.proof = mockData.proof();
 
       // *must* use `capabilityInvocationKey`
-      mockOperation.proof = clone(mockData.proof);
+      mockOperation.proof = mockData.proof();
 
       const s = await jsigs.sign(mockOperation, {
         documentLoader,
@@ -1198,7 +1198,7 @@ describe('validate regular DIDs', () => {
 
       // add a write proof for the ledger that will pass json-schema
       // validation for testnet v2 *not* a valid signature
-      mockOperation.proof = clone(mockData.proof);
+      mockOperation.proof = mockData.proof();
 
       const s = await jsigs.sign(mockOperation, {
         documentLoader,
@@ -1251,7 +1251,7 @@ describe('validate regular DIDs', () => {
         mockDoc.methodFor({purpose: 'capabilityInvocation'});
       // add a write proof that will pass json-schema
       // validation for testnet v2 *not* a valid signature
-      mockOperation.proof = clone(mockData.proof);
+      mockOperation.proof = mockData.proof();
 
       const s = await jsigs.sign(mockOperation, {
         documentLoader,
@@ -1318,7 +1318,7 @@ describe('validate regular DIDs', () => {
         // add a write proof for the accelerator that will pass json-schema
         // validation for
         // testnet v2 *not* a valid signature
-        mockOperation.proof = clone(mockData.proof);
+        mockOperation.proof = mockData.proof();
 
         const s = await jsigs.sign(mockOperation, {
           documentLoader,
@@ -1372,7 +1372,7 @@ describe('validate regular DIDs', () => {
         // add a write proof for the accelerator that will pass json-schema
         // validation for
         // testnet v2 *not* a valid signature
-        mockOperation.proof = clone(mockData.proof);
+        mockOperation.proof = mockData.proof();
         const s = await jsigs.sign(mockOperation, {
           documentLoader,
           suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
@@ -1418,7 +1418,7 @@ describe('validate regular DIDs', () => {
         // add a write proof for the accelerator that will pass json-schema
         // validation for
         // testnet v2 *not* a valid signature
-        mockOperation.proof = clone(mockData.proof);
+        mockOperation.proof = mockData.proof();
 
         const s = await jsigs.sign(mockOperation, {
           documentLoader,
@@ -1467,7 +1467,7 @@ describe('validate regular DIDs', () => {
         // add a write proof for the accelerator that will pass json-schema
         // validation for
         // testnet v2 *not* a valid signature
-        mockOperation.proof = clone(mockData.proof);
+        mockOperation.proof = mockData.proof();
         const s = await jsigs.sign(mockOperation, {
           documentLoader,
           suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
@@ -1523,7 +1523,7 @@ describe('validate regular DIDs', () => {
         // add a write proof for the accelerator that will pass json-schema
         // validation for
         // testnet v2 *not* a valid signature
-        mockOperation.proof = clone(mockData.proof);
+        mockOperation.proof = mockData.proof();
 
         const s = await jsigs.sign(mockOperation, {
           documentLoader,

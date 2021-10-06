@@ -431,10 +431,6 @@ const writeCapability = {
         capabilityAction: {
           enum: ['write'],
         },
-        // FIXME: this is for testnet v2 only
-        jws: {
-          enum: ['MOCKPROOF'],
-        },
       }
     }]
 };

@@ -43,7 +43,7 @@ mock.patchContext = [
 const privateDidDocuments = mock.privateDidDocuments = {};
 const validatorParameterSet = mock.validatorParameterSet = {};
 // TODO: for testnet v2, this proof is only validated using json-schema
-mock.proof = {
+mock.proof = ({caveat = '/records'} = {}) => ({
   type: 'Ed25519Signature2020',
   created: '2021-01-10T23:10:25Z',
   capability: helpers.generatateRootZcapId({
@@ -51,13 +51,13 @@ mock.proof = {
   }),
   capabilityAction: 'write',
   invocationTarget:
-    'did:v1:test:uuid:c37e914a-1e2a-4d59-9668-ee93458fd19a',
+    `did:v1:test:uuid:c37e914a-1e2a-4d59-9668-ee93458fd19a${caveat}`,
   proofPurpose: 'capabilityInvocation',
   proofValue: 'z3t9it5yhFHkqWnHKMQ2DWVj7aHDN37f95UzhQYQGYd9LyTSGzufCiTwDWN' +
     'fCdxQA9ZHcTTVAhHwoAji2AJnk2E6',
   verificationMethod: 'did:v1:test:nym:z279yHL6HsxRzCPU78DAWgZVieb8xPK1mJKJBb' +
     'P8T2CezuFY#z279tKmToKKMjQ8tsCgTbBBthw5xEzHWL6GCqZyQnzZr7wUo'
-};
+});
 
 // need to return document for beta but *not* for alpha
 const didAlpha = 'did:v1:test:uuid:40aea416-73b2-436f-bb91-41175494d72b';

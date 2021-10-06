@@ -7,9 +7,10 @@ require('../lib/config');
 
 /* eslint-disable-next-line max-len */
 const pattern = '^did:v1(:[a-z][a-z0-9]+)*:uuid:' +
-  '([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$';
+  '([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})' +
+  '\/?(records|config)?$';
 const minLength = 48; // did:v1:uuid:<UUID_VALUE>
-const maxLength = 66; // minLength + :<16_CHARACTER_NETWORK_ID>
+const maxLength = 74; // minLength + :<16_CHARACTER_NETWORK_ID> + /records
 
 const schema = {
   title: 'DID UUID',

@@ -38,7 +38,7 @@ describe('validate API ValidatorParameterSet', () => {
 
         // FIXME: add a write proof for the ledger that will pass json-schema
         // validation for testnet v2 *not* a valid signature
-        operation.proof = clone(mockData.proof);
+        operation.proof = mockData.proof();
 
         operation = await attachInvocationProof({
           operation,
@@ -89,7 +89,7 @@ describe('validate API ValidatorParameterSet', () => {
 
         // FIXME: add a write proof for the ledger that will pass json-schema
         // validation for testnet v2 *not* a valid signature
-        operation.proof = clone(mockData.proof);
+        operation.proof = mockData.proof();
 
         operation = await attachInvocationProof({
           operation,
@@ -148,7 +148,7 @@ describe('validate API ValidatorParameterSet', () => {
 
         // FIXME: add a write proof for the ledger that will pass json-schema
         // validation for testnet v2 *not* a valid signature
-        operation.proof = clone(mockData.proof);
+        operation.proof = mockData.proof();
 
         operation = await attachInvocationProof({
           operation,
@@ -228,7 +228,7 @@ describe('validate API ValidatorParameterSet', () => {
 
         // FIXME: add a write proof for the ledger that will pass json-schema
         // validation for testnet v2 *not* a valid signature
-        operation.proof = clone(mockData.proof);
+        operation.proof = mockData.proof();
 
         operation = await attachInvocationProof({
           operation,
@@ -302,7 +302,7 @@ describe('validate API ValidatorParameterSet', () => {
 
         // FIXME: add a write proof for the ledger that will pass json-schema
         // validation for testnet v2 *not* a valid signature
-        operation.proof = clone(mockData.proof);
+        operation.proof = mockData.proof();
 
         operation = await attachInvocationProof({
           operation,
@@ -380,7 +380,7 @@ describe('validate API ValidatorParameterSet', () => {
 
         // FIXME: add a write proof for the ledger that will pass json-schema
         // validation for testnet v2 *not* a valid signature
-        operation.proof = clone(mockData.proof);
+        operation.proof = mockData.proof();
 
         operation = await attachInvocationProof({
           operation,
@@ -458,7 +458,7 @@ describe('validate API ValidatorParameterSet', () => {
 
         // FIXME: add a write proof for the ledger that will pass json-schema
         // validation for testnet v2 *not* a valid signature
-        operation.proof = clone(mockData.proof);
+        operation.proof = mockData.proof();
         operation = await attachInvocationProof({
           operation,
           capability: helpers.generatateRootZcapId({

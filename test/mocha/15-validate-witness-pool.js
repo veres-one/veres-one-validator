@@ -36,7 +36,7 @@ describe('validate API WitnessPool', () => {
 
         // FIXME: add a write proof for the ledger that will pass json-schema
         // validation for testnet v2 *not* a valid signature
-        operation.proof = bedrock.util.clone(mockData.proof);
+        operation.proof = mockData.proof();
         operation = await attachInvocationProof({
           operation,
           capability: helpers.generatateRootZcapId({
@@ -91,7 +91,7 @@ describe('validate API WitnessPool', () => {
         const key = _getMaintainerKeys();
         // FIXME: add a write proof for the ledger that will pass json-schema
         // validation for testnet v2 *not* a valid signature
-        operation.proof = bedrock.util.clone(mockData.proof);
+        operation.proof = mockData.proof();
 
         operation = await attachInvocationProof({
           operation,
@@ -357,7 +357,7 @@ describe('validate API WitnessPool', () => {
 
         // FIXME: add a write proof for the ledger that will pass json-schema
         // validation for testnet v2 *not* a valid signature
-        operation.proof = bedrock.util.clone(mockData.proof);
+        operation.proof = mockData.proof();
         // this DID document does not exist
         const notFoundDid =
           'did:v1:test:uuid:e798d4cf-f4f5-40cb-9f06-7fa56cf55d95';
@@ -457,7 +457,7 @@ describe('validate API WitnessPool', () => {
 
         // FIXME: add a write proof for the ledger that will pass json-schema
         // validation for testnet v2 *not* a valid signature
-        operation.proof = bedrock.util.clone(mockData.proof);
+        operation.proof = mockData.proof();
 
         operation = await attachInvocationProof({
           operation,
@@ -539,7 +539,7 @@ describe('validate API WitnessPool', () => {
 
         // FIXME: add a write proof for the ledger that will pass json-schema
         // validation for testnet v2 *not* a valid signature
-        operation.proof = bedrock.util.clone(mockData.proof);
+        operation.proof = mockData.proof();
 
         operation = await attachInvocationProof({
           operation,
