@@ -488,6 +488,7 @@ const ledgerConfiguration = {
   properties: {
     '@context': schemas.jsonldContext([
       constants.WEB_LEDGER_CONTEXT_V1_URL,
+      constants.ZCAP_CONTEXT_V1_URL,
       constants.ED25519_2020_CONTEXT_V1_URL
     ]),
     consensusMethod: {const: 'Continuity2017'},
@@ -537,7 +538,7 @@ const ledgerConfiguration = {
           properties: {
             proofPurpose: {
               type: 'string',
-              enum: ['assertionMethod']
+              enum: ['capabilityInvocation']
             }
           }
         }

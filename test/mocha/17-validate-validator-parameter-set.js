@@ -42,8 +42,10 @@ describe('validate API ValidatorParameterSet', () => {
 
         operation = await attachInvocationProof({
           operation,
-          // capability: maintainerDid,
-          capability: validatorParameterSetDoc.id,
+          capability: helpers.generatateRootZcapId({
+            id: operation.record.id,
+            controller: key.id
+          }),
           capabilityAction: 'write',
           invocationTarget: operation.record.id,
           key,
@@ -91,8 +93,10 @@ describe('validate API ValidatorParameterSet', () => {
 
         operation = await attachInvocationProof({
           operation,
-          // capability: maintainerDid,
-          capability: validatorParameterSetDoc.id,
+          capability: helpers.generatateRootZcapId({
+            id: operation.record.id,
+            controller: key.id
+          }),
           capabilityAction: 'write',
           invocationTarget: operation.record.id,
           key,
@@ -148,8 +152,10 @@ describe('validate API ValidatorParameterSet', () => {
 
         operation = await attachInvocationProof({
           operation,
-          // capability: maintainerDid,
-          capability: validatorParameterSetDoc.id,
+          capability: helpers.generatateRootZcapId({
+            id: operation.record.id,
+            controller: key.id
+          }),
           capabilityAction: 'write',
           invocationTarget: operation.record.id,
           key,
@@ -226,8 +232,10 @@ describe('validate API ValidatorParameterSet', () => {
 
         operation = await attachInvocationProof({
           operation,
-          capability: validatorParameterSetDoc.id,
-          // capabilityAction: operation.type,
+          capability: helpers.generatateRootZcapId({
+            id: operation.recordPatch.target,
+            controller: key.id
+          }),
           capabilityAction: 'write',
           invocationTarget: operation.recordPatch.target,
           key,
@@ -298,8 +306,10 @@ describe('validate API ValidatorParameterSet', () => {
 
         operation = await attachInvocationProof({
           operation,
-          capability: validatorParameterSetDoc.id,
-          // capabilityAction: operation.type,
+          capability: helpers.generatateRootZcapId({
+            id: operation.recordPatch.target,
+            controller: key.id
+          }),
           capabilityAction: 'write',
           invocationTarget: operation.recordPatch.target,
           key,
@@ -374,8 +384,10 @@ describe('validate API ValidatorParameterSet', () => {
 
         operation = await attachInvocationProof({
           operation,
-          capability: validatorParameterSetDoc.id,
-          // capabilityAction: operation.type,
+          capability: helpers.generatateRootZcapId({
+            id: operation.recordPatch.target,
+            controller: key.id
+          }),
           capabilityAction: 'write',
           invocationTarget: operation.recordPatch.target,
           key,
@@ -449,8 +461,10 @@ describe('validate API ValidatorParameterSet', () => {
         operation.proof = clone(mockData.proof);
         operation = await attachInvocationProof({
           operation,
-          capability: validatorParameterSetDoc.id,
-          // capabilityAction: operation.type,
+          capability: helpers.generatateRootZcapId({
+            id: operation.recordPatch.target,
+            controller: key.id
+          }),
           capabilityAction: 'write',
           invocationTarget: operation.recordPatch.target,
           key,

@@ -4,6 +4,8 @@
 'use strict';
 
 const bedrock = require('bedrock');
+const helpers = require('./helpers');
+
 const {config: {constants}, util: {uuid, BedrockError}} = bedrock;
 
 const mock = {};
@@ -44,10 +46,12 @@ const validatorParameterSet = mock.validatorParameterSet = {};
 mock.proof = {
   type: 'Ed25519Signature2020',
   created: '2021-01-10T23:10:25Z',
-  capability: 'did:v1:test:uuid:c37e914a-1e2a-4d59-9668-ee93458fd19a',
+  capability: helpers.generatateRootZcapId({
+    id: 'did:v1:test:uuid:c37e914a-1e2a-4d59-9668-ee93458fd19a'
+  }),
   capabilityAction: 'write',
   invocationTarget:
-    'did:v1:nym:z6Mkogv718iDZqyoTmPKagKcG2VBXXz6w4xau8fL5jjB948r',
+    'did:v1:test:uuid:c37e914a-1e2a-4d59-9668-ee93458fd19a',
   proofPurpose: 'capabilityInvocation',
   proofValue: 'z3t9it5yhFHkqWnHKMQ2DWVj7aHDN37f95UzhQYQGYd9LyTSGzufCiTwDWN' +
     'fCdxQA9ZHcTTVAhHwoAji2AJnk2E6',
@@ -220,7 +224,10 @@ mock.authorizedSigners = {
 };
 
 ledgerConfigurations.alpha = {
-  '@context': constants.WEB_LEDGER_CONTEXT_V1_URL,
+  '@context': [
+    constants.WEB_LEDGER_CONTEXT_V1_URL,
+    constants.ZCAP_CONTEXT_V1_URL
+  ],
   type: 'WebLedgerConfiguration',
   ledger: 'did:v1:c02915fc-672d-4568-8e6e-b12a0b35cbb3',
   consensusMethod: 'Continuity2017',

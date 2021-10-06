@@ -4,7 +4,8 @@
 'use strict';
 
 const bedrock = require('bedrock');
-const {util: {clone, BedrockError}} = bedrock;
+const {config: {constants}, util: {clone, BedrockError}} = bedrock;
+const {jsonLdDocumentLoader} = require('bedrock-jsonld-document-loader');
 
 exports.createMockLedgerNode = ({ldDocuments}) => {
   return {
@@ -30,4 +31,24 @@ exports.createMockLedgerNode = ({ldDocuments}) => {
       }
     }
   };
+};
+
+/**
+ * Takes in an id and generates a urn for the root zcap dynamically.
+ *
+ * @param {object} options - Options to use.
+ * @param {string} options.id - Either a UUID or a DiD.
+ *
+ * @returns {string} The resulting zcap id.
+ */
+exports.generatateRootZcapId = ({id, controller}) => {
+  const zcapId = `urn:zcap:root:${encodeURIComponent(id)}`;
+  const zcap = {
+    '@context': constants.ZCAP_CONTEXT_V1_URL,
+    id: zcapId,
+    controller: controller || id,
+    invocationTarget: id
+  };
+  jsonLdDocumentLoader.addStatic(zcapId, zcap);
+  return zcapId;
 };
