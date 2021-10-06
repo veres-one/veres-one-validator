@@ -37,11 +37,13 @@ describe('validate API WitnessPool', () => {
         // FIXME: add a write proof for the ledger that will pass json-schema
         // validation for testnet v2 *not* a valid signature
         operation.proof = bedrock.util.clone(mockData.proof);
-
         operation = await attachInvocationProof({
           operation,
-          // capability: maintainerDid,
-          capability: helpers.generatateRootZcapId({id: witnessPoolDoc.id}),
+          capability: helpers.generatateRootZcapId({
+            id: witnessPoolDoc.id,
+            // this is not a didDoc so the controller should be the maintainer
+            controller: key.id
+          }),
           capabilityAction: 'write',
           invocationTarget: witnessPoolDoc.id,
           key,
@@ -426,8 +428,11 @@ describe('validate API WitnessPool', () => {
 
         operation = await attachInvocationProof({
           operation,
-          capability: witnessPoolDoc.id,
-          // capabilityAction: operation.type,
+          capability: helpers.generatateRootZcapId({
+            id: witnessPoolDoc.id,
+            // this is not a didDoc so the controller should be the maintainer
+            controller: key.id
+          }),
           capabilityAction: 'write',
           invocationTarget: operation.recordPatch.target,
           key,
@@ -505,8 +510,11 @@ describe('validate API WitnessPool', () => {
 
         operation = await attachInvocationProof({
           operation,
-          capability: witnessPoolDoc.id,
-          // capabilityAction: operation.type,
+          capability: helpers.generatateRootZcapId({
+            id: witnessPoolDoc.id,
+            // this is not a didDoc so the controller should be the maintainer
+            controller: key.id
+          }),
           capabilityAction: 'write',
           invocationTarget: operation.recordPatch.target,
           key,
