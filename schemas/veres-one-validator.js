@@ -366,7 +366,7 @@ const validatorParameterSet = {
   },
 };
 
-const baseCapability = {
+const baseCapability = ({target = invocationTarget} = {}) => ({
   type: 'object',
   additionalProperties: false,
   required: [
@@ -389,7 +389,7 @@ const baseCapability = {
       enum: ['write'],
     },
     created: schemas.w3cDateTime(),
-    invocationTarget,
+    invocationTarget: target,
     proofValue: {
       type: 'string',
       // this should be the multibase base58 representation of a 64-byte
@@ -407,7 +407,7 @@ const baseCapability = {
     },
     verificationMethod: didReference()
   }
-};
+});
 
 const creatorOrVerificationMethod = {
   oneOf: [{
@@ -423,9 +423,24 @@ const creatorOrVerificationMethod = {
   }]
 };
 
+// this is the proof for writing a record itself.
 const writeCapability = {
   allOf: [
-    baseCapability,
+    baseCapability(),
+    creatorOrVerificationMethod, {
+      properties: {
+        capabilityAction: {
+          enum: ['write'],
+        },
+      }
+    }]
+};
+
+// this is the proof that you can write records
+// to the ledger at all.
+const ledgerRecordWriteCapability = {
+  allOf: [
+    baseCapability({target: didUuid({path: 'records'})}),
     creatorOrVerificationMethod, {
       properties: {
         capabilityAction: {
@@ -459,7 +474,7 @@ const updateWebLedgerRecord = {
     proof: {
       anyOf: [{
         type: 'array',
-        items: [writeCapability, writeCapability],
+        items: [ledgerRecordWriteCapability, writeCapability],
         additionalItems: false,
       }],
     }
@@ -535,7 +550,8 @@ const ledgerConfiguration = {
             proofPurpose: {
               type: 'string',
               enum: ['capabilityInvocation']
-            }
+            },
+            invocationTarget: didUuid({path: 'config'})
           }
         }
       ]
@@ -598,7 +614,7 @@ const createWebLedgerRecord = {
     proof: {
       anyOf: [{
         type: 'array',
-        items: [writeCapability, writeCapability],
+        items: [ledgerRecordWriteCapability, writeCapability],
         additionalItems: false,
       }],
     },
