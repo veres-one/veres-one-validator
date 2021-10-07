@@ -108,7 +108,9 @@ describe('validate regular DIDs', () => {
       mockOperation.record = mockDoc;
       // FIXME: add a write proof for the accelerator that will pass
       // json-schema validation for testnet v2 *not* a valid signature
-      mockOperation.proof = mockData.proof({caveat: '/incorrect'});
+      mockOperation.proof = mockData.proof({
+        invocationTargetPath: '/incorrect'
+      });
 
       const s = await jsigs.sign(mockOperation, {
         documentLoader,

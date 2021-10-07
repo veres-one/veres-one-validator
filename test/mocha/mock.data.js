@@ -43,15 +43,15 @@ mock.patchContext = [
 const privateDidDocuments = mock.privateDidDocuments = {};
 const validatorParameterSet = mock.validatorParameterSet = {};
 // TODO: for testnet v2, this proof is only validated using json-schema
-mock.proof = ({caveat = '/records'} = {}) => ({
+mock.proof = ({invocationTargetPath = '/records'} = {}) => ({
   type: 'Ed25519Signature2020',
   created: '2021-01-10T23:10:25Z',
   capability: helpers.generatateRootZcapId({
     id: 'did:v1:test:uuid:c37e914a-1e2a-4d59-9668-ee93458fd19a'
   }),
   capabilityAction: 'write',
-  invocationTarget:
-    `did:v1:test:uuid:c37e914a-1e2a-4d59-9668-ee93458fd19a${caveat}`,
+  invocationTarget: 'did:v1:test:uuid:c37e914a-1e2a-4d59-9668-' +
+    'ee93458fd19a' + invocationTargetPath,
   proofPurpose: 'capabilityInvocation',
   proofValue: 'z3t9it5yhFHkqWnHKMQ2DWVj7aHDN37f95UzhQYQGYd9LyTSGzufCiTwDWN' +
     'fCdxQA9ZHcTTVAhHwoAji2AJnk2E6',
