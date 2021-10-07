@@ -26,10 +26,12 @@ describe('validate API WebLedgerConfiguration', () => {
       documentLoader,
       suite: new Ed25519Signature2020({key: signingKey}),
       purpose: new CapabilityInvocation({
-        capability: helpers.generatateRootZcapId(
-          {id: ledgerConfiguration.ledger, controller: didDocument.id}),
+        capability: helpers.generatateRootZcapId({
+          id: ledgerConfiguration.ledger,
+          controller: didDocument.id,
+        }),
         capabilityAction: 'write',
-        invocationTarget: `${ledgerConfiguration.ledger}`
+        invocationTarget: `${ledgerConfiguration.ledger}/config`
       })
     });
     const result = await voValidator.validate({
@@ -55,8 +57,10 @@ describe('validate API WebLedgerConfiguration', () => {
       documentLoader,
       suite: new Ed25519Signature2020({key: signingKey}),
       purpose: new CapabilityInvocation({
-        capability: helpers.generatateRootZcapId(
-          {id: ledgerConfiguration.ledger}),
+        capability: helpers.generatateRootZcapId({
+          id: ledgerConfiguration.ledger,
+          controller: signingKey.controller,
+        }),
         capabilityAction: 'write',
         invocationTarget: `${ledgerConfiguration.ledger}/config`
       })
@@ -87,8 +91,10 @@ describe('validate API WebLedgerConfiguration', () => {
       documentLoader,
       suite: new Ed25519Signature2020({key: signingKey}),
       purpose: new CapabilityInvocation({
-        capability: helpers.generatateRootZcapId(
-          {id: ledgerConfiguration.ledger}),
+        capability: helpers.generatateRootZcapId({
+          id: ledgerConfiguration.ledger,
+          controller: signingKey.controller,
+        }),
         capabilityAction: 'write',
         invocationTarget: `${ledgerConfiguration.ledger}/config`
       })
@@ -117,8 +123,10 @@ describe('validate API WebLedgerConfiguration', () => {
       documentLoader,
       suite: new Ed25519Signature2020({key: signingKey}),
       purpose: new CapabilityInvocation({
-        capability: helpers.generatateRootZcapId(
-          {id: ledgerConfiguration.ledger}),
+        capability: helpers.generatateRootZcapId({
+          id: ledgerConfiguration.ledger,
+          controller: signingKey.controller,
+        }),
         capabilityAction: 'write',
         invocationTarget: `${ledgerConfiguration.ledger}/config`
       })
@@ -149,8 +157,10 @@ describe('validate API WebLedgerConfiguration', () => {
       documentLoader,
       suite: new Ed25519Signature2020({key: signingKey}),
       purpose: new CapabilityInvocation({
-        capability: helpers.generatateRootZcapId(
-          {id: ledgerConfiguration.ledger}),
+        capability: helpers.generatateRootZcapId({
+          id: ledgerConfiguration.ledger,
+          controller: signingKey.controller,
+        }),
         capabilityAction: 'write',
         invocationTarget: `${ledgerConfiguration.ledger}/config`
       })
@@ -185,8 +195,10 @@ describe('validate API WebLedgerConfiguration', () => {
       documentLoader,
       suite: new Ed25519Signature2020({key: signingKey}),
       purpose: new CapabilityInvocation({
-        capability: helpers.generatateRootZcapId(
-          {id: ledgerConfiguration.ledger}),
+        capability: helpers.generatateRootZcapId({
+          id: ledgerConfiguration.ledger,
+          controller: signingKey.controller,
+        }),
         capabilityAction: 'write',
         invocationTarget: `${ledgerConfiguration.ledger}/config`
       })
