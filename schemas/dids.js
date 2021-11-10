@@ -11,17 +11,17 @@ const patterns = {
   nym: '^did:v1(:[a-z][a-z0-9]+)*:nym:(z[A-Za-z1-9]+)'
 };
 
-const getPattern = path => {
+const getPath = path => {
   if(path) {
     return `(${patterns.uuid}|${patterns.nym})\/${path}$`;
   }
-  return patterns.uuid + '$';
+  return `(${patterns.uuid}|${patterns.nym})$`;
 };
 
 module.exports.path = ({path = ''} = {}) => ({
   title: 'DID with Path',
   type: 'string',
-  pattern: getPattern(path),
+  pattern: getPath(path),
   // did:v1:uuid:<UUID_VALUE>
   minLength: 48,
   // did:v1:[16 character network ID]:nym:[48 base58 characters]

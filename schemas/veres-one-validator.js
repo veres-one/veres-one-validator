@@ -6,19 +6,17 @@
 const {config: {constants}} = require('bedrock');
 const {schemas} = require('bedrock-validation');
 const {maxLength} = require('../lib/constants');
-const did = require('./did');
-const didReference = require('./didReference');
-const didUuid = require('./did-uuid');
+const dids = require('./dids');
 const {serviceDescriptor} = require('./service');
 const urnUuid = require('./urn-uuid');
 
 // can be a did or a url
 const creator = {
-  anyOf: [schemas.url(), did(), didReference(), didUuid()]
+  anyOf: [schemas.url(), dids.nym(), dids.reference(), dids.uuid()]
 };
 
 const invocationTarget = {
-  anyOf: [did(), didUuid(), urnUuid()]
+  anyOf: [dids.nym(), dids.uuid(), urnUuid()]
 };
 
 const operationValidator = {
@@ -61,7 +59,7 @@ const operationValidator = {
         },
       },
     },
-    validatorParameterSet: didUuid(),
+    validatorParameterSet: dids.uuid(),
   },
 };
 const configurationValidator = {
@@ -95,12 +93,12 @@ const publicKey = {
   ],
   type: 'object',
   properties: {
-    id: didReference(),
+    id: dids.reference(),
     type: {
       type: 'string',
       enum: ['Ed25519VerificationKey2020', 'X25519KeyAgreementKey2020'],
     },
-    controller: did(),
+    controller: dids.nym(),
     publicKeyMultibase: {
       type: 'string',
       // multibase base58 encoding of multicodec public key
@@ -139,43 +137,43 @@ const didDocument = {
   required: ['@context'],
   properties: {
     '@context': didDocumentContext,
-    id: did(),
+    id: dids.nym(),
     // FIXME: be more specific with restrictions for all properties below
     invocationTarget,
-    invoker: did(),
+    invoker: dids.nym(),
     assertionMethod: {
       type: 'array',
       minItems: 1,
       items: {
-        anyOf: [didReference(), publicKey]
+        anyOf: [dids.reference(), publicKey]
       }
     },
     authentication: {
       type: 'array',
       minItems: 1,
       items: {
-        anyOf: [didReference(), publicKey]
+        anyOf: [dids.reference(), publicKey]
       }
     },
     capabilityDelegation: {
       type: 'array',
       minItems: 1,
       items: {
-        anyOf: [didReference(), publicKey]
+        anyOf: [dids.reference(), publicKey]
       }
     },
     capabilityInvocation: {
       type: 'array',
       minItems: 1,
       items: {
-        anyOf: [didReference(), publicKey]
+        anyOf: [dids.reference(), publicKey]
       }
     },
     keyAgreement: {
       type: 'array',
       minItems: 1,
       items: {
-        anyOf: [didReference(), publicKey]
+        anyOf: [dids.reference(), publicKey]
       }
     },
     service: {
@@ -253,7 +251,7 @@ const didDocumentPatch = {
   properties: {
     '@context': patchContext,
     target: {
-      anyOf: [did(), didUuid()],
+      anyOf: [dids.nym(), dids.uuid()],
     },
     // FIXME: also support `frame` property later
     patch: {
@@ -308,8 +306,8 @@ const witnessPoolDocument = {
   ],
   properties: {
     '@context': didDocumentContext,
-    id: didUuid(),
-    controller: did(),
+    id: dids.uuid(),
+    controller: dids.nym(),
     type: {const: 'WitnessPool'},
     primaryWitnessCandidate: {
       type: 'array',
@@ -350,8 +348,8 @@ const validatorParameterSet = {
   ],
   properties: {
     '@context': didDocumentContext,
-    id: didUuid(),
-    controller: did(),
+    id: dids.uuid(),
+    controller: dids.nym(),
     type: {const: 'ValidatorParameterSet'},
     allowedServiceBaseUrl: {
       type: 'array',
@@ -405,7 +403,7 @@ const baseCapability = ({target = invocationTarget} = {}) => ({
       type: 'string',
       enum: ['Ed25519Signature2020']
     },
-    verificationMethod: didReference()
+    verificationMethod: dids.reference()
   }
 });
 
@@ -440,7 +438,7 @@ const writeCapability = {
 // to the ledger at all.
 const ledgerRecordWriteCapability = {
   allOf: [
-    baseCapability({target: didUuid({path: 'records'})}),
+    baseCapability({target: dids.path({path: 'records'})}),
     creatorOrVerificationMethod, {
       properties: {
         capabilityAction: {
@@ -515,7 +513,7 @@ const ledgerConfiguration = {
         type: {
           const: 'WitnessPoolWitnessSelection'
         },
-        witnessPool: didUuid()
+        witnessPool: dids.uuid()
       }
     },
     ledger: {
@@ -551,7 +549,7 @@ const ledgerConfiguration = {
               type: 'string',
               enum: ['capabilityInvocation']
             },
-            invocationTarget: didUuid({path: 'config'})
+            invocationTarget: dids.path({path: 'config'})
           }
         }
       ]
@@ -625,17 +623,17 @@ const createWebLedgerRecord = {
       ],
       properties: {
         id: {
-          anyOf: [did(), didUuid()]
+          anyOf: [dids.nym(), dids.uuid()]
         }
       },
       allOf: [{
         if: {
-          properties: {id: did()}
+          properties: {id: dids.nym()}
         },
         then: createDidDocument
       }, {
         if: {
-          properties: {id: didUuid()}
+          properties: {id: dids.uuid()}
         },
         then: uuidDidRecord
       }],
