@@ -501,6 +501,7 @@ const ledgerConfiguration = {
       constants.ED25519_2020_CONTEXT_V1_URL
     ]),
     consensusMethod: {const: 'Continuity2017'},
+    controller: dids.nym(),
     creator,
     witnessSelectionMethod: {
       additionalProperties: false,
