@@ -94,6 +94,11 @@ mock.ledgerNode = {
       throw new BedrockError(
         'DID Document not found.', 'NotFoundError', {recordId});
     }
+  },
+  config: {
+    async get({/*blockHeight*/}) {
+      return null;
+    }
   }
 };
 
