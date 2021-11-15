@@ -47,7 +47,7 @@ const ledgerId = 'did:v1:test:uuid:c37e914a-1e2a-4d59-9668-ee93458fd19a';
 mock.proof = ({invocationTargetPath = '/records'} = {}) => ({
   type: 'Ed25519Signature2020',
   created: '2021-01-10T23:10:25Z',
-  capability: helpers.generatateRootZcapId({
+  capability: helpers.generateRootZcapId({
     id: ledgerId
   }),
   capabilityAction: 'write',

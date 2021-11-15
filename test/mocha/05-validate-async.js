@@ -50,7 +50,7 @@ describe('validate regular DIDs', () => {
         documentLoader,
         suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
         purpose: new CapabilityInvocation({
-          capability: helpers.generatateRootZcapId({id: mockDoc.id}),
+          capability: helpers.generateRootZcapId({id: mockDoc.id}),
           capabilityAction,
           invocationTarget: mockDoc.id
         })
@@ -79,7 +79,7 @@ describe('validate regular DIDs', () => {
         documentLoader,
         suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
         purpose: new CapabilityInvocation({
-          capability: helpers.generatateRootZcapId({id: mockDoc.id}),
+          capability: helpers.generateRootZcapId({id: mockDoc.id}),
           capabilityAction,
           invocationTarget: mockDoc.id
         })
@@ -116,7 +116,7 @@ describe('validate regular DIDs', () => {
         documentLoader,
         suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
         purpose: new CapabilityInvocation({
-          capability: helpers.generatateRootZcapId({id: mockDoc.id}),
+          capability: helpers.generateRootZcapId({id: mockDoc.id}),
           capabilityAction,
           invocationTarget: mockDoc.id
         })
@@ -157,7 +157,7 @@ describe('validate regular DIDs', () => {
         documentLoader,
         suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
         purpose: new CapabilityInvocation({
-          capability: helpers.generatateRootZcapId({id: did}),
+          capability: helpers.generateRootZcapId({id: did}),
           capabilityAction,
           invocationTarget: did
         })
@@ -226,7 +226,7 @@ describe('validate regular DIDs', () => {
         documentLoader,
         suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
         purpose: new CapabilityInvocation({
-          capability: helpers.generatateRootZcapId({id: mockDoc.id}),
+          capability: helpers.generateRootZcapId({id: mockDoc.id}),
           capabilityAction,
           invocationTarget: mockDoc.id
         })
@@ -264,7 +264,7 @@ describe('validate regular DIDs', () => {
         documentLoader,
         suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
         purpose: new CapabilityInvocation({
-          capability: helpers.generatateRootZcapId({id: mockDoc.id}),
+          capability: helpers.generateRootZcapId({id: mockDoc.id}),
           capabilityAction,
           invocationTarget: mockDoc.id
         })
@@ -322,7 +322,7 @@ describe('validate regular DIDs', () => {
           documentLoader,
           suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
           purpose: new CapabilityInvocation({
-            capability: helpers.generatateRootZcapId({id: did}),
+            capability: helpers.generateRootZcapId({id: did}),
             capabilityAction,
             invocationTarget: mockOperation.record.id
           })
@@ -361,7 +361,7 @@ describe('validate regular DIDs', () => {
           documentLoader,
           suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
           purpose: new CapabilityInvocation({
-            capability: helpers.generatateRootZcapId({id: did}),
+            capability: helpers.generateRootZcapId({id: did}),
             capabilityAction,
             invocationTarget: mockOperation.record.id
           })
@@ -414,7 +414,7 @@ describe('validate regular DIDs', () => {
           documentLoader,
           suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
           purpose: new CapabilityInvocation({
-            capability: helpers.generatateRootZcapId({id: did}),
+            capability: helpers.generateRootZcapId({id: did}),
             capabilityAction,
             invocationTarget: mockOperation.record.id
           })
@@ -453,7 +453,7 @@ describe('validate regular DIDs', () => {
           documentLoader,
           suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
           purpose: new CapabilityInvocation({
-            capability: helpers.generatateRootZcapId({id: did}),
+            capability: helpers.generateRootZcapId({id: did}),
             capabilityAction,
             invocationTarget: mockOperation.record.id
           })
@@ -496,7 +496,7 @@ describe('validate regular DIDs', () => {
           documentLoader,
           suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
           purpose: new CapabilityInvocation({
-            capability: helpers.generatateRootZcapId({id: did}),
+            capability: helpers.generateRootZcapId({id: did}),
             capabilityAction,
             invocationTarget: mockOperation.record.id
           })
@@ -546,7 +546,7 @@ describe('validate regular DIDs', () => {
           documentLoader,
           suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
           purpose: new CapabilityInvocation({
-            capability: helpers.generatateRootZcapId({id: did}),
+            capability: helpers.generateRootZcapId({id: did}),
             capabilityAction,
             invocationTarget: mockOperation.record.id
           })
@@ -589,7 +589,7 @@ describe('validate regular DIDs', () => {
           documentLoader,
           suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
           purpose: new CapabilityInvocation({
-            capability: helpers.generatateRootZcapId({id: did}),
+            capability: helpers.generateRootZcapId({id: did}),
             capabilityAction,
             invocationTarget: mockOperation.record.id
           })
@@ -648,7 +648,7 @@ describe('validate regular DIDs', () => {
         documentLoader,
         suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
         purpose: new CapabilityInvocation({
-          capability: helpers.generatateRootZcapId({id: did}),
+          capability: helpers.generateRootZcapId({id: did}),
           capabilityAction,
           invocationTarget: did
         })
@@ -700,7 +700,7 @@ describe('validate regular DIDs', () => {
         documentLoader,
         suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
         purpose: new CapabilityInvocation({
-          capability: helpers.generatateRootZcapId({id: did}),
+          capability: helpers.generateRootZcapId({id: did}),
           capabilityAction,
           invocationTarget: did
         })
@@ -748,7 +748,7 @@ describe('validate regular DIDs', () => {
         documentLoader,
         suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
         purpose: new CapabilityInvocation({
-          capability: helpers.generatateRootZcapId({id: did}),
+          capability: helpers.generateRootZcapId({id: did}),
           capabilityAction,
           invocationTarget: did
         })
@@ -805,7 +805,7 @@ describe('validate regular DIDs', () => {
         documentLoader,
         suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
         purpose: new CapabilityInvocation({
-          capability: helpers.generatateRootZcapId({id: did}),
+          capability: helpers.generateRootZcapId({id: did}),
           capabilityAction,
           invocationTarget: did
         })
@@ -857,7 +857,7 @@ describe('validate regular DIDs', () => {
         documentLoader,
         suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
         purpose: new CapabilityInvocation({
-          capability: helpers.generatateRootZcapId({id: did}),
+          capability: helpers.generateRootZcapId({id: did}),
           capabilityAction,
           invocationTarget: did
         })
@@ -908,7 +908,7 @@ describe('validate regular DIDs', () => {
         documentLoader,
         suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
         purpose: new CapabilityInvocation({
-          capability: helpers.generatateRootZcapId({id: did}),
+          capability: helpers.generateRootZcapId({id: did}),
           capabilityAction,
           // Set the invocation target to did2 here
           // in order to have the correct expectedTarget in the validator below.
@@ -973,7 +973,7 @@ describe('validate regular DIDs', () => {
         documentLoader,
         suite: new Ed25519Signature2020({key: capabilityInvocationKey1}),
         purpose: new CapabilityInvocation({
-          capability: helpers.generatateRootZcapId({id: did}),
+          capability: helpers.generateRootZcapId({id: did}),
           capabilityAction,
           invocationTarget: did
         })
@@ -1032,7 +1032,7 @@ describe('validate regular DIDs', () => {
         documentLoader,
         suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
         purpose: new CapabilityInvocation({
-          capability: helpers.generatateRootZcapId({id: did}),
+          capability: helpers.generateRootZcapId({id: did}),
           capabilityAction,
           invocationTarget: did1
         })
@@ -1085,7 +1085,7 @@ describe('validate regular DIDs', () => {
         documentLoader,
         suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
         purpose: new CapabilityInvocation({
-          capability: helpers.generatateRootZcapId({id: did}),
+          capability: helpers.generateRootZcapId({id: did}),
           capabilityAction,
           invocationTarget: did
         })
@@ -1137,7 +1137,7 @@ describe('validate regular DIDs', () => {
         documentLoader,
         suite: new Ed25519Signature2020({key: newKey}),
         purpose: new CapabilityInvocation({
-          capability: helpers.generatateRootZcapId({id: did}),
+          capability: helpers.generateRootZcapId({id: did}),
           capabilityAction,
           invocationTarget: did
         })
@@ -1194,7 +1194,7 @@ describe('validate regular DIDs', () => {
         documentLoader,
         suite: new Ed25519Signature2020({key: newKey}),
         purpose: new CapabilityInvocation({
-          capability: helpers.generatateRootZcapId({id: did}),
+          capability: helpers.generateRootZcapId({id: did}),
           capabilityAction,
           invocationTarget: did
         })
@@ -1244,7 +1244,7 @@ describe('validate regular DIDs', () => {
         documentLoader,
         suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
         purpose: new CapabilityInvocation({
-          capability: helpers.generatateRootZcapId({id: did}),
+          capability: helpers.generateRootZcapId({id: did}),
           capabilityAction,
           invocationTarget: did
         })
@@ -1297,7 +1297,7 @@ describe('validate regular DIDs', () => {
         documentLoader,
         suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
         purpose: new CapabilityInvocation({
-          capability: helpers.generatateRootZcapId({id: did}),
+          capability: helpers.generateRootZcapId({id: did}),
           capabilityAction,
           invocationTarget: did
         })
@@ -1364,7 +1364,7 @@ describe('validate regular DIDs', () => {
           documentLoader,
           suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
           purpose: new CapabilityInvocation({
-            capability: helpers.generatateRootZcapId({id: did}),
+            capability: helpers.generateRootZcapId({id: did}),
             capabilityAction,
             invocationTarget: did
           })
@@ -1417,7 +1417,7 @@ describe('validate regular DIDs', () => {
           documentLoader,
           suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
           purpose: new CapabilityInvocation({
-            capability: helpers.generatateRootZcapId({id: did}),
+            capability: helpers.generateRootZcapId({id: did}),
             capabilityAction,
             invocationTarget: did
           })
@@ -1464,7 +1464,7 @@ describe('validate regular DIDs', () => {
           documentLoader,
           suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
           purpose: new CapabilityInvocation({
-            capability: helpers.generatateRootZcapId({id: did}),
+            capability: helpers.generateRootZcapId({id: did}),
             capabilityAction,
             invocationTarget: did
           })
@@ -1512,7 +1512,7 @@ describe('validate regular DIDs', () => {
           documentLoader,
           suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
           purpose: new CapabilityInvocation({
-            capability: helpers.generatateRootZcapId({id: did}),
+            capability: helpers.generateRootZcapId({id: did}),
             capabilityAction,
             invocationTarget: did
           })
@@ -1569,7 +1569,7 @@ describe('validate regular DIDs', () => {
           documentLoader,
           suite: new Ed25519Signature2020({key: capabilityInvocationKey}),
           purpose: new CapabilityInvocation({
-            capability: helpers.generatateRootZcapId({id: did}),
+            capability: helpers.generateRootZcapId({id: did}),
             capabilityAction,
             invocationTarget: did
           })
