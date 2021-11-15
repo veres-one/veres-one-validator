@@ -1050,7 +1050,7 @@ describe('validate regular DIDs', () => {
       const {proofVerifyResult} = result.error.details;
       proofVerifyResult.verified.should.be.false;
       proofVerifyResult.error.errors[0].message.should.contain(
-        'does not match root capability target');
+        'does not match capability target');
     });
     // proof has `capabilityAction` === `write`
     it('rejects update operation without proper capabilityAction', async () => {
