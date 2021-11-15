@@ -278,7 +278,6 @@ describe('validate API WitnessPool', () => {
       // id of a didDocument
       it('fails on op w/two ledger write capability proofs', async () => {
         const {ledger} = mockData.ledgerConfigurations.alpha;
-        const {id: maintainerDid} = maintainerDidDocumentFull.didDocument;
         const witnessPoolDoc = _generateWitnessPoolDoc();
         let operation = await _wrap(
           {didDocument: witnessPoolDoc, operationType: 'create'});
