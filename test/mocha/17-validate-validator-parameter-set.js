@@ -38,13 +38,12 @@ describe('validate API ValidatorParameterSet', () => {
 
         // FIXME: add a write proof for the ledger that will pass json-schema
         // validation for testnet v2 *not* a valid signature
-        operation.proof = clone(mockData.proof);
+        operation.proof = mockData.proof();
 
         operation = await attachInvocationProof({
           operation,
-          capability: helpers.generatateRootZcapId({
+          capability: helpers.generateRootZcapId({
             id: operation.record.id,
-            controller: key.id
           }),
           capabilityAction: 'write',
           invocationTarget: operation.record.id,
@@ -89,13 +88,12 @@ describe('validate API ValidatorParameterSet', () => {
 
         // FIXME: add a write proof for the ledger that will pass json-schema
         // validation for testnet v2 *not* a valid signature
-        operation.proof = clone(mockData.proof);
+        operation.proof = mockData.proof();
 
         operation = await attachInvocationProof({
           operation,
-          capability: helpers.generatateRootZcapId({
+          capability: helpers.generateRootZcapId({
             id: operation.record.id,
-            controller: key.id
           }),
           capabilityAction: 'write',
           invocationTarget: operation.record.id,
@@ -148,13 +146,12 @@ describe('validate API ValidatorParameterSet', () => {
 
         // FIXME: add a write proof for the ledger that will pass json-schema
         // validation for testnet v2 *not* a valid signature
-        operation.proof = clone(mockData.proof);
+        operation.proof = mockData.proof();
 
         operation = await attachInvocationProof({
           operation,
-          capability: helpers.generatateRootZcapId({
+          capability: helpers.generateRootZcapId({
             id: operation.record.id,
-            controller: key.id
           }),
           capabilityAction: 'write',
           invocationTarget: operation.record.id,
@@ -228,13 +225,12 @@ describe('validate API ValidatorParameterSet', () => {
 
         // FIXME: add a write proof for the ledger that will pass json-schema
         // validation for testnet v2 *not* a valid signature
-        operation.proof = clone(mockData.proof);
+        operation.proof = mockData.proof();
 
         operation = await attachInvocationProof({
           operation,
-          capability: helpers.generatateRootZcapId({
+          capability: helpers.generateRootZcapId({
             id: operation.recordPatch.target,
-            controller: key.id
           }),
           capabilityAction: 'write',
           invocationTarget: operation.recordPatch.target,
@@ -302,13 +298,12 @@ describe('validate API ValidatorParameterSet', () => {
 
         // FIXME: add a write proof for the ledger that will pass json-schema
         // validation for testnet v2 *not* a valid signature
-        operation.proof = clone(mockData.proof);
+        operation.proof = mockData.proof();
 
         operation = await attachInvocationProof({
           operation,
-          capability: helpers.generatateRootZcapId({
+          capability: helpers.generateRootZcapId({
             id: operation.recordPatch.target,
-            controller: key.id
           }),
           capabilityAction: 'write',
           invocationTarget: operation.recordPatch.target,
@@ -380,13 +375,12 @@ describe('validate API ValidatorParameterSet', () => {
 
         // FIXME: add a write proof for the ledger that will pass json-schema
         // validation for testnet v2 *not* a valid signature
-        operation.proof = clone(mockData.proof);
+        operation.proof = mockData.proof();
 
         operation = await attachInvocationProof({
           operation,
-          capability: helpers.generatateRootZcapId({
+          capability: helpers.generateRootZcapId({
             id: operation.recordPatch.target,
-            controller: key.id
           }),
           capabilityAction: 'write',
           invocationTarget: operation.recordPatch.target,
@@ -458,12 +452,11 @@ describe('validate API ValidatorParameterSet', () => {
 
         // FIXME: add a write proof for the ledger that will pass json-schema
         // validation for testnet v2 *not* a valid signature
-        operation.proof = clone(mockData.proof);
+        operation.proof = mockData.proof();
         operation = await attachInvocationProof({
           operation,
-          capability: helpers.generatateRootZcapId({
+          capability: helpers.generateRootZcapId({
             id: operation.recordPatch.target,
-            controller: key.id
           }),
           capabilityAction: 'write',
           invocationTarget: operation.recordPatch.target,

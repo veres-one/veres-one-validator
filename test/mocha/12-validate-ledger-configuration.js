@@ -22,14 +22,17 @@ describe('validate API WebLedgerConfiguration', () => {
     // maintainers DID does not yet exist on the ledger
     const {methodFor, didDocument} = await v1.generate();
     const signingKey = methodFor({purpose: 'capabilityInvocation'});
+    // set the controller of the ledger config here
+    ledgerConfiguration.controller = didDocument.id;
     const s = await jsigs.sign(ledgerConfiguration, {
       documentLoader,
       suite: new Ed25519Signature2020({key: signingKey}),
       purpose: new CapabilityInvocation({
-        capability: helpers.generatateRootZcapId(
-          {id: ledgerConfiguration.ledger, controller: didDocument.id}),
+        capability: helpers.generateRootZcapId({
+          id: ledgerConfiguration.ledger
+        }),
         capabilityAction: 'write',
-        invocationTarget: `${ledgerConfiguration.ledger}`
+        invocationTarget: `${ledgerConfiguration.ledger}/config`
       })
     });
     const result = await voValidator.validate({
@@ -48,6 +51,8 @@ describe('validate API WebLedgerConfiguration', () => {
     // The public key material is derived from the nym DID because the
     // maintainers DID does not yet exist on the ledger
     const maintainerDoc = await v1.generate();
+    // set the controller of the ledger config here
+    ledgerConfiguration.controller = maintainerDoc.didDocument.id;
     const signingKey =
       maintainerDoc.methodFor({purpose: 'capabilityInvocation'});
     const s = await jsigs.sign(ledgerConfiguration, {
@@ -55,8 +60,9 @@ describe('validate API WebLedgerConfiguration', () => {
       documentLoader,
       suite: new Ed25519Signature2020({key: signingKey}),
       purpose: new CapabilityInvocation({
-        capability: helpers.generatateRootZcapId(
-          {id: ledgerConfiguration.ledger}),
+        capability: helpers.generateRootZcapId({
+          id: ledgerConfiguration.ledger
+        }),
         capabilityAction: 'write',
         invocationTarget: `${ledgerConfiguration.ledger}/config`
       })
@@ -80,6 +86,8 @@ describe('validate API WebLedgerConfiguration', () => {
     // The public key material is derived from the nym DID because the
     // maintainers DID does not yet exist on the ledger
     const maintainerDoc = await v1.generate();
+    // set the controller of the ledger config here
+    ledgerConfiguration.controller = maintainerDoc.didDocument.id;
     const signingKey =
       maintainerDoc.methodFor({purpose: 'capabilityInvocation'});
     const s = await jsigs.sign(ledgerConfiguration, {
@@ -87,8 +95,9 @@ describe('validate API WebLedgerConfiguration', () => {
       documentLoader,
       suite: new Ed25519Signature2020({key: signingKey}),
       purpose: new CapabilityInvocation({
-        capability: helpers.generatateRootZcapId(
-          {id: ledgerConfiguration.ledger}),
+        capability: helpers.generateRootZcapId({
+          id: ledgerConfiguration.ledger
+        }),
         capabilityAction: 'write',
         invocationTarget: `${ledgerConfiguration.ledger}/config`
       })
@@ -110,6 +119,8 @@ describe('validate API WebLedgerConfiguration', () => {
     // The public key material is derived from the nym DID because the
     // maintainers DID does not yet exist on the ledger
     const maintainerDoc = await v1.generate();
+    // set the controller of the ledger config here
+    ledgerConfiguration.controller = maintainerDoc.didDocument.id;
     const signingKey =
       maintainerDoc.methodFor({purpose: 'capabilityInvocation'});
     const s = await jsigs.sign(ledgerConfiguration, {
@@ -117,8 +128,9 @@ describe('validate API WebLedgerConfiguration', () => {
       documentLoader,
       suite: new Ed25519Signature2020({key: signingKey}),
       purpose: new CapabilityInvocation({
-        capability: helpers.generatateRootZcapId(
-          {id: ledgerConfiguration.ledger}),
+        capability: helpers.generateRootZcapId({
+          id: ledgerConfiguration.ledger
+        }),
         capabilityAction: 'write',
         invocationTarget: `${ledgerConfiguration.ledger}/config`
       })
@@ -149,8 +161,9 @@ describe('validate API WebLedgerConfiguration', () => {
       documentLoader,
       suite: new Ed25519Signature2020({key: signingKey}),
       purpose: new CapabilityInvocation({
-        capability: helpers.generatateRootZcapId(
-          {id: ledgerConfiguration.ledger}),
+        capability: helpers.generateRootZcapId({
+          id: ledgerConfiguration.ledger
+        }),
         capabilityAction: 'write',
         invocationTarget: `${ledgerConfiguration.ledger}/config`
       })
@@ -178,6 +191,8 @@ describe('validate API WebLedgerConfiguration', () => {
     // The public key material is derived from the nym DID because the
     // maintainers DID does not yet exist on the ledger
     const maintainerDoc = await v1.generate();
+    // set the controller of the ledger config here
+    ledgerConfiguration.controller = maintainerDoc.didDocument.id;
     const signingKey =
       maintainerDoc.methodFor({purpose: 'capabilityInvocation'});
     const s = await jsigs.sign(ledgerConfiguration, {
@@ -185,8 +200,9 @@ describe('validate API WebLedgerConfiguration', () => {
       documentLoader,
       suite: new Ed25519Signature2020({key: signingKey}),
       purpose: new CapabilityInvocation({
-        capability: helpers.generatateRootZcapId(
-          {id: ledgerConfiguration.ledger}),
+        capability: helpers.generateRootZcapId({
+          id: ledgerConfiguration.ledger
+        }),
         capabilityAction: 'write',
         invocationTarget: `${ledgerConfiguration.ledger}/config`
       })

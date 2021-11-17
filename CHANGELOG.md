@@ -1,5 +1,14 @@
 # veres-one-validator ChangeLog
 
+## 9.0.0 -
+
+### Changed
+- **BREAKING**: LedgerConfigurations now use `CapabilityInvocation` proofs.
+- **BREAKING**: LedgerWrite proofs require attenuated invocationTargets such as `<ledgerId>/records`.
+- The documentloader can resolve dynamically created root zcaps.
+- **BREAKING**: Record validators now expect attenuated invocationTargets.
+- **BREAKING**: Record validators now expect dynamic root zcaps.
+
 ### 8.0.0 - 2021-07-23
 
 ### Changed

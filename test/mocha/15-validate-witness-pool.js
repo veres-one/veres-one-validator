@@ -36,13 +36,11 @@ describe('validate API WitnessPool', () => {
 
         // FIXME: add a write proof for the ledger that will pass json-schema
         // validation for testnet v2 *not* a valid signature
-        operation.proof = bedrock.util.clone(mockData.proof);
+        operation.proof = mockData.proof();
         operation = await attachInvocationProof({
           operation,
-          capability: helpers.generatateRootZcapId({
+          capability: helpers.generateRootZcapId({
             id: witnessPoolDoc.id,
-            // this is not a didDoc so the controller should be the maintainer
-            controller: key.id
           }),
           capabilityAction: 'write',
           invocationTarget: witnessPoolDoc.id,
@@ -91,14 +89,12 @@ describe('validate API WitnessPool', () => {
         const key = _getMaintainerKeys();
         // FIXME: add a write proof for the ledger that will pass json-schema
         // validation for testnet v2 *not* a valid signature
-        operation.proof = bedrock.util.clone(mockData.proof);
+        operation.proof = mockData.proof();
 
         operation = await attachInvocationProof({
           operation,
-          capability: helpers.generatateRootZcapId({
+          capability: helpers.generateRootZcapId({
             id: witnessPoolDoc.id,
-            // this is not a didDoc so the controller should be the maintainer
-            controller: key.id
           }),
           capabilityAction: 'write',
           invocationTarget: operation.record.id,
@@ -137,7 +133,6 @@ describe('validate API WitnessPool', () => {
         result.error.name.should.equal('ValidationError');
       });
       it('fails on op if proof is not an array', async () => {
-        const {id: maintainerDid} = maintainerDidDocumentFull.didDocument;
         const witnessPoolDoc = _generateWitnessPoolDoc();
         let operation = await _wrap(
           {didDocument: witnessPoolDoc, operationType: 'create'});
@@ -145,10 +140,8 @@ describe('validate API WitnessPool', () => {
         // no create proof added
         operation = await attachInvocationProof({
           operation,
-          capability: helpers.generatateRootZcapId({
+          capability: helpers.generateRootZcapId({
             id: witnessPoolDoc.id,
-            // this is not a didDoc so the controller should be the maintainer
-            controller: maintainerDid
           }),
           capabilityAction: 'write',
           invocationTarget: operation.record.id,
@@ -184,7 +177,6 @@ describe('validate API WitnessPool', () => {
       });
 
       it('fails on op w/only one write capability', async () => {
-        const {id: maintainerDid} = maintainerDidDocumentFull.didDocument;
         const witnessPoolDoc = _generateWitnessPoolDoc();
         let operation = await _wrap(
           {didDocument: witnessPoolDoc, operationType: 'create'});
@@ -193,10 +185,8 @@ describe('validate API WitnessPool', () => {
         // this proof is for writing to a single did
         operation = await attachInvocationProof({
           operation,
-          capability: helpers.generatateRootZcapId({
+          capability: helpers.generateRootZcapId({
             id: witnessPoolDoc.id,
-            // this is not a didDoc so the controller should be the maintainer
-            controller: maintainerDid
           }),
           capabilityAction: 'write',
           invocationTarget: operation.record.id,
@@ -242,10 +232,8 @@ describe('validate API WitnessPool', () => {
         // proof for writing to the ledger itself
         operation = await attachInvocationProof({
           operation,
-          capability: helpers.generatateRootZcapId({
+          capability: helpers.generateRootZcapId({
             id: witnessPoolDoc.id,
-            // this is not a didDoc so the controller should be the maintainer
-            controller: key.id
           }),
           capabilityAction: 'write',
           invocationTarget: witnessPoolDoc.id,
@@ -253,10 +241,8 @@ describe('validate API WitnessPool', () => {
         });
         operation = await attachInvocationProof({
           operation,
-          capability: helpers.generatateRootZcapId({
+          capability: helpers.generateRootZcapId({
             id: witnessPoolDoc.id,
-            // this is not a didDoc so the controller should be the maintainer
-            controller: key.id
           }),
           capabilityAction: 'write',
           invocationTarget: witnessPoolDoc.id,
@@ -292,7 +278,6 @@ describe('validate API WitnessPool', () => {
       // id of a didDocument
       it('fails on op w/two ledger write capability proofs', async () => {
         const {ledger} = mockData.ledgerConfigurations.alpha;
-        const {id: maintainerDid} = maintainerDidDocumentFull.didDocument;
         const witnessPoolDoc = _generateWitnessPoolDoc();
         let operation = await _wrap(
           {didDocument: witnessPoolDoc, operationType: 'create'});
@@ -303,10 +288,8 @@ describe('validate API WitnessPool', () => {
         operation = await attachInvocationProof({
           operation,
           algorithm: 'Ed25519Signature2020',
-          capability: helpers.generatateRootZcapId({
+          capability: helpers.generateRootZcapId({
             id: ledger,
-            // this is not a didDoc so the controller should be the maintainer
-            controller: maintainerDid
           }),
           capabilityAction: 'write',
           invocationTarget: ledger,
@@ -315,10 +298,8 @@ describe('validate API WitnessPool', () => {
         operation = await attachInvocationProof({
           operation,
           algorithm: 'Ed25519Signature2020',
-          capability: helpers.generatateRootZcapId({
+          capability: helpers.generateRootZcapId({
             id: ledger,
-            // this is not a didDoc so the controller should be the maintainer
-            controller: maintainerDid
           }),
           capabilityAction: 'write',
           invocationTarget: ledger,
@@ -357,16 +338,15 @@ describe('validate API WitnessPool', () => {
 
         // FIXME: add a write proof for the ledger that will pass json-schema
         // validation for testnet v2 *not* a valid signature
-        operation.proof = bedrock.util.clone(mockData.proof);
+        operation.proof = mockData.proof();
         // this DID document does not exist
         const notFoundDid =
           'did:v1:test:uuid:e798d4cf-f4f5-40cb-9f06-7fa56cf55d95';
         // replacing witnessDid with maintainerDid
         operation = await attachInvocationProof({
           operation,
-          capability: helpers.generatateRootZcapId({
+          capability: helpers.generateRootZcapId({
             id: notFoundDid,
-            controller: key.id
           }),
           capabilityAction: 'write',
           invocationTarget: notFoundDid,
@@ -457,14 +437,12 @@ describe('validate API WitnessPool', () => {
 
         // FIXME: add a write proof for the ledger that will pass json-schema
         // validation for testnet v2 *not* a valid signature
-        operation.proof = bedrock.util.clone(mockData.proof);
+        operation.proof = mockData.proof();
 
         operation = await attachInvocationProof({
           operation,
-          capability: helpers.generatateRootZcapId({
+          capability: helpers.generateRootZcapId({
             id: witnessPoolDoc.id,
-            // this is not a didDoc so the controller should be the maintainer
-            controller: key.id
           }),
           capabilityAction: 'write',
           invocationTarget: operation.recordPatch.target,
@@ -539,14 +517,12 @@ describe('validate API WitnessPool', () => {
 
         // FIXME: add a write proof for the ledger that will pass json-schema
         // validation for testnet v2 *not* a valid signature
-        operation.proof = bedrock.util.clone(mockData.proof);
+        operation.proof = mockData.proof();
 
         operation = await attachInvocationProof({
           operation,
-          capability: helpers.generatateRootZcapId({
+          capability: helpers.generateRootZcapId({
             id: witnessPoolDoc.id,
-            // this is not a didDoc so the controller should be the maintainer
-            controller: key.id
           }),
           capabilityAction: 'write',
           invocationTarget: operation.recordPatch.target,

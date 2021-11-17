@@ -42,22 +42,22 @@ mock.patchContext = [
 
 const privateDidDocuments = mock.privateDidDocuments = {};
 const validatorParameterSet = mock.validatorParameterSet = {};
+const ledgerId = 'did:v1:test:uuid:c37e914a-1e2a-4d59-9668-ee93458fd19a';
 // TODO: for testnet v2, this proof is only validated using json-schema
-mock.proof = {
+mock.proof = ({invocationTargetPath = '/records'} = {}) => ({
   type: 'Ed25519Signature2020',
   created: '2021-01-10T23:10:25Z',
-  capability: helpers.generatateRootZcapId({
-    id: 'did:v1:test:uuid:c37e914a-1e2a-4d59-9668-ee93458fd19a'
+  capability: helpers.generateRootZcapId({
+    id: ledgerId
   }),
   capabilityAction: 'write',
-  invocationTarget:
-    'did:v1:test:uuid:c37e914a-1e2a-4d59-9668-ee93458fd19a',
+  invocationTarget: `${ledgerId}${invocationTargetPath}`,
   proofPurpose: 'capabilityInvocation',
   proofValue: 'z3t9it5yhFHkqWnHKMQ2DWVj7aHDN37f95UzhQYQGYd9LyTSGzufCiTwDWN' +
     'fCdxQA9ZHcTTVAhHwoAji2AJnk2E6',
   verificationMethod: 'did:v1:test:nym:z279yHL6HsxRzCPU78DAWgZVieb8xPK1mJKJBb' +
     'P8T2CezuFY#z279tKmToKKMjQ8tsCgTbBBthw5xEzHWL6GCqZyQnzZr7wUo'
-};
+});
 
 // need to return document for beta but *not* for alpha
 const didAlpha = 'did:v1:test:uuid:40aea416-73b2-436f-bb91-41175494d72b';
@@ -93,6 +93,11 @@ mock.ledgerNode = {
       }
       throw new BedrockError(
         'DID Document not found.', 'NotFoundError', {recordId});
+    }
+  },
+  config: {
+    async get({/*blockHeight*/}) {
+      return null;
     }
   }
 };
@@ -229,7 +234,7 @@ ledgerConfigurations.alpha = {
     constants.ZCAP_CONTEXT_V1_URL
   ],
   type: 'WebLedgerConfiguration',
-  ledger: 'did:v1:c02915fc-672d-4568-8e6e-b12a0b35cbb3',
+  ledger: 'did:v1:uuid:c02915fc-672d-4568-8e6e-b12a0b35cbb3',
   consensusMethod: 'Continuity2017',
   witnessSelectionMethod: {
     type: 'WitnessPoolWitnessSelection',
